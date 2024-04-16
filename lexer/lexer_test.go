@@ -12,7 +12,7 @@ type nextTokeTestTable struct {
 	expectedLiteral string
 }
 
-func TestNextToken(t *testing.T) {
+func TestNextTokenRecognizedCharacters(t *testing.T) {
 	input := `=+(){},;`
 
 	tt := []nextTokeTestTable{
@@ -28,7 +28,7 @@ func TestNextToken(t *testing.T) {
 	runNextTokenTest(t, input, tt)
 }
 
-func TestNextToken2(t *testing.T) {
+func TestNextTokenIdentifiers(t *testing.T) {
 	input := `let five = 5;
 let ten = 10;
    let add = fn(x, y) {
