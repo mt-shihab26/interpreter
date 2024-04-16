@@ -1,39 +1,59 @@
 package lexer
 
-import (
-	"monkey/token"
-	"strings"
-)
+import "monkey/token"
 
 type Lexer struct {
-	cursor int
-	tokens []token.Token
+	input         string
+	position      int  // current position in input (points to current char)
+	readPoisition int  // current reading position in input (after current char)
+	ch            byte // current char under examination
 }
 
-func (l *Lexer) NextToken() token.Token {
-	tok := l.tokens[l.cursor]
-	l.cursor++
+func New(input string) *Lexer {
+	l := &Lexer{input: input}
+	l.readChar()
+	return l
+}
+
+func (l *Lexer) readChar() {
+	if l.readPoisition >= len(l.input) {
+		l.ch = 0
+	} else {
+		l.ch = l.input[l.readPoisition]
+	}
+	l.position = l.readPoisition
+	l.readPoisition++
+}
+
+func (l *Lexer) NextToken() (tok token.Token) {
+	switch l.ch {
+	case '=':
+		tok = newToken(token.ASSIGN, l.ch)
+	case ';':
+		tok = newToken(token.SEMICOLON, l.ch)
+	case '(':
+		tok = newToken(token.LPAREN, l.ch)
+	case ')':
+		tok = newToken(token.RPAREN, l.ch)
+	case ',':
+		tok = newToken(token.COMMA, l.ch)
+	case '+':
+		tok = newToken(token.PLUS, l.ch)
+	case '{':
+		tok = newToken(token.LBRACE, l.ch)
+	case '}':
+		tok = newToken(token.RBRACE, l.ch)
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
+	}
+	l.readChar()
 	return tok
 }
 
-func New(sourceCode string) Lexer {
-	return Lexer{
-		tokens: parseTokens(sourceCode),
+func newToken(tokenType token.TokenType, ch byte) token.Token {
+	return token.Token{
+		Type:    tokenType,
+		Literal: string(ch),
 	}
-}
-
-func parseTokens(sourceCode string) []token.Token {
-	var tokens []token.Token
-	characters := strings.Split(sourceCode, "")
-	for _, character := range characters {
-		tokens = append(tokens, token.Token{Type: tokenType(character), Literal: character})
-	}
-	return tokens
-}
-
-func tokenType(character string) token.TokenType {
-	if character == token.ASSIGN {
-		return token.ASSIGN
-	}
-	return token.ILLEGAL
 }
