@@ -13,7 +13,7 @@ type nextTokeTestTable struct {
 }
 
 func TestNextTokenRecognizedCharacters(t *testing.T) {
-	input := `=+(){},;`
+	input := `=+(){},   ;`
 
 	tt := []nextTokeTestTable{
 		{token.ASSIGN, "="},
@@ -82,26 +82,29 @@ func runNextTokenTest(t *testing.T, input string, tt []nextTokeTestTable) {
 	l := lexer.New(input)
 
 	for i, tc := range tt {
-		t.Run(fmt.Sprintf("tests[%d]:%s", i, tc.expectedType), func(t *testing.T) {
-			tok := l.NextToken()
-			if tok.Type != tc.expectedType {
-				t.Errorf(
-					"tests[%d] - tokentype wrong. expected=%q, got=%q",
-					i,
-					tc.expectedType,
-					tok.Type,
-				)
-				return
-			}
-			if tok.Literal != tc.expectedLiteral {
-				t.Fatalf(
-					"tests[%d] - literal wrong. expected=%q, got=%q",
-					i,
-					tc.expectedLiteral,
-					tok.Literal,
-				)
-			}
-		})
+		t.Run(
+			fmt.Sprintf("tests[%d]:%s-%s", i, tc.expectedType, tc.expectedLiteral),
+			func(t *testing.T) {
+				tok := l.NextToken()
+				if tok.Type != tc.expectedType {
+					t.Errorf(
+						"tests[%d] - tokentype wrong. expected=%q, got=%q",
+						i,
+						tc.expectedType,
+						tok.Type,
+					)
+					return
+				}
+				if tok.Literal != tc.expectedLiteral {
+					t.Fatalf(
+						"tests[%d] - literal wrong. expected=%q, got=%q",
+						i,
+						tc.expectedLiteral,
+						tok.Literal,
+					)
+				}
+			},
+		)
 	}
 
 }
