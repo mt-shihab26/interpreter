@@ -1,21 +1,18 @@
-package lexer_test
+package lexer
 
 import (
-	"fmt"
-	"monkey/lexer"
-	"monkey/token"
 	"testing"
+
+	"monkey/internal/token"
 )
 
-type nextTokeTestTable struct {
-	expectedType    token.TokenType
-	expectedLiteral string
-}
+func TestNextToken(t *testing.T) {
+	input := `=+(){},;`
 
-func TestNextTokenRecognizedCharacters(t *testing.T) {
-	input := `=+(){},   ;`
-
-	tt := []nextTokeTestTable{
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
 		{token.LPAREN, "("},
@@ -24,19 +21,39 @@ func TestNextTokenRecognizedCharacters(t *testing.T) {
 		{token.RBRACE, "}"},
 		{token.COMMA, ","},
 		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
 	}
-	runNextTokenTest(t, input, tt)
+
+	l := New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
 }
 
-func TestNextTokenIdentifiers(t *testing.T) {
+func TestNextToken2(t *testing.T) {
 	input := `let five = 5;
-let ten = 10;
-   let add = fn(x, y) {
-     x + y;
-};
-   let result = add(five, ten);
-   `
-	tt := []nextTokeTestTable{
+    let ten = 10;
+
+    let add = fn(x, y) {
+        x + y;
+    };
+
+    let result = add(five, ten);
+    `
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
 		{token.LET, "let"},
 		{token.IDENT, "five"},
 		{token.ASSIGN, "="},
@@ -75,10 +92,23 @@ let ten = 10;
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
-	runNextTokenTest(t, input, tt)
+
+	l := New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
 }
 
-func TestNextToken(t *testing.T) {
+func TestNextToken3(t *testing.T) {
 	input := `let five = 5;
 let ten = 10;
 
@@ -100,7 +130,10 @@ if (5 < 10) {
 10 != 9;
 `
 
-	tt := []nextTokeTestTable{
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
 		{token.LET, "let"},
 		{token.IDENT, "five"},
 		{token.ASSIGN, "="},
@@ -149,6 +182,7 @@ if (5 < 10) {
 		{token.GT, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+
 		{token.IF, "if"},
 		{token.LPAREN, "("},
 		{token.INT, "5"},
@@ -166,6 +200,7 @@ if (5 < 10) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
+
 		{token.INT, "10"},
 		{token.EQ, "=="},
 		{token.INT, "10"},
@@ -174,38 +209,23 @@ if (5 < 10) {
 		{token.NOT_EQ, "!="},
 		{token.INT, "9"},
 		{token.SEMICOLON, ";"},
+
 		{token.EOF, ""},
 	}
-	runNextTokenTest(t, input, tt)
-}
 
-func runNextTokenTest(t *testing.T, input string, tt []nextTokeTestTable) {
-	l := lexer.New(input)
+	l := New(input)
 
-	for i, tc := range tt {
-		t.Run(
-			fmt.Sprintf("tests[%d]:%s-%s", i, tc.expectedType, tc.expectedLiteral),
-			func(t *testing.T) {
-				tok := l.NextToken()
-				if tok.Type != tc.expectedType {
-					t.Errorf(
-						"tests[%d] - tokentype wrong. expected=%q, got=%q",
-						i,
-						tc.expectedType,
-						tok.Type,
-					)
-					return
-				}
-				if tok.Literal != tc.expectedLiteral {
-					t.Fatalf(
-						"tests[%d] - literal wrong. expected=%q, got=%q",
-						i,
-						tc.expectedLiteral,
-						tok.Literal,
-					)
-				}
-			},
-		)
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
+				i, tt.expectedType, tok.Type)
+		}
+
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q",
+				i, tt.expectedLiteral, tok.Literal)
+		}
 	}
-
 }
