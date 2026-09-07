@@ -3,3 +3,9 @@
 1. Add line number and file name in generated token
 2. Support full unicode (and emojis!)
 3. Support for others numbers then integers (floats, hex notations, octal notations, etc)
+
+## Notes
+
+1. There is only two statements in the monkey programming language
+    - let statement
+    - return statement

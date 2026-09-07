@@ -55,7 +55,7 @@ func (ls *LetStatement) TokenLiteral() string {
 
 type ReturnStatement struct {
 	Token token.Token
-	Value Expression
+	ReturnValue Expression
 }
 
 func (ls *ReturnStatement) statementNode() {

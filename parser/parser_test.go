@@ -5,7 +5,6 @@ import (
 
 	"monkey/ast"
 	"monkey/lexer"
-	"monkey/token"
 )
 
 func checkParserErrors(t *testing.T, p *Parser) {
@@ -103,35 +102,13 @@ return add(15);
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
 	}
 
-	for i := range 3 {
-		stmt := program.Statements[i]
-		if !testReturnStatement(t, stmt) {
-			return
+	for _, stmt := range program.Statements {
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+		if !ok {
+			t.Errorf("stmt not *ast.ReturnStatement. got=%T", stmt)
+		}
+		if returnStmt.TokenLiteral() != "return" {
+			t.Errorf("returnStmt.TokenLiteral not 'return'. got=%q", returnStmt.TokenLiteral())
 		}
 	}
-}
-
-func testReturnStatement(t *testing.T, s ast.Statement) bool {
-	if s.TokenLiteral() != "return" {
-		t.Errorf("s.TokenLiteral not 'return'. got=%q", s.TokenLiteral())
-		return false
-	}
-
-	returnStmt, ok := s.(*ast.ReturnStatement)
-	if !ok {
-		t.Errorf("s not *ast.ReturnStatement. got=%T", s)
-		return false
-	}
-
-	if returnStmt.Token.Type != token.RETURN {
-		t.Errorf("returnStmt.Token.Type not '%s'. got=%s", token.RETURN, returnStmt.Token.Type)
-		return false
-	}
-
-	if returnStmt.Token.Literal != "return" {
-		t.Errorf("returnStmt.Token.Literal not '%s'. got=%s", "return", returnStmt.Token.Literal)
-		return false
-	}
-
-	return true
 }
