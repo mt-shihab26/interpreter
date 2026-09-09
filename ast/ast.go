@@ -61,15 +61,15 @@ type IntegralLiteral struct {
 	Value int64
 }
 
-func (i *IntegralLiteral) expressionNode() {
+func (il *IntegralLiteral) expressionNode() {
 
 }
-func (i *IntegralLiteral) TokenLiteral() string {
-	return i.Token.Literal
+func (il *IntegralLiteral) TokenLiteral() string {
+	return il.Token.Literal
 }
 
-func (i *IntegralLiteral) String() string {
-	return i.Token.Literal
+func (il *IntegralLiteral) String() string {
+	return il.Token.Literal
 }
 
 type PrefixExpression struct {
@@ -78,18 +78,44 @@ type PrefixExpression struct {
 	Right    Expression
 }
 
-func (i *PrefixExpression) expressionNode() {
+func (pe *PrefixExpression) expressionNode() {
 
 }
-func (i *PrefixExpression) TokenLiteral() string {
-	return i.Token.Literal
+func (pe *PrefixExpression) TokenLiteral() string {
+	return pe.Token.Literal
 }
 
-func (i *PrefixExpression) String() string {
+func (pe *PrefixExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
-	out.WriteString(i.Operator)
-	out.WriteString(i.Right.String())
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+	return out.String()
+}
+
+type InfixExpression struct {
+	Token    token.Token
+	Left     Expression
+	Operator string
+	Right    Expression
+}
+
+func (ie *InfixExpression) expressionNode() {
+
+}
+func (ie *InfixExpression) TokenLiteral() string {
+	return ie.Token.Literal
+}
+
+func (ie *InfixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString(" ")
+	out.WriteString(ie.Operator)
+	out.WriteString("")
+	out.WriteString(ie.Right.String())
 	out.WriteString(")")
 	return out.String()
 }
