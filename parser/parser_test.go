@@ -93,9 +93,9 @@ func TestParsingPrefixExpressions(t *testing.T) {
 func TestParsingInfixExpression(t *testing.T) {
 	tests := []struct {
 		input    string
-		left     int64
+		left     any
 		operator string
-		right    int64
+		right    any
 	}{
 		{"5 + 5", 5, "+", 5},
 		{"5 - 5", 5, "-", 5},
@@ -105,6 +105,9 @@ func TestParsingInfixExpression(t *testing.T) {
 		{"5 > 5", 5, ">", 5},
 		{"5 == 5", 5, "==", 5},
 		{"5 != 5", 5, "!=", 5},
+		{"true == true", true, "==", true},
+		{"true != false", true, "!=", false},
+		{"false == false", false, "==", false},
 	}
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
@@ -305,6 +308,8 @@ func testLiteralExpression(t *testing.T, expression ast.Expression, expected any
 		return testIntegerExpression(t, expression, v)
 	case string:
 		return testIdentifierExpression(t, expression, v)
+	case bool:
+		return testBooleanExpression(t, expression, v)
 	}
 	t.Errorf("type of expression not handled. got=%T", expression)
 	return false
