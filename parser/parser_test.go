@@ -99,22 +99,23 @@ func TestParsingInfixExpression(t *testing.T) {
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	tests := []struct {
-		input    string
-		expected string
+		input          string
+		expected       string
+		statementCount int
 	}{
-		{"-a * b", "((-a) * b)"},
-		{"!-a", "(!(-a))"},
-		{"a + b + c", "((a + b) + c)"},
-		{"a + b - c", "((a + b) - c)"},
-		{"a * b * c", "((a * b) * c)"},
-		{"a * b / c", "((a * b) / c)"},
-		{"a + b / c", "(a + (b / c))"},
-		{"a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"},
-		{"3 + 4; -5 * 5", "(3 + 4)((-5) * 5)"},
-		{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))"},
-		{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))"},
-		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"},
-		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"},
+		{"-a * b", "((-a) * b)", 1},
+		{"!-a", "(!(-a))", 1},
+		{"a + b + c", "((a + b) + c)", 1},
+		{"a + b - c", "((a + b) - c)", 1},
+		{"a * b * c", "((a * b) * c)", 1},
+		{"a * b / c", "((a * b) / c)", 1},
+		{"a + b / c", "(a + (b / c))", 1},
+		{"a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)", 1},
+		{"3 + 4; -5 * 5", "(3 + 4)((-5) * 5)", 2},
+		{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))", 1},
+		{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))", 1},
+		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
+		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
 	}
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
@@ -165,7 +166,7 @@ func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {
 		return false
 	}
 	if letStatement.Name.TokenLiteral() != name {
-		t.Errorf("statement.Name not '%s'. got=%s", name, letStatement.Name)
+		t.Errorf("letStatement.Name.TokenLiteral() not '%s'. got=%s", name, letStatement.Name.TokenLiteral())
 		return false
 	}
 	return true
@@ -197,11 +198,11 @@ func testIdentifierExpression(t *testing.T, expression ast.Expression, value str
 		return false
 	}
 	if identifierExpression.Value != value {
-		t.Errorf("identifierExpression.Value not %s. got=%s", "foobar", identifierExpression.Value)
+		t.Errorf("identifierExpression.Value not %s. got=%s", value, identifierExpression.Value)
 		return false
 	}
-	if identifierExpression.TokenLiteral() != "foobar" {
-		t.Errorf("identifierExpression.TokenLiteral not %s. got=%s", "foobar", identifierExpression.TokenLiteral())
+	if identifierExpression.TokenLiteral() != value {
+		t.Errorf("identifierExpression.TokenLiteral not %s. got=%s", value, identifierExpression.TokenLiteral())
 		return false
 	}
 	return true
