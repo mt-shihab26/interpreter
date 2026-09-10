@@ -182,6 +182,36 @@ func TestIfExpression(t *testing.T) {
 	}
 }
 
+func TestIfElseExpression(t *testing.T) {
+	input := `if (x < y) { x } else { y }`
+	program := testParseProgram(t, input, 1)
+	expressionStatement := testExpressionStatement(t, program.Statements[0])
+	ifExpression, ok := expressionStatement.Expression.(*ast.IfExpression)
+	if !ok {
+		t.Fatalf("expressionStatement.Expression is not *ast.IfExpression. got=%T", expressionStatement.Expression)
+	}
+	if !testInfixExpression(t, ifExpression.Condition, "x", "<", "y") {
+		return
+	}
+	if len(ifExpression.Consequence.Statements) != 1 {
+		t.Errorf("consequence is not '%v'. got=%v", 1, len(ifExpression.Consequence.Statements))
+	}
+	consequence, ok := ifExpression.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("ifExpression.Consequence.Statements[0] is not ast.ExpressionStatement. got=%T", ifExpression.Consequence.Statements[0])
+	}
+	if !testIdentifierExpression(t, consequence.Expression, "x") {
+		return
+	}
+	alternative, ok := ifExpression.Alternative.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("ifExpression.Alternative.Statements[0] is not ast.ExpressionStatement. got=%T", ifExpression.Alternative.Statements[0])
+	}
+	if !testIdentifierExpression(t, alternative.Expression, "y") {
+		return
+	}
+}
+
 func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Program {
 	parser := New(lexer.New(input))
 	program := parser.ParseProgram()
