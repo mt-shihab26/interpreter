@@ -63,6 +63,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.FUNCTION, p.parseFunctionExpression)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 
@@ -141,6 +142,48 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		}
 		expression.Alternative = p.parseBlockStatement()
 	}
+	return expression
+}
+
+func (p *Parser) parseFunctionExpression() ast.Expression {
+	// fn (x, y) { x + y ;}
+	expression := &ast.FunctionLiteral{Token: p.curToken}
+	p.nextToken()
+
+	// (x, y) { x + y ;}
+	if !p.curTokenIs(token.LPAREN) {
+		return nil
+	}
+	p.nextToken()
+
+	// x, y) { x + y ;}
+	expression.Parameters = []*ast.Identifier{}
+	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
+		expression.Parameters = append(expression.Parameters, &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal})
+		p.nextToken()
+		if !p.curTokenIs(token.COMMA) {
+			return nil
+		}
+		p.nextToken()
+	}
+
+	// ) { x + y ;}
+	if !p.curTokenIs(token.RPAREN) {
+		return nil
+	}
+	p.nextToken()
+
+	// { x + y ;}
+	if !p.curTokenIs(token.LBRACE) {
+		return nil
+	}
+	p.nextToken()
+
+	// x + y ;}
+	expression.Body = p.parseBlockStatement()
+
+	//
+
 	return expression
 }
 
