@@ -151,7 +151,7 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		program := testParseProgram(t, test.input, test.statementCount)
 		actual := program.String()
 		if actual != test.expected {
-			t.Errorf("expected=%q, got=%q", test.expected, actual)
+			t.Errorf("expected=%v, got=%v", test.expected, actual)
 		}
 	}
 }
@@ -190,7 +190,7 @@ func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Prog
 		t.Fatalf("parser.ParseProgram() returned nil")
 	}
 	if len(program.Statements) != statementsCount {
-		t.Fatalf("program.Statements does not contain %d statements. got=%d", statementsCount, len(program.Statements))
+		t.Fatalf("program.Statements does not contain %v statements. got=%v", statementsCount, len(program.Statements))
 	}
 	return program
 }
@@ -200,16 +200,16 @@ func checkParserErrors(t *testing.T, parser *Parser) {
 	if len(errors) == 0 {
 		return
 	}
-	t.Errorf("parser has %d errors", len(errors))
+	t.Errorf("parser has %v errors", len(errors))
 	for _, message := range errors {
-		t.Errorf("parser error: %q", message)
+		t.Errorf("parser error: %v", message)
 	}
 	t.FailNow()
 }
 
 func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {
 	if statement.TokenLiteral() != "let" {
-		t.Errorf("statement.TokenLiteral not 'let'. got=%q", statement.TokenLiteral())
+		t.Errorf("statement.TokenLiteral not 'let'. got=%v", statement.TokenLiteral())
 		return false
 	}
 	letStatement, ok := statement.(*ast.LetStatement)
@@ -218,11 +218,11 @@ func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {
 		return false
 	}
 	if letStatement.Name.Value != name {
-		t.Errorf("letStatement.Name.Value not '%s'. got=%s", name, letStatement.Name.Value)
+		t.Errorf("letStatement.Name.Value not '%v'. got=%v", name, letStatement.Name.Value)
 		return false
 	}
 	if letStatement.Name.TokenLiteral() != name {
-		t.Errorf("letStatement.Name.TokenLiteral() not '%s'. got=%s", name, letStatement.Name.TokenLiteral())
+		t.Errorf("letStatement.Name.TokenLiteral() not '%v'. got=%v", name, letStatement.Name.TokenLiteral())
 		return false
 	}
 	return true
@@ -234,7 +234,7 @@ func testReturnStatement(t *testing.T, statement ast.Statement) bool {
 		t.Errorf("statement not *ast.ReturnStatement. got=%T", statement)
 	}
 	if returnStatement.TokenLiteral() != "return" {
-		t.Errorf("returnStatement.TokenLiteral not 'return'. got=%q", returnStatement.TokenLiteral())
+		t.Errorf("returnStatement.TokenLiteral not 'return'. got=%v", returnStatement.TokenLiteral())
 	}
 	return true
 }
@@ -254,11 +254,11 @@ func testIdentifierExpression(t *testing.T, expression ast.Expression, value str
 		return false
 	}
 	if identifierExpression.Value != value {
-		t.Errorf("identifierExpression.Value not %s. got=%s", value, identifierExpression.Value)
+		t.Errorf("identifierExpression.Value not %v. got=%v", value, identifierExpression.Value)
 		return false
 	}
 	if identifierExpression.TokenLiteral() != value {
-		t.Errorf("identifierExpression.TokenLiteral not %s. got=%s", value, identifierExpression.TokenLiteral())
+		t.Errorf("identifierExpression.TokenLiteral not %v. got=%v", value, identifierExpression.TokenLiteral())
 		return false
 	}
 	return true
@@ -271,11 +271,11 @@ func testIntegerExpression(t *testing.T, expression ast.Expression, value int64)
 		return false
 	}
 	if integerExpression.Value != value {
-		t.Errorf("integerExpression.Value not %d. got=%d", value, integerExpression.Value)
+		t.Errorf("integerExpression.Value not %v. got=%v", value, integerExpression.Value)
 		return false
 	}
-	if integerExpression.TokenLiteral() != fmt.Sprintf("%d", value) {
-		t.Errorf("integerExpression.TokenLiteral not %d. got=%s", value, integerExpression.TokenLiteral())
+	if integerExpression.TokenLiteral() != fmt.Sprintf("%v", value) {
+		t.Errorf("integerExpression.TokenLiteral not %v. got=%v", value, integerExpression.TokenLiteral())
 		return false
 	}
 	return true
@@ -292,7 +292,7 @@ func testBooleanExpression(t *testing.T, expression ast.Expression, value bool) 
 		return false
 	}
 	if booleanExpression.TokenLiteral() != fmt.Sprintf("%v", value) {
-		t.Errorf("booleanExpression.TokenLiteral not %v. got=%s", value, booleanExpression.TokenLiteral())
+		t.Errorf("booleanExpression.TokenLiteral not %v. got=%v", value, booleanExpression.TokenLiteral())
 		return false
 	}
 	return true
@@ -305,7 +305,7 @@ func testPrefixExpression(t *testing.T, expression ast.Expression, operator stri
 		return false
 	}
 	if prefixExpression.Operator != operator {
-		t.Fatalf("prefixExpression.Operator is not '%s'. got=%s", operator, prefixExpression.Operator)
+		t.Fatalf("prefixExpression.Operator is not '%v'. got=%v", operator, prefixExpression.Operator)
 		return false
 	}
 	if !testLiteralExpression(t, prefixExpression.Right, right) {
@@ -324,7 +324,7 @@ func testInfixExpression(t *testing.T, expression ast.Expression, left any, oper
 		return false
 	}
 	if infixExpression.Operator != operator {
-		t.Fatalf("infixExpression.Operator is not '%s'. got=%s", operator, infixExpression.Operator)
+		t.Fatalf("infixExpression.Operator is not '%v'. got=%v", operator, infixExpression.Operator)
 		return false
 	}
 	if !testLiteralExpression(t, infixExpression.Right, right) {

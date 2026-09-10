@@ -86,7 +86,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 
 	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
 	if err != nil {
-		msg := fmt.Sprintf("cloud not parse %q as integer", p.curToken.Literal)
+		msg := fmt.Sprintf("cloud not parse %v as integer", p.curToken.Literal)
 		p.errors = append(p.errors, msg)
 	}
 
@@ -175,7 +175,7 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 }
 
 func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	msg := fmt.Sprintf("expected next token to be %v, got %v instead", t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
 }
 
@@ -274,6 +274,6 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 }
 
 func (p *Parser) noPrefixParseError(tokenType token.TokenType) {
-	msg := fmt.Sprintf("no prefix parse function for %s found", tokenType)
+	msg := fmt.Sprintf("no prefix parse function for %v found", tokenType)
 	p.errors = append(p.errors, msg)
 }
