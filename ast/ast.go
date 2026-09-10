@@ -203,3 +203,51 @@ func (es *ExpressionStatement) String() string {
 	}
 	return ""
 }
+
+type BlockStatement struct {
+	Token      token.Token
+	Statements []Statement
+}
+
+func (bs *BlockStatement) statementNode() {
+
+}
+
+func (bs *BlockStatement) TokenLiteral() string {
+	return bs.Token.Literal
+}
+
+func (bs *BlockStatement) String() string {
+	var out bytes.Buffer
+	for _, s := range bs.Statements {
+		out.WriteString(s.String())
+	}
+	return out.String()
+}
+
+type IfStatement struct {
+	Token       token.Token
+	Condition   Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
+}
+
+func (is *IfStatement) expressionNode() {
+
+}
+func (is *IfStatement) TokenLiteral() string {
+	return is.Token.Literal
+}
+
+func (is *IfStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString("if")
+	out.WriteString(is.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(is.Consequence.String())
+	if is.Alternative != nil {
+		out.WriteString("else ")
+		out.WriteString(is.Alternative.String())
+	}
+	return out.String()
+}
