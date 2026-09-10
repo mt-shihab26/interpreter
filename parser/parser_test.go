@@ -78,10 +78,12 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	tests := []struct {
 		input    string
 		operator string
-		right    int64
+		right    any
 	}{
-		{"!5", "!", 5},
-		{"-15", "-", 15},
+		{"!5;", "!", 5},
+		{"-15;", "-", 15},
+		{"!true;", "!", true},
+		{"!false;", "!", false},
 	}
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
