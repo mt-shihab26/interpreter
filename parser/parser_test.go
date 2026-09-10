@@ -232,6 +232,32 @@ func TestFunctionLiteralExpression(t *testing.T) {
 	testInfixExpression(t, bodyStatement.Expression, "x", "+", "y")
 }
 
+func TestFunctionLiteralParsing(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedParams []string
+	}{
+		{input: "fn() {};", expectedParams: []string{}},
+		{input: "fn(x) {};", expectedParams: []string{"x"}},
+		{input: "fn(x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		expressionStatement := testExpressionStatement(t, program.Statements[0])
+		functionLiteralExpression, ok := expressionStatement.Expression.(*ast.FunctionLiteral)
+		if !ok {
+			t.Fatalf("expressionStatement.Expression is not *ast.FunctionLiteral. got=%T\n", expressionStatement.Expression)
+		}
+		if len(functionLiteralExpression.Parameters) != len(test.expectedParams) {
+			t.Fatalf("functionLiteralExpression.Parameters does not contain %v parameters. got=%v\n", len(test.expectedParams), len(functionLiteralExpression.Parameters))
+		}
+		for i, identifier := range test.expectedParams {
+			testLiteralExpression(t, functionLiteralExpression.Parameters[i], identifier)
+
+		}
+	}
+}
+
 func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Program {
 	parser := New(lexer.New(input))
 	program := parser.ParseProgram()
