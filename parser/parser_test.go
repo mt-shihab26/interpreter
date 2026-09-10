@@ -59,37 +59,18 @@ func TestIntegerLiteralExpression(t *testing.T) {
 }
 
 func TestParsingPrefixExpressions(t *testing.T) {
-	prefixTests := []struct {
-		input        string
-		operator     string
-		value int64
+	tests := []struct {
+		input    string
+		operator string
+		value    int64
 	}{
 		{"!5", "!", 5},
 		{"-15", "-", 15},
 	}
-
-	for _, tt := range prefixTests {
-		l := lexer.New(tt.input)
-		p := New(l)
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
-		if len(program.Statements) != 1 {
-			t.Fatalf("program.Statements does not contain %d statements. got=%d\n", 1, len(program.Statements))
-		}
-		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
-		if !ok {
-			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
-		}
-		exp, ok := stmt.Expression.(*ast.PrefixExpression)
-		if !ok {
-			t.Fatalf("stmt is not *ast.PrefixExpression. got=%T", stmt.Expression)
-		}
-		if exp.Operator != tt.operator {
-			t.Fatalf("exp.Operator is not '%s'. got=%s", tt.operator, exp.Operator)
-		}
-		if !testIntegerLiteralExpression(t, exp.Right, tt.value) {
-			return
-		}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		expressionStatement := testExpressionStatement(t, program.Statements[0])
+		testPrefixExpression(t, expressionStatement.Expression, test.operator, test.value)
 	}
 }
 
@@ -187,6 +168,22 @@ func testIntegerLiteralExpression(t *testing.T, il ast.Expression, value int64) 
 	}
 	if integerLiteralExpression.TokenLiteral() != fmt.Sprintf("%d", value) {
 		t.Errorf("integ.TokenLiteral not %d. got=%s", value, integerLiteralExpression.TokenLiteral())
+		return false
+	}
+	return true
+}
+
+func testPrefixExpression(t *testing.T, expression ast.Expression, operator string, value int64) bool {
+	prefixExpression, ok := expression.(*ast.PrefixExpression)
+	if !ok {
+		t.Fatalf("stmt is not *ast.PrefixExpression. got=%T", expression)
+		return false
+	}
+	if prefixExpression.Operator != operator {
+		t.Fatalf("exp.Operator is not '%s'. got=%s", operator, prefixExpression.Operator)
+		return false
+	}
+	if !testIntegerLiteralExpression(t, prefixExpression.Right, value) {
 		return false
 	}
 	return true
