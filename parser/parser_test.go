@@ -118,7 +118,7 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
 	}
 	for _, test := range tests {
-		program := testParseProgram(t, test.input, 1)
+		program := testParseProgram(t, test.input, test.statementCount)
 		actual := program.String()
 		if actual != test.expected {
 			t.Errorf("expected=%q, got=%q", test.expected, actual)
