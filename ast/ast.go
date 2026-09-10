@@ -25,11 +25,10 @@ type Program struct {
 }
 
 func (p *Program) TokenLiteral() string {
-	if len(p.Statements) == 0 {
+	if len(p.Statements) > 0 {
 		return p.Statements[0].TokenLiteral()
-	} else {
-		return ""
 	}
+	return ""
 }
 
 func (p *Program) String() string {
@@ -225,29 +224,29 @@ func (bs *BlockStatement) String() string {
 	return out.String()
 }
 
-type IfStatement struct {
+type IfExpression struct {
 	Token       token.Token
 	Condition   Expression
 	Consequence *BlockStatement
 	Alternative *BlockStatement
 }
 
-func (is *IfStatement) expressionNode() {
+func (ie *IfExpression) expressionNode() {
 
 }
-func (is *IfStatement) TokenLiteral() string {
-	return is.Token.Literal
+func (ie *IfExpression) TokenLiteral() string {
+	return ie.Token.Literal
 }
 
-func (is *IfStatement) String() string {
+func (ie *IfExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("if")
-	out.WriteString(is.Condition.String())
+	out.WriteString(ie.Condition.String())
 	out.WriteString(" ")
-	out.WriteString(is.Consequence.String())
-	if is.Alternative != nil {
+	out.WriteString(ie.Consequence.String())
+	if ie.Alternative != nil {
 		out.WriteString("else ")
-		out.WriteString(is.Alternative.String())
+		out.WriteString(ie.Alternative.String())
 	}
 	return out.String()
 }
