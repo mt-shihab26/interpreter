@@ -56,19 +56,19 @@ func (i *Identifier) String() string {
 	return i.Value
 }
 
-type IntegralLiteral struct {
+type Integer struct {
 	Token token.Token
 	Value int64
 }
 
-func (il *IntegralLiteral) expressionNode() {
+func (il *Integer) expressionNode() {
 
 }
-func (il *IntegralLiteral) TokenLiteral() string {
+func (il *Integer) TokenLiteral() string {
 	return il.Token.Literal
 }
 
-func (il *IntegralLiteral) String() string {
+func (il *Integer) String() string {
 	return il.Token.Literal
 }
 

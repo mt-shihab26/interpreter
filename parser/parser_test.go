@@ -51,11 +51,11 @@ func TestIdentifierExpression(t *testing.T) {
 	testIdentifierExpression(t, expressionStatement.Expression, "foobar")
 }
 
-func TestIntegerLiteralExpression(t *testing.T) {
+func TestIntegerExpression(t *testing.T) {
 	input := "5;"
 	program := testParseProgram(t, input, 1)
 	expressionStatement := testExpressionStatement(t, program.Statements[0])
-	testIntegerLiteralExpression(t, expressionStatement.Expression, 5)
+	testIntegerExpression(t, expressionStatement.Expression, 5)
 }
 
 func TestBooleanExpression(t *testing.T) {
@@ -215,18 +215,18 @@ func testIdentifierExpression(t *testing.T, expression ast.Expression, value str
 	return true
 }
 
-func testIntegerLiteralExpression(t *testing.T, expression ast.Expression, value int64) bool {
-	integerLiteralExpression, ok := expression.(*ast.IntegralLiteral)
+func testIntegerExpression(t *testing.T, expression ast.Expression, value int64) bool {
+	integerExpression, ok := expression.(*ast.Integer)
 	if !ok {
-		t.Errorf("expression not *ast.IntegralLiteral. got=%T", expression)
+		t.Errorf("expression not *ast.Integer. got=%T", expression)
 		return false
 	}
-	if integerLiteralExpression.Value != value {
-		t.Errorf("integerLiteralExpression.Value not %d. got=%d", value, integerLiteralExpression.Value)
+	if integerExpression.Value != value {
+		t.Errorf("integerExpression.Value not %d. got=%d", value, integerExpression.Value)
 		return false
 	}
-	if integerLiteralExpression.TokenLiteral() != fmt.Sprintf("%d", value) {
-		t.Errorf("integerLiteralExpression.TokenLiteral not %d. got=%s", value, integerLiteralExpression.TokenLiteral())
+	if integerExpression.TokenLiteral() != fmt.Sprintf("%d", value) {
+		t.Errorf("integerExpression.TokenLiteral not %d. got=%s", value, integerExpression.TokenLiteral())
 		return false
 	}
 	return true
@@ -287,9 +287,9 @@ func testInfixExpression(t *testing.T, expression ast.Expression, left any, oper
 func testLiteralExpression(t *testing.T, expression ast.Expression, expected any) bool {
 	switch v := expected.(type) {
 	case int:
-		return testIntegerLiteralExpression(t, expression, int64(v))
+		return testIntegerExpression(t, expression, int64(v))
 	case int64:
-		return testIntegerLiteralExpression(t, expression, v)
+		return testIntegerExpression(t, expression, v)
 	case string:
 		return testIdentifierExpression(t, expression, v)
 	}
