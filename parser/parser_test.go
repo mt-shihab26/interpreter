@@ -59,10 +59,19 @@ func TestIntegerExpression(t *testing.T) {
 }
 
 func TestBooleanExpression(t *testing.T) {
-	input := "true;"
-	program := testParseProgram(t, input, 1)
-	expressionStatement := testExpressionStatement(t, program.Statements[0])
-	testBooleanExpression(t, expressionStatement.Expression, true)
+	tests := []struct {
+		input string
+		value bool
+	}{
+		{"true;", true},
+		{"false;", false},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		expressionStatement := testExpressionStatement(t, program.Statements[0])
+		testBooleanExpression(t, expressionStatement.Expression, test.value)
+	}
+
 }
 
 func TestParsingPrefixExpressions(t *testing.T) {
