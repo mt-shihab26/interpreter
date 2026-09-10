@@ -62,7 +62,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	tests := []struct {
 		input    string
 		operator string
-		value    int64
+		right    int64
 	}{
 		{"!5", "!", 5},
 		{"-15", "-", 15},
@@ -70,7 +70,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
 		expressionStatement := testExpressionStatement(t, program.Statements[0])
-		testPrefixExpression(t, expressionStatement.Expression, test.operator, test.value)
+		testPrefixExpression(t, expressionStatement.Expression, test.operator, test.right)
 	}
 }
 
@@ -90,11 +90,82 @@ func TestParsingInfixExpression(t *testing.T) {
 		{"5 == 5", 5, "==", 5},
 		{"5 != 5", 5, "!=", 5},
 	}
-
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
 		expressionStatement := testExpressionStatement(t, program.Statements[0])
 		testInfixExpression(t, expressionStatement.Expression, test.left, test.operator, test.right)
+	}
+}
+
+func TestOperatorPrecedenceParsing(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{
+			"-a * b",
+			"((-a) * b)",
+		},
+		{
+			"!-a",
+			"(!(-a))",
+		},
+		{
+			"a + b + c",
+			"((a + b) + c)",
+		},
+		{
+			"a + b - c",
+			"((a + b) - c)",
+		},
+		{
+			"a * b * c",
+			"((a * b) * c)",
+		},
+		{
+			"a * b / c",
+			"((a * b) / c)",
+		},
+		{
+			"a + b / c",
+			"(a + (b / c))",
+		},
+		{
+			"a + b * c + d / e - f",
+			"(((a + (b * c)) + (d / e)) - f)",
+		},
+		{
+			"3 + 4; -5 * 5",
+			"(3 + 4)((-5) * 5)",
+		},
+		{
+			"5 > 4 == 3 < 4",
+			"((5 > 4) == (3 < 4))",
+		},
+		{
+			"5 < 4 != 3 > 4",
+			"((5 < 4) != (3 > 4))",
+		},
+		{
+			"3 + 4 * 5 == 3 * 1 + 4 * 5",
+			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+		},
+		{
+			"3 + 4 * 5 == 3 * 1 + 4 * 5",
+			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+		},
+	}
+
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+		actual := program.String()
+
+		if actual != tt.expected {
+			t.Errorf("expected=%q, got=%q", tt.expected, actual)
+		}
 	}
 }
 
@@ -197,7 +268,7 @@ func testIntegerLiteralExpression(t *testing.T, il ast.Expression, value int64) 
 	return true
 }
 
-func testPrefixExpression(t *testing.T, expression ast.Expression, operator string, value int64) bool {
+func testPrefixExpression(t *testing.T, expression ast.Expression, operator string, right any) bool {
 	prefixExpression, ok := expression.(*ast.PrefixExpression)
 	if !ok {
 		t.Fatalf("stmt is not *ast.PrefixExpression. got=%T", expression)
@@ -207,7 +278,7 @@ func testPrefixExpression(t *testing.T, expression ast.Expression, operator stri
 		t.Fatalf("exp.Operator is not '%s'. got=%s", operator, prefixExpression.Operator)
 		return false
 	}
-	if !testIntegerLiteralExpression(t, prefixExpression.Right, value) {
+	if !testLiteralExpression(t, prefixExpression.Right, right) {
 		return false
 	}
 	return true
@@ -243,76 +314,4 @@ func testLiteralExpression(t *testing.T, exp ast.Expression, expected any) bool 
 	}
 	t.Errorf("type of exp not handled. got=%T", exp)
 	return false
-}
-
-func TestOperatorPrecedenceParsing(t *testing.T) {
-	tests := []struct {
-		input    string
-		expected string
-	}{
-		{
-			"-a * b",
-			"((-a) * b)",
-		},
-		{
-			"!-a",
-			"(!(-a))",
-		},
-		{
-			"a + b + c",
-			"((a + b) + c)",
-		},
-		{
-			"a + b - c",
-			"((a + b) - c)",
-		},
-		{
-			"a * b * c",
-			"((a * b) * c)",
-		},
-		{
-			"a * b / c",
-			"((a * b) / c)",
-		},
-		{
-			"a + b / c",
-			"(a + (b / c))",
-		},
-		{
-			"a + b * c + d / e - f",
-			"(((a + (b * c)) + (d / e)) - f)",
-		},
-		{
-			"3 + 4; -5 * 5",
-			"(3 + 4)((-5) * 5)",
-		},
-		{
-			"5 > 4 == 3 < 4",
-			"((5 > 4) == (3 < 4))",
-		},
-		{
-			"5 < 4 != 3 > 4",
-			"((5 < 4) != (3 > 4))",
-		},
-		{
-			"3 + 4 * 5 == 3 * 1 + 4 * 5",
-			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
-		},
-		{
-			"3 + 4 * 5 == 3 * 1 + 4 * 5",
-			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
-		},
-	}
-
-	for _, tt := range tests {
-		l := lexer.New(tt.input)
-		p := New(l)
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
-		actual := program.String()
-
-		if actual != tt.expected {
-			t.Errorf("expected=%q, got=%q", tt.expected, actual)
-		}
-	}
 }
