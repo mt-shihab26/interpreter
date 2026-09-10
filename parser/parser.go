@@ -149,44 +149,38 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	// fn (x, y) { x + y ;}
 	expression := &ast.FunctionLiteral{Token: p.curToken}
 	p.nextToken()
-
 	// (x, y) { x + y ;}
 	if !p.curTokenIs(token.LPAREN) {
 		return nil
 	}
 	p.nextToken()
-
 	// x, y) { x + y ;}
 	expression.Parameters = []*ast.Identifier{}
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
 		expression.Parameters = append(expression.Parameters, &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal})
 		p.nextToken()
+		if p.curTokenIs(token.RPAREN) {
+			break
+		}
 		if !p.curTokenIs(token.COMMA) {
 			return nil
 		}
 		p.nextToken()
 	}
-
 	// ) { x + y ;}
 	if !p.curTokenIs(token.RPAREN) {
 		return nil
 	}
 	p.nextToken()
-
 	// { x + y ;}
 	if !p.curTokenIs(token.LBRACE) {
 		return nil
 	}
-	p.nextToken()
-
-	// x + y ;}
 	expression.Body = p.parseBlockStatement()
-
-	//
-
 	return expression
 }
 
+// expected tokens: { x + y ;}
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	blockStatement := &ast.BlockStatement{Token: p.curToken}
 	blockStatement.Statements = []ast.Statement{}
