@@ -180,7 +180,8 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	return expression
 }
 
-// expected tokens: { x + y ;}
+// It expect tokens on entry: { x + y ;}  (curToken must be "{").
+// It leaves curToken on the closing "}" -- it does not consume "}" it.
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	blockStatement := &ast.BlockStatement{Token: p.curToken}
 	blockStatement.Statements = []ast.Statement{}
