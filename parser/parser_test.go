@@ -58,6 +58,13 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	testIntegerLiteralExpression(t, expressionStatement.Expression, 5)
 }
 
+func TestBooleanExpression(t *testing.T) {
+	input := "true;"
+	program := testParseProgram(t, input, 1)
+	expressionStatement := testExpressionStatement(t, program.Statements[0])
+	testBooleanExpression(t, expressionStatement.Expression, true)
+}
+
 func TestParsingPrefixExpressions(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -220,6 +227,23 @@ func testIntegerLiteralExpression(t *testing.T, il ast.Expression, value int64) 
 	}
 	if integerLiteralExpression.TokenLiteral() != fmt.Sprintf("%d", value) {
 		t.Errorf("integ.TokenLiteral not %d. got=%s", value, integerLiteralExpression.TokenLiteral())
+		return false
+	}
+	return true
+}
+
+func testBooleanExpression(t *testing.T, il ast.Expression, value bool) bool {
+	booleanExpression, ok := il.(*ast.Boolean)
+	if !ok {
+		t.Errorf("il not *ast.Boolean. got=%T", il)
+		return false
+	}
+	if booleanExpression.Value != value {
+		t.Errorf("integ.Value not %v. got=%v", value, booleanExpression.Value)
+		return false
+	}
+	if booleanExpression.TokenLiteral() != fmt.Sprintf("%v", value) {
+		t.Errorf("integ.TokenLiteral not %v. got=%s", value, booleanExpression.TokenLiteral())
 		return false
 	}
 	return true
