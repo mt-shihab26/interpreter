@@ -156,6 +156,32 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 	}
 }
 
+func TestIfExpression(t *testing.T) {
+	input := `if (x < y) { x }`
+	program := testParseProgram(t, input, 1)
+	expressionStatement := testExpressionStatement(t, program.Statements[0])
+	ifExpression, ok := expressionStatement.Expression.(*ast.IfExpression)
+	if !ok {
+		t.Fatalf("expressionStatement.Expression is not *ast.IfExpression. got=%T", expressionStatement.Expression)
+	}
+	if !testInfixExpression(t, ifExpression.Condition, "x", "<", "y") {
+		return
+	}
+	if len(ifExpression.Consequence.Statements) != 1 {
+		t.Errorf("consequence is not '%v'. got=%v", 1, len(ifExpression.Consequence.Statements))
+	}
+	consequence, ok := ifExpression.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Statements[0] is not ast.ExpressionStatement. got=%T", ifExpression.Consequence.Statements[0])
+	}
+	if !testIdentifierExpression(t, consequence.Expression, "x") {
+		return
+	}
+	if ifExpression.Alternative != nil {
+		t.Errorf("ifExpression.Alternative.Statements was not nil. got=%+v", ifExpression.Alternative)
+	}
+}
+
 func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Program {
 	parser := New(lexer.New(input))
 	program := parser.ParseProgram()
