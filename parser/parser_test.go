@@ -181,7 +181,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
-func testLiteralExpression(t *testing.T, exp ast.Expression, expected interface{}) bool {
+func testLiteralExpression(t *testing.T, exp ast.Expression, expected any) bool {
 	switch v := expected.(type) {
 	case int:
 		return testIntegerLiteral(t, exp, int64(v))
@@ -291,7 +291,7 @@ func TestParsingInfixExpression(t *testing.T) {
 	}
 }
 
-func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, operator string, right interface{}) bool {
+func testInfixExpression(t *testing.T, exp ast.Expression, left any, operator string, right any) bool {
 	opExp, ok := exp.(*ast.InfixExpression)
 	if !ok {
 		t.Fatalf("exp is not *ast.InfixExpression. got=%T", exp)
