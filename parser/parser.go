@@ -8,7 +8,7 @@ import (
 
 // Parser turns a token stream from the lexer into an *ast.Program via Pratt parsing.
 type Parser struct {
-	l         *lexer.Lexer
+	lexer     *lexer.Lexer
 	errors    []string
 	nuds      map[token.TokenType]nudFuncType
 	leds      map[token.TokenType]ledFuncType
@@ -19,7 +19,7 @@ type Parser struct {
 // New creates a Parser for l, priming curToken/peekToken and registering all nuds and leds.
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
-		l:      l,
+		lexer:  l,
 		errors: []string{},
 		nuds:   make(map[token.TokenType]nudFuncType),
 		leds:   make(map[token.TokenType]ledFuncType),

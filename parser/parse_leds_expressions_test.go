@@ -41,15 +41,15 @@ func TestCallExpressionParsing(t *testing.T) {
 	if !ok {
 		t.Fatalf("callExpression.Expression is not *ast.CallExpression. got=%T\n", callExpression)
 	}
-	if !testIdentifierExpression(t, callExpression.Function, "add") {
+	if !testIdentifierExpression(t, callExpression.FunctionExpression, "add") {
 		return
 	}
-	if len(callExpression.Arguments) != 3 {
-		t.Fatalf("wrong length of arguments. got=%v\n", len(callExpression.Arguments))
+	if len(callExpression.ArgumentExpressions) != 3 {
+		t.Fatalf("wrong length of arguments. got=%v\n", len(callExpression.ArgumentExpressions))
 	}
-	testLiteralExpression(t, callExpression.Arguments[0], 1)
-	testBinaryExpression(t, callExpression.Arguments[1], 2, "*", 3)
-	testBinaryExpression(t, callExpression.Arguments[2], 4, "+", 5)
+	testLiteralExpression(t, callExpression.ArgumentExpressions[0], 1)
+	testBinaryExpression(t, callExpression.ArgumentExpressions[1], 2, "*", 3)
+	testBinaryExpression(t, callExpression.ArgumentExpressions[2], 4, "+", 5)
 }
 
 // TestParseEmptyCallArguments checks a call expression with no arguments.
@@ -59,11 +59,11 @@ func TestParseEmptyCallArguments(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if !testIdentifierExpression(t, callExpression.Function, "foo") {
+	if !testIdentifierExpression(t, callExpression.FunctionExpression, "foo") {
 		return
 	}
-	if len(callExpression.Arguments) != 0 {
-		t.Fatalf("callExpression.Arguments is not empty. got=%v\n", len(callExpression.Arguments))
+	if len(callExpression.ArgumentExpressions) != 0 {
+		t.Fatalf("callExpression.Arguments is not empty. got=%v\n", len(callExpression.ArgumentExpressions))
 	}
 }
 
@@ -75,15 +75,15 @@ func TestParseImmediatelyInvokedFunctionExpression(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	functionExpression, ok := callExpression.Function.(*ast.FunctionExpression)
+	functionExpression, ok := callExpression.FunctionExpression.(*ast.FunctionExpression)
 	if !ok {
-		t.Fatalf("callExpression.Function is not *ast.FunctionExpression. got=%T\n", callExpression.Function)
+		t.Fatalf("callExpression.Function is not *ast.FunctionExpression. got=%T\n", callExpression.FunctionExpression)
 	}
 	testLiteralExpression(t, functionExpression.ParameterExpressions[0], "x")
-	if len(callExpression.Arguments) != 1 {
-		t.Fatalf("callExpression.Arguments does not contain 1 argument. got=%v\n", len(callExpression.Arguments))
+	if len(callExpression.ArgumentExpressions) != 1 {
+		t.Fatalf("callExpression.Arguments does not contain 1 argument. got=%v\n", len(callExpression.ArgumentExpressions))
 	}
-	testIntegerExpression(t, callExpression.Arguments[0], 5)
+	testIntegerExpression(t, callExpression.ArgumentExpressions[0], 5)
 }
 
 // TestParseChainedCallExpressions checks that a call's callee can itself be
@@ -94,21 +94,21 @@ func TestParseChainedCallExpressions(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if len(outerCall.Arguments) != 1 {
-		t.Fatalf("outerCall.Arguments does not contain 1 argument. got=%v\n", len(outerCall.Arguments))
+	if len(outerCall.ArgumentExpressions) != 1 {
+		t.Fatalf("outerCall.Arguments does not contain 1 argument. got=%v\n", len(outerCall.ArgumentExpressions))
 	}
-	testIntegerExpression(t, outerCall.Arguments[0], 2)
-	innerCall, ok := outerCall.Function.(*ast.CallExpression)
+	testIntegerExpression(t, outerCall.ArgumentExpressions[0], 2)
+	innerCall, ok := outerCall.FunctionExpression.(*ast.CallExpression)
 	if !ok {
-		t.Fatalf("outerCall.Function is not *ast.CallExpression. got=%T\n", outerCall.Function)
+		t.Fatalf("outerCall.Function is not *ast.CallExpression. got=%T\n", outerCall.FunctionExpression)
 	}
-	if !testIdentifierExpression(t, innerCall.Function, "add") {
+	if !testIdentifierExpression(t, innerCall.FunctionExpression, "add") {
 		return
 	}
-	if len(innerCall.Arguments) != 1 {
-		t.Fatalf("innerCall.Arguments does not contain 1 argument. got=%v\n", len(innerCall.Arguments))
+	if len(innerCall.ArgumentExpressions) != 1 {
+		t.Fatalf("innerCall.Arguments does not contain 1 argument. got=%v\n", len(innerCall.ArgumentExpressions))
 	}
-	testIntegerExpression(t, innerCall.Arguments[0], 1)
+	testIntegerExpression(t, innerCall.ArgumentExpressions[0], 1)
 }
 
 // TestParseTrailingCommaInCallArgumentsIsTolerated documents that the
@@ -121,11 +121,11 @@ func TestParseTrailingCommaInCallArgumentsIsTolerated(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if len(callExpression.Arguments) != 2 {
-		t.Fatalf("callExpression.Arguments does not contain 2 arguments. got=%v\n", len(callExpression.Arguments))
+	if len(callExpression.ArgumentExpressions) != 2 {
+		t.Fatalf("callExpression.Arguments does not contain 2 arguments. got=%v\n", len(callExpression.ArgumentExpressions))
 	}
-	testIntegerExpression(t, callExpression.Arguments[0], 1)
-	testIntegerExpression(t, callExpression.Arguments[1], 2)
+	testIntegerExpression(t, callExpression.ArgumentExpressions[0], 1)
+	testIntegerExpression(t, callExpression.ArgumentExpressions[1], 2)
 }
 
 // TestParseUnterminatedCallArgumentsIsSilentlyDropped documents a known

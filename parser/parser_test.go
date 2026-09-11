@@ -94,14 +94,14 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("result's value is not *ast.CallExpression. got=%T\n", stmts[3].(*ast.LetStatement).ValueExpression)
 	}
-	if !testIdentifierExpression(t, resultCall.Function, "add") {
+	if !testIdentifierExpression(t, resultCall.FunctionExpression, "add") {
 		return
 	}
-	if len(resultCall.Arguments) != 2 {
-		t.Fatalf("resultCall.Arguments does not contain 2 arguments. got=%v\n", len(resultCall.Arguments))
+	if len(resultCall.ArgumentExpressions) != 2 {
+		t.Fatalf("resultCall.Arguments does not contain 2 arguments. got=%v\n", len(resultCall.ArgumentExpressions))
 	}
-	testIdentifierExpression(t, resultCall.Arguments[0], "five")
-	testIdentifierExpression(t, resultCall.Arguments[1], "ten")
+	testIdentifierExpression(t, resultCall.ArgumentExpressions[0], "five")
+	testIdentifierExpression(t, resultCall.ArgumentExpressions[1], "ten")
 
 	// !-five;
 	bangMinusFive := testExpressionStatement(t, stmts[4])
@@ -130,8 +130,8 @@ max(five * 2, (ten + five) / 3);
 	if outerComparison.Operator != ">" {
 		t.Fatalf("outerComparison.Operator is not '>'. got=%v\n", outerComparison.Operator)
 	}
-	testBinaryExpression(t, outerComparison.Left, "five", "<", "ten")
-	testIdentifierExpression(t, outerComparison.Right, "five")
+	testBinaryExpression(t, outerComparison.LeftExpression, "five", "<", "ten")
+	testIdentifierExpression(t, outerComparison.RightExpression, "five")
 
 	// five == five;
 	testBinaryExpression(t, testExpressionStatement(t, stmts[6]).Expression, "five", "==", "five")
@@ -213,22 +213,22 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, stmts[13]).Expression)
 	}
-	if !testIdentifierExpression(t, finalCall.Function, "max") {
+	if !testIdentifierExpression(t, finalCall.FunctionExpression, "max") {
 		return
 	}
-	if len(finalCall.Arguments) != 2 {
-		t.Fatalf("finalCall.Arguments does not contain 2 arguments. got=%v\n", len(finalCall.Arguments))
+	if len(finalCall.ArgumentExpressions) != 2 {
+		t.Fatalf("finalCall.Arguments does not contain 2 arguments. got=%v\n", len(finalCall.ArgumentExpressions))
 	}
-	testBinaryExpression(t, finalCall.Arguments[0], "five", "*", 2)
-	groupedDivision, ok := finalCall.Arguments[1].(*ast.BinaryExpression)
+	testBinaryExpression(t, finalCall.ArgumentExpressions[0], "five", "*", 2)
+	groupedDivision, ok := finalCall.ArgumentExpressions[1].(*ast.BinaryExpression)
 	if !ok {
-		t.Fatalf("finalCall.Arguments[1] is not *ast.BinaryExpression. got=%T\n", finalCall.Arguments[1])
+		t.Fatalf("finalCall.Arguments[1] is not *ast.BinaryExpression. got=%T\n", finalCall.ArgumentExpressions[1])
 	}
 	if groupedDivision.Operator != "/" {
 		t.Fatalf("groupedDivision.Operator is not '/'. got=%v\n", groupedDivision.Operator)
 	}
-	testBinaryExpression(t, groupedDivision.Left, "ten", "+", "five")
-	testIntegerExpression(t, groupedDivision.Right, 3)
+	testBinaryExpression(t, groupedDivision.LeftExpression, "ten", "+", "five")
+	testIntegerExpression(t, groupedDivision.RightExpression, 3)
 }
 
 // TestParseEmptyProgram checks that an empty (or whitespace-only) source

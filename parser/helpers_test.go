@@ -146,14 +146,14 @@ func testBinaryExpression(t *testing.T, expression ast.Expression, left any, ope
 		t.Fatalf("expression is not *ast.BinaryExpression. got=%T\n", expression)
 		return false
 	}
-	if !testLiteralExpression(t, binaryExpression.Left, left) {
+	if !testLiteralExpression(t, binaryExpression.LeftExpression, left) {
 		return false
 	}
 	if binaryExpression.Operator != operator {
 		t.Fatalf("binaryExpression.Operator is not %v. got=%v\n", operator, binaryExpression.Operator)
 		return false
 	}
-	if !testLiteralExpression(t, binaryExpression.Right, right) {
+	if !testLiteralExpression(t, binaryExpression.RightExpression, right) {
 		return false
 	}
 	return true

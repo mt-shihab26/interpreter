@@ -9,10 +9,10 @@ import (
 
 // BinaryExpression implements the Expression interface.
 type BinaryExpression struct {
-	Token    token.Token
-	Left     Expression
-	Operator string
-	Right    Expression
+	Token           token.Token
+	LeftExpression  Expression
+	Operator        string
+	RightExpression Expression
 }
 
 func (be *BinaryExpression) expressionNode() {
@@ -25,31 +25,31 @@ func (be *BinaryExpression) TokenLiteral() string {
 func (be *BinaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
-	out.WriteString(be.Left.String())
+	out.WriteString(be.LeftExpression.String())
 	out.WriteString(" ")
 	out.WriteString(be.Operator)
 	out.WriteString(" ")
-	out.WriteString(be.Right.String())
+	out.WriteString(be.RightExpression.String())
 	out.WriteString(")")
 	return out.String()
 }
 
 func (be *BinaryExpression) Tree() string {
 	children := []treeChild{}
-	if be.Left != nil {
-		children = append(children, treeChild{"Left", be.Left})
+	if be.LeftExpression != nil {
+		children = append(children, treeChild{"Left", be.LeftExpression})
 	}
-	if be.Right != nil {
-		children = append(children, treeChild{"Right", be.Right})
+	if be.RightExpression != nil {
+		children = append(children, treeChild{"Right", be.RightExpression})
 	}
 	return renderTree(fmt.Sprintf("BinaryExpression %q", be.Operator), children...)
 }
 
 // CallExpression implements the Expression interface.
 type CallExpression struct {
-	Token     token.Token // The '(' Token
-	Function  Expression  // IdentifierExpression or FunctionExpression
-	Arguments []Expression
+	Token               token.Token // The '(' Token
+	FunctionExpression  Expression  // IdentifierExpression or FunctionExpression
+	ArgumentExpressions []Expression
 }
 
 func (ce *CallExpression) expressionNode() {
@@ -62,10 +62,10 @@ func (ce *CallExpression) TokenLiteral() string {
 func (ce *CallExpression) String() string {
 	var out bytes.Buffer
 	params := []string{}
-	for _, parameter := range ce.Arguments {
+	for _, parameter := range ce.ArgumentExpressions {
 		params = append(params, parameter.String())
 	}
-	out.WriteString(ce.Function.String())
+	out.WriteString(ce.FunctionExpression.String())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
@@ -73,11 +73,11 @@ func (ce *CallExpression) String() string {
 }
 
 func (ce *CallExpression) Tree() string {
-	children := make([]treeChild, 0, len(ce.Arguments)+1)
-	if ce.Function != nil {
-		children = append(children, treeChild{"Function", ce.Function})
+	children := make([]treeChild, 0, len(ce.ArgumentExpressions)+1)
+	if ce.FunctionExpression != nil {
+		children = append(children, treeChild{"Function", ce.FunctionExpression})
 	}
-	for i, argument := range ce.Arguments {
+	for i, argument := range ce.ArgumentExpressions {
 		if argument == nil {
 			continue
 		}

@@ -37,7 +37,7 @@ var precedences = map[token.TokenType]int{
 // advanceToken shifts peekToken into curToken and reads a new peekToken from the lexer.
 func (p *Parser) advanceToken() {
 	p.curToken = p.peekToken
-	p.peekToken = p.l.NextToken()
+	p.peekToken = p.lexer.NextToken()
 }
 
 // curTokenIs reports whether curToken is of the given type.

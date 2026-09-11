@@ -27,13 +27,13 @@ func (p *Parser) registerLeds() {
 // It leaves curToken on the last token of the right-hand expression (e.g. "b").
 func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expression {
 	expression := &ast.BinaryExpression{
-		Token:    p.curToken,
-		Operator: p.curToken.Literal,
-		Left:     leftExpression,
+		Token:          p.curToken,
+		Operator:       p.curToken.Literal,
+		LeftExpression: leftExpression,
 	}
 	precedence := p.curPrecedence()
 	p.advanceToken()
-	expression.Right = p.parseExpression(precedence)
+	expression.RightExpression = p.parseExpression(precedence)
 	return expression
 }
 
@@ -43,11 +43,11 @@ func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expres
 //
 // It leaves curToken on the closing ")" -- it does not consume the ")".
 func (p *Parser) parseCallExpression(calleeExpression ast.Expression) ast.Expression {
-	callExpression := &ast.CallExpression{Token: p.curToken, Function: calleeExpression}
+	callExpression := &ast.CallExpression{Token: p.curToken, FunctionExpression: calleeExpression}
 	p.advanceToken()
-	callExpression.Arguments = []ast.Expression{}
+	callExpression.ArgumentExpressions = []ast.Expression{}
 	for !p.curTokenIs(token.RIGHT_PAREN) && !p.curTokenIs(token.EOF) {
-		callExpression.Arguments = append(callExpression.Arguments, p.parseExpression(LOWEST))
+		callExpression.ArgumentExpressions = append(callExpression.ArgumentExpressions, p.parseExpression(LOWEST))
 		p.advanceToken()
 		if p.curTokenIs(token.RIGHT_PAREN) {
 			break
