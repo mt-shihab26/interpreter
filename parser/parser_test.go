@@ -228,7 +228,7 @@ func TestFunctionLiteralExpression(t *testing.T) {
 	input := `fn(x, y) { x + y; }`
 	program := testParseProgram(t, input, 1)
 	expressionStatement := testExpressionStatement(t, program.Statements[0])
-	functionLiteralExpression, ok := expressionStatement.Expression.(*ast.FunctionLiteral)
+	functionLiteralExpression, ok := expressionStatement.Expression.(*ast.FunctionExpression)
 	if !ok {
 		t.Fatalf("expressionStatement.Expression is not *ast.FunctionLiteral. got=%T\n", expressionStatement.Expression)
 	}
@@ -256,7 +256,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
 		expressionStatement := testExpressionStatement(t, program.Statements[0])
-		functionLiteralExpression, ok := expressionStatement.Expression.(*ast.FunctionLiteral)
+		functionLiteralExpression, ok := expressionStatement.Expression.(*ast.FunctionExpression)
 		if !ok {
 			t.Fatalf("expressionStatement.Expression is not *ast.FunctionLiteral. got=%T\n", expressionStatement.Expression)
 		}
@@ -355,7 +355,7 @@ func testExpressionStatement(t *testing.T, statement ast.Statement) *ast.Express
 }
 
 func testIdentifierExpression(t *testing.T, expression ast.Expression, value string) bool {
-	identifierExpression, ok := expression.(*ast.Identifier)
+	identifierExpression, ok := expression.(*ast.IdentifierExpression)
 	if !ok {
 		t.Errorf("expression is not *ast.Identifier. got=%T\n", expression)
 		return false
@@ -372,7 +372,7 @@ func testIdentifierExpression(t *testing.T, expression ast.Expression, value str
 }
 
 func testIntegerExpression(t *testing.T, expression ast.Expression, value int64) bool {
-	integerExpression, ok := expression.(*ast.Integer)
+	integerExpression, ok := expression.(*ast.IntegerExpression)
 	if !ok {
 		t.Errorf("expression is not *ast.Integer. got=%T\n", expression)
 		return false
@@ -389,7 +389,7 @@ func testIntegerExpression(t *testing.T, expression ast.Expression, value int64)
 }
 
 func testBooleanExpression(t *testing.T, expression ast.Expression, value bool) bool {
-	booleanExpression, ok := expression.(*ast.Boolean)
+	booleanExpression, ok := expression.(*ast.BooleanExpression)
 	if !ok {
 		t.Errorf("expression is not *ast.Boolean. got=%T\n", expression)
 		return false

@@ -8,65 +8,63 @@ import (
 )
 
 func (p *Parser) parseUnaryExpression() ast.Expression {
-	expression := &ast.UnaryExpression{
+	unaryExpression := &ast.UnaryExpression{
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
 	}
 	p.nextToken()
-	expression.Right = p.parseExpression(PREFIX)
-	return expression
+	unaryExpression.Right = p.parseExpression(PREFIX)
+	return unaryExpression
 }
 
 func (p *Parser) parseIdentifierExpression() ast.Expression {
-	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	identifierExpression := &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
+	return identifierExpression
 }
 
-func (p *Parser) parseIntegerLiteralExpression() ast.Expression {
-	lit := &ast.Integer{Token: p.curToken}
-
+func (p *Parser) parseIntegerExpression() ast.Expression {
+	integerExpression := &ast.IntegerExpression{Token: p.curToken}
 	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
 	if err != nil {
-		msg := fmt.Sprintf("cloud not parse %v as integer", p.curToken.Literal)
-		p.errors = append(p.errors, msg)
+		message := fmt.Sprintf("cloud not parse %v as integer", p.curToken.Literal)
+		p.errors = append(p.errors, message)
 	}
-
-	lit.Value = value
-
-	return lit
+	integerExpression.Value = value
+	return integerExpression
 }
 
 func (p *Parser) parseBooleanExpression() ast.Expression {
-	lit := &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
-	return lit
+	booleanExpression := &ast.BooleanExpression{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
+	return booleanExpression
 }
 
 func (p *Parser) parseIfExpression() ast.Expression {
-	expression := &ast.IfExpression{Token: p.curToken}
+	ifExpression := &ast.IfExpression{Token: p.curToken}
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}
 	p.nextToken()
-	expression.Condition = p.parseExpression(LOWEST)
+	ifExpression.Condition = p.parseExpression(LOWEST)
 	if !p.expectPeek(token.RPAREN) {
 		return nil
 	}
 	if !p.expectPeek(token.LBRACE) {
 		return nil
 	}
-	expression.Consequence = p.parseBlockStatement()
+	ifExpression.Consequence = p.parseBlockStatement()
 	if p.peekTokenIs(token.ELSE) {
 		p.nextToken()
 		if !p.expectPeek(token.LBRACE) {
 			return nil
 		}
-		expression.Alternative = p.parseBlockStatement()
+		ifExpression.Alternative = p.parseBlockStatement()
 	}
-	return expression
+	return ifExpression
 }
 
 func (p *Parser) parseFunctionExpression() ast.Expression {
 	// fn (x, y) { x + y ;}
-	expression := &ast.FunctionLiteral{Token: p.curToken}
+	functionExpression := &ast.FunctionExpression{Token: p.curToken}
 	p.nextToken()
 	// (x, y) { x + y ;}
 	if !p.curTokenIs(token.LPAREN) {
@@ -74,9 +72,10 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	}
 	p.nextToken()
 	// x, y) { x + y ;}
-	expression.Parameters = []*ast.Identifier{}
+	functionExpression.Parameters = []*ast.IdentifierExpression{}
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
-		expression.Parameters = append(expression.Parameters, &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal})
+		parameter := &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
+		functionExpression.Parameters = append(functionExpression.Parameters, parameter)
 		p.nextToken()
 		if p.curTokenIs(token.RPAREN) {
 			break
@@ -95,15 +94,34 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	if !p.curTokenIs(token.LBRACE) {
 		return nil
 	}
-	expression.Body = p.parseBlockStatement()
-	return expression
+	functionExpression.Body = p.parseBlockStatement()
+	return functionExpression
 }
 
 func (p *Parser) parseGroupedExpression() ast.Expression {
 	p.nextToken()
-	expression := p.parseExpression(LOWEST)
+	insideGroupExpression := p.parseExpression(LOWEST)
 	if !p.expectPeek(token.RPAREN) {
 		return nil
 	}
-	return expression
+	return insideGroupExpression
+}
+
+// parseBlockStatement parses a "{ ... }" block statement.
+//
+// It expects tokens on entry: { x + y ;}  (curToken must be "{").
+//
+// It leaves curToken on the closing "}" -- it does not consume the "}".
+func (p *Parser) parseBlockStatement() *ast.BlockStatement {
+	blockStatement := &ast.BlockStatement{Token: p.curToken}
+	blockStatement.Statements = []ast.Statement{}
+	p.nextToken()
+	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
+		statement := p.parseStatement()
+		if statement != nil {
+			blockStatement.Statements = append(blockStatement.Statements, statement)
+		}
+		p.nextToken()
+	}
+	return blockStatement
 }

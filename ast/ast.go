@@ -40,51 +40,51 @@ func (p *Program) String() string {
 	return out.String()
 }
 
-type Identifier struct {
+type IdentifierExpression struct {
 	Token token.Token
 	Value string
 }
 
-func (i *Identifier) expressionNode() {
+func (i *IdentifierExpression) expressionNode() {
 
 }
-func (i *Identifier) TokenLiteral() string {
+func (i *IdentifierExpression) TokenLiteral() string {
 	return i.Token.Literal
 }
 
-func (i *Identifier) String() string {
+func (i *IdentifierExpression) String() string {
 	return i.Value
 }
 
-type Integer struct {
+type IntegerExpression struct {
 	Token token.Token
 	Value int64
 }
 
-func (il *Integer) expressionNode() {
+func (il *IntegerExpression) expressionNode() {
 
 }
-func (il *Integer) TokenLiteral() string {
+func (il *IntegerExpression) TokenLiteral() string {
 	return il.Token.Literal
 }
 
-func (il *Integer) String() string {
+func (il *IntegerExpression) String() string {
 	return il.Token.Literal
 }
 
-type Boolean struct {
+type BooleanExpression struct {
 	Token token.Token
 	Value bool
 }
 
-func (b *Boolean) expressionNode() {
+func (b *BooleanExpression) expressionNode() {
 
 }
-func (b *Boolean) TokenLiteral() string {
+func (b *BooleanExpression) TokenLiteral() string {
 	return b.Token.Literal
 }
 
-func (b *Boolean) String() string {
+func (b *BooleanExpression) String() string {
 	return b.Token.Literal
 }
 
@@ -138,7 +138,7 @@ func (ie *InfixExpression) String() string {
 
 type LetStatement struct {
 	Token token.Token
-	Name  *Identifier
+	Name  *IdentifierExpression
 	Value Expression
 }
 
@@ -252,20 +252,20 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
-type FunctionLiteral struct {
+type FunctionExpression struct {
 	Token      token.Token
-	Parameters []*Identifier
+	Parameters []*IdentifierExpression
 	Body       *BlockStatement
 }
 
-func (fl *FunctionLiteral) expressionNode() {
+func (fl *FunctionExpression) expressionNode() {
 
 }
-func (fl *FunctionLiteral) TokenLiteral() string {
+func (fl *FunctionExpression) TokenLiteral() string {
 	return fl.Token.Literal
 }
 
-func (fl *FunctionLiteral) String() string {
+func (fl *FunctionExpression) String() string {
 	var out bytes.Buffer
 	params := []string{}
 	for _, parameter := range fl.Parameters {

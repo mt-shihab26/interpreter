@@ -112,7 +112,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.MINUS, p.parseUnaryExpression)
 	p.registerPrefix(token.BANG, p.parseUnaryExpression)
 	p.registerPrefix(token.IDENT, p.parseIdentifierExpression)
-	p.registerPrefix(token.INT, p.parseIntegerLiteralExpression)
+	p.registerPrefix(token.INT, p.parseIntegerExpression)
 	p.registerPrefix(token.TRUE, p.parseBooleanExpression)
 	p.registerPrefix(token.FALSE, p.parseBooleanExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
@@ -137,7 +137,6 @@ func New(l *lexer.Lexer) *Parser {
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
-
 	for p.curToken.Type != token.EOF {
 		stmt := p.parseStatement()
 		if stmt != nil {
@@ -145,7 +144,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 		}
 		p.nextToken()
 	}
-
 	return program
 }
 
@@ -160,30 +158,11 @@ func (p *Parser) parseStatement() ast.Statement {
 	}
 }
 
-// parseBlockStatement parses a "{ ... }" block statement.
-//
-// It expects tokens on entry: { x + y ;}  (curToken must be "{").
-//
-// It leaves curToken on the closing "}" -- it does not consume the "}".
-func (p *Parser) parseBlockStatement() *ast.BlockStatement {
-	blockStatement := &ast.BlockStatement{Token: p.curToken}
-	blockStatement.Statements = []ast.Statement{}
-	p.nextToken()
-	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
-		statement := p.parseStatement()
-		if statement != nil {
-			blockStatement.Statements = append(blockStatement.Statements, statement)
-		}
-		p.nextToken()
-	}
-	return blockStatement
-}
-
 func (p *Parser) parseCallArguments() []ast.Expression {
-	arguments := []ast.Expression{}
+	callArguments := []ast.Expression{}
 	p.nextToken()
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
-		arguments = append(arguments, p.parseExpression(LOWEST))
+		callArguments = append(callArguments, p.parseExpression(LOWEST))
 		p.nextToken()
 		if p.curTokenIs(token.RPAREN) {
 			break
@@ -193,5 +172,5 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 		}
 		p.nextToken()
 	}
-	return arguments
+	return callArguments
 }
