@@ -42,8 +42,8 @@ func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expres
 // It expects tokens on entry: (a, b)  curToken must be "(".
 //
 // It leaves curToken on the closing ")" -- it does not consume the ")".
-func (p *Parser) parseCallExpression(functionExpression ast.Expression) ast.Expression {
-	callExpression := &ast.CallExpression{Token: p.curToken, Function: functionExpression}
+func (p *Parser) parseCallExpression(calleeExpression ast.Expression) ast.Expression {
+	callExpression := &ast.CallExpression{Token: p.curToken, Function: calleeExpression}
 	p.advanceToken()
 	callExpression.Arguments = []ast.Expression{}
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
