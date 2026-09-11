@@ -274,7 +274,7 @@ func TestCallExpressionParsing(t *testing.T) {
 	}
 	testLiteralExpression(t, callExpression.Arguments[0], 1)
 	testInfixExpression(t, callExpression.Arguments[1], 2, "*", 3)
-	testInfixExpression(t, callExpression.Arguments[2], 2, "+", 3)
+	testInfixExpression(t, callExpression.Arguments[2], 4, "+", 5)
 }
 
 func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Program {
