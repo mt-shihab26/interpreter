@@ -22,6 +22,11 @@ func (p *Parser) registerNuds() {
 	p.nuds[token.LPAREN] = p.parseGroupedExpression
 }
 
+// parseUnaryExpression parses a "-x" or "!x" unary expression.
+//
+// It expects tokens on entry: -x  (curToken must be the operator, e.g. "-").
+//
+// It leaves curToken on the last token of the operand expression (e.g. "x").
 func (p *Parser) parseUnaryExpression() ast.Expression {
 	unaryExpression := &ast.UnaryExpression{
 		Token:    p.curToken,
@@ -32,11 +37,21 @@ func (p *Parser) parseUnaryExpression() ast.Expression {
 	return unaryExpression
 }
 
+// parseIdentifierExpression parses a bare identifier, e.g. "foobar".
+//
+// It expects tokens on entry: foobar  (curToken must be the identifier).
+//
+// It does not advance -- curToken is left unchanged on the identifier.
 func (p *Parser) parseIdentifierExpression() ast.Expression {
 	identifierExpression := &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
 	return identifierExpression
 }
 
+// parseIntegerExpression parses an integer literal, e.g. "5".
+//
+// It expects tokens on entry: 5  (curToken must be the INT token).
+//
+// It does not advance -- curToken is left unchanged on the integer literal.
 func (p *Parser) parseIntegerExpression() ast.Expression {
 	integerExpression := &ast.IntegerExpression{Token: p.curToken}
 	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
@@ -48,11 +63,22 @@ func (p *Parser) parseIntegerExpression() ast.Expression {
 	return integerExpression
 }
 
+// parseBooleanExpression parses a "true" or "false" literal.
+//
+// It expects tokens on entry: true  (curToken must be TRUE or FALSE).
+//
+// It does not advance -- curToken is left unchanged on the boolean literal.
 func (p *Parser) parseBooleanExpression() ast.Expression {
 	booleanExpression := &ast.BooleanExpression{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
 	return booleanExpression
 }
 
+// parseIfExpression parses an "if (cond) { ... } else { ... }" expression.
+//
+// It expects tokens on entry: if (x < y) { x } else { y }  (curToken must be "if").
+//
+// It leaves curToken on the closing "}" of whichever block was parsed last
+// (the consequence if there's no "else", otherwise the alternative).
 func (p *Parser) parseIfExpression() ast.Expression {
 	ifExpression := &ast.IfExpression{Token: p.curToken}
 	if !p.expectAdvancePeek(token.LPAREN) {
@@ -77,6 +103,11 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	return ifExpression
 }
 
+// parseFunctionExpression parses a "fn(x, y) { ... }" function literal.
+//
+// It expects tokens on entry: fn(x, y) { x + y; }  (curToken must be "fn").
+//
+// It leaves curToken on the closing "}" of the function body.
 func (p *Parser) parseFunctionExpression() ast.Expression {
 	// fn (x, y) { x + y ;}
 	functionExpression := &ast.FunctionExpression{Token: p.curToken}
@@ -113,6 +144,11 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	return functionExpression
 }
 
+// parseGroupedExpression parses a parenthesized "(x + y)" expression.
+//
+// It expects tokens on entry: (x + y)  (curToken must be "(").
+//
+// It leaves curToken on the closing ")".
 func (p *Parser) parseGroupedExpression() ast.Expression {
 	p.advanceToken()
 	insideGroupExpression := p.parseExpression(LOWEST)
