@@ -78,8 +78,3 @@ func (p *Parser) curPrecedence() int {
 	}
 	return precedence
 }
-
-// registerNud associates a nud (prefix) parse function with a token type.
-func (p *Parser) registerNud(tokenType token.TokenType, nudFunc nudFuncType) {
-	p.nuds[tokenType] = nudFunc
-}

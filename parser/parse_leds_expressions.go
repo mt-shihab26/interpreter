@@ -7,7 +7,7 @@ import (
 
 // registerLeds wires up the led (left denotation) parse functions.
 // Per Pratt's "Top Down Operator Precedence" paper, a led is a token
-// parsed given an already-parsed left-hand expression,
+// parsed given an already-parsed left-hand expression -- our p.leds map.
 func (p *Parser) registerLeds() {
 	p.leds[token.PLUS] = p.parseBinaryExpression
 	p.leds[token.MINUS] = p.parseBinaryExpression

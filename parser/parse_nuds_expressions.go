@@ -7,16 +7,19 @@ import (
 	"strconv"
 )
 
+// registerNuds wires up the nud (null denotation) parse functions.
+// Per Pratt's "Top Down Operator Precedence" paper, a nud is a token
+// parsed with no left-hand expression -- our p.nuds map.
 func (p *Parser) registerNuds() {
-	p.registerNud(token.MINUS, p.parseUnaryExpression)
-	p.registerNud(token.BANG, p.parseUnaryExpression)
-	p.registerNud(token.IDENT, p.parseIdentifierExpression)
-	p.registerNud(token.INT, p.parseIntegerExpression)
-	p.registerNud(token.TRUE, p.parseBooleanExpression)
-	p.registerNud(token.FALSE, p.parseBooleanExpression)
-	p.registerNud(token.IF, p.parseIfExpression)
-	p.registerNud(token.FUNCTION, p.parseFunctionExpression)
-	p.registerNud(token.LPAREN, p.parseGroupedExpression)
+	p.nuds[token.MINUS] = p.parseUnaryExpression
+	p.nuds[token.BANG] = p.parseUnaryExpression
+	p.nuds[token.IDENT] = p.parseIdentifierExpression
+	p.nuds[token.INT] = p.parseIntegerExpression
+	p.nuds[token.TRUE] = p.parseBooleanExpression
+	p.nuds[token.FALSE] = p.parseBooleanExpression
+	p.nuds[token.IF] = p.parseIfExpression
+	p.nuds[token.FUNCTION] = p.parseFunctionExpression
+	p.nuds[token.LPAREN] = p.parseGroupedExpression
 }
 
 func (p *Parser) parseUnaryExpression() ast.Expression {
