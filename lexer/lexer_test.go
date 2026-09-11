@@ -123,7 +123,7 @@ if (5 < 10) {
 		{token.SEMICOLON, ";"},
 		{token.RIGHT_BRACE, "}"},
 		{token.INTEGER, "10"},
-		{token.EQUALUAL, "=="},
+		{token.EQUAL, "=="},
 		{token.INTEGER, "10"},
 		{token.SEMICOLON, ";"},
 		{token.INTEGER, "10"},

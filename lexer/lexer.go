@@ -33,7 +33,7 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.chracter
 			l.readChar()
-			tok = token.Token{Type: token.EQUALUAL, Literal: string(ch) + string(l.chracter)}
+			tok = token.Token{Type: token.EQUAL, Literal: string(ch) + string(l.chracter)}
 		} else {
 			tok = newToken(token.ASSIGN, l.chracter)
 		}

@@ -13,7 +13,7 @@ func (p *Parser) registerLeds() {
 	p.leds[token.MINUS] = p.parseBinaryExpression
 	p.leds[token.ASTERISK] = p.parseBinaryExpression
 	p.leds[token.SLASH] = p.parseBinaryExpression
-	p.leds[token.EQUALUAL] = p.parseBinaryExpression
+	p.leds[token.EQUAL] = p.parseBinaryExpression
 	p.leds[token.NOT_EQUAL] = p.parseBinaryExpression
 	p.leds[token.GREATER_THAN] = p.parseBinaryExpression
 	p.leds[token.LESS_THAN] = p.parseBinaryExpression
