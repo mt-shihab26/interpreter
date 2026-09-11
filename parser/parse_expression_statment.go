@@ -6,6 +6,7 @@ import (
 	"monkey/token"
 )
 
+// parseExpressionStatement parses a bare expression followed by an optional ";".
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	expressionStatement := &ast.ExpressionStatement{Token: p.curToken}
 	expressionStatement.Expression = p.parseExpression(LOWEST)
@@ -15,6 +16,8 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	return expressionStatement
 }
 
+// parseExpression runs the core Pratt parsing loop: it parses curToken's nud,
+// then keeps folding in leds from peekToken as long as they bind tighter than precedence.
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	nudFunc := p.nuds[p.curToken.Type]
 	if nudFunc == nil {
