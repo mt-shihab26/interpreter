@@ -1,17 +1,15 @@
 package lexer
 
 import (
-	"testing"
-
 	"monkey/token"
+	"testing"
 )
 
 func TestNextToken(t *testing.T) {
 	input := "=+(){},;"
-
 	tests := []struct {
-		expectedType    token.TokenType
-		expectedLiteral string
+		Type    token.TokenType
+		Literal string
 	}{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
@@ -22,18 +20,14 @@ func TestNextToken(t *testing.T) {
 		{token.COMMA, ","},
 		{token.SEMICOLON, ";"},
 	}
-
 	l := New(input)
-
-	for i, tt := range tests {
+	for i, test := range tests {
 		tok := l.NextToken()
-
-		if tok.Type != tt.expectedType {
-			t.Fatalf("tests[%v] - tokentype wrong, expected=%v, got=%v", i, tt.expectedType, tok.Type)
+		if tok.Type != test.Type {
+			t.Fatalf("tests[%v] - tokentype wrong, expected=%v, got=%v", i, test.Type, tok.Type)
 		}
-
-		if tok.Literal != tt.expectedLiteral {
-			t.Fatalf("tests[%v] - literal wrong, expected=%v, got=%v", i, tt.expectedLiteral, tok.Literal)
+		if tok.Literal != test.Literal {
+			t.Fatalf("tests[%v] - literal wrong, expected=%v, got=%v", i, test.Literal, tok.Literal)
 		}
 	}
 }
@@ -59,10 +53,9 @@ if (5 < 10) {
 10 == 10;
 10 != 9;
 `
-
 	tests := []struct {
-		expectedType    token.TokenType
-		expectedLiteral string
+		Type    token.TokenType
+		Literal string
 	}{
 		{token.LET, "let"},
 		{token.IDENT, "five"},
@@ -139,18 +132,14 @@ if (5 < 10) {
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
-
 	l := New(input)
-
-	for i, tt := range tests {
+	for i, test := range tests {
 		tok := l.NextToken()
-
-		if tok.Type != tt.expectedType {
-			t.Fatalf("tests[%v] - tokentype wrong, expected=%v, got=%v", i, tt.expectedType, tok.Type)
+		if tok.Type != test.Type {
+			t.Fatalf("tests[%v] - tokentype wrong, expected=%v, got=%v", i, test.Type, tok.Type)
 		}
-
-		if tok.Literal != tt.expectedLiteral {
-			t.Fatalf("tests[%v] - literal wrong, expected=%v, got=%v", i, tt.expectedLiteral, tok.Literal)
+		if tok.Literal != test.Literal {
+			t.Fatalf("tests[%v] - literal wrong, expected=%v, got=%v", i, test.Literal, tok.Literal)
 		}
 	}
 }

@@ -9,3 +9,9 @@
 1. There is only two statements in the monkey programming language
     - let statement
     - return statement
+2. The parser is a Pratt parser (top-down operator precedence parsing): each
+   token type registers a nud (null denotation, parsed with no left-hand
+   expression -- prefix position) and/or a led (left denotation, parsed
+   given an already-parsed left-hand expression -- infix/postfix position),
+   and precedence values decide how far a led keeps consuming to its right
+   before control returns to the caller.
