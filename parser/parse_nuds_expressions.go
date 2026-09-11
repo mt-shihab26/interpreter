@@ -25,7 +25,7 @@ func (p *Parser) parseUnaryExpression() ast.Expression {
 		Operator: p.curToken.Literal,
 	}
 	p.advance()
-	unaryExpression.Right = p.parseExpression(PREFIX)
+	unaryExpression.Right = p.parseExpression(UNARY)
 	return unaryExpression
 }
 

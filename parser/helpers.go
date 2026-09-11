@@ -9,23 +9,23 @@ import (
 const (
 	_ int = iota
 	LOWEST
-	EQUALS      // ==
-	LESSGREATER // < or >
-	SUM         // +, -
-	PRODUCT     // *, /
-	PREFIX      // -x or !x
-	CALL        // myFunction(x)
+	EQUALS         // ==
+	COMPARISON     // < or >
+	ADDITIVE       // +, -
+	MULTIPLICATIVE // *, /
+	UNARY          // -x or !x
+	CALL           // myFunction(x)
 )
 
 var precedences = map[token.TokenType]int{
 	token.EQ:       EQUALS,
 	token.NOT_EQ:   EQUALS,
-	token.LT:       LESSGREATER,
-	token.GT:       LESSGREATER,
-	token.PLUS:     SUM,
-	token.MINUS:    SUM,
-	token.ASTERISK: PRODUCT,
-	token.SLASH:    PRODUCT,
+	token.LT:       COMPARISON,
+	token.GT:       COMPARISON,
+	token.PLUS:     ADDITIVE,
+	token.MINUS:    ADDITIVE,
+	token.ASTERISK: MULTIPLICATIVE,
+	token.SLASH:    MULTIPLICATIVE,
 	token.LPAREN:   CALL,
 }
 
@@ -37,10 +37,6 @@ type (
 func (p *Parser) advance() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
-}
-
-func (p *Parser) Errors() []string {
-	return p.errors
 }
 
 func (p *Parser) curTokenIs(t token.TokenType) bool {
