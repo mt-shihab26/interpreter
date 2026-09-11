@@ -20,7 +20,7 @@ func (p *Parser) registerLeds() {
 	p.leds[token.LPAREN] = p.parseCallExpression
 }
 
-// parseBinaryExpression parses a "a + b" binary expression.
+// parseBinaryExpression parses a "<left expression> <operator> <right expression>" binary expression.
 //
 // It expects tokens on entry: a + b  (curToken must be the operator, e.g. "+").
 //
@@ -37,7 +37,7 @@ func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expres
 	return expression
 }
 
-// parseCallExpression parses a "foo(a, b)" call expression.
+// parseCallExpression parses a "<callee expression>(<arguments>)" call expression.
 //
 // It expects tokens on entry: (a, b)  curToken must be "(".
 //
