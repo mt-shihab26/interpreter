@@ -7,33 +7,33 @@ import (
 )
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
-	stmt := &ast.ExpressionStatement{Token: p.curToken}
-	stmt.Expression = p.parseExpression(LOWEST)
+	expressionStatement := &ast.ExpressionStatement{Token: p.curToken}
+	expressionStatement.Expression = p.parseExpression(LOWEST)
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
-	return stmt
+	return expressionStatement
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefix := p.prefixParseFns[p.curToken.Type]
-	if prefix == nil {
+	prefixParseFn := p.prefixParseFns[p.curToken.Type]
+	if prefixParseFn == nil {
 		p.noPrefixParseError(p.curToken.Type)
 		return nil
 	}
-	leftExp := prefix()
+	leftExpression := prefixParseFn()
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infix := p.infixParseFns[p.peekToken.Type]
-		if infix == nil {
-			return leftExp
+		infixParseFn := p.infixParseFns[p.peekToken.Type]
+		if infixParseFn == nil {
+			return leftExpression
 		}
 		p.nextToken()
-		leftExp = infix(leftExp)
+		leftExpression = infixParseFn(leftExpression)
 	}
-	return leftExp
+	return leftExpression
 }
 
 func (p *Parser) noPrefixParseError(tokenType token.TokenType) {
-	msg := fmt.Sprintf("no prefix parse function for %v found", tokenType)
-	p.errors = append(p.errors, msg)
+	message := fmt.Sprintf("no prefix parse function for %v found", tokenType)
+	p.errors = append(p.errors, message)
 }
