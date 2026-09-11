@@ -31,15 +31,10 @@ func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expres
 
 func (p *Parser) parseCallExpression(functionExpression ast.Expression) ast.Expression {
 	callExpression := &ast.CallExpression{Token: p.curToken, Function: functionExpression}
-	callExpression.Arguments = p.parseCallArguments()
-	return callExpression
-}
-
-func (p *Parser) parseCallArguments() []ast.Expression {
-	callArguments := []ast.Expression{}
 	p.advanceToken()
+	callExpression.Arguments = []ast.Expression{}
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
-		callArguments = append(callArguments, p.parseExpression(LOWEST))
+		callExpression.Arguments = append(callExpression.Arguments, p.parseExpression(LOWEST))
 		p.advanceToken()
 		if p.curTokenIs(token.RPAREN) {
 			break
@@ -49,5 +44,5 @@ func (p *Parser) parseCallArguments() []ast.Expression {
 		}
 		p.advanceToken()
 	}
-	return callArguments
+	return callExpression
 }

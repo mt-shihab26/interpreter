@@ -16,24 +16,20 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefixParseFn := p.nuds[p.curToken.Type]
-	if prefixParseFn == nil {
-		p.noPrefixParseError(p.curToken.Type)
+	nudFunc := p.nuds[p.curToken.Type]
+	if nudFunc == nil {
+		message := fmt.Sprintf("no prefix parse function for %v found", p.curToken.Type)
+		p.errors = append(p.errors, message)
 		return nil
 	}
-	leftExpression := prefixParseFn()
+	leftExpression := nudFunc()
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infixParseFn := p.leds[p.peekToken.Type]
-		if infixParseFn == nil {
+		ledFunc := p.leds[p.peekToken.Type]
+		if ledFunc == nil {
 			return leftExpression
 		}
 		p.advanceToken()
-		leftExpression = infixParseFn(leftExpression)
+		leftExpression = ledFunc(leftExpression)
 	}
 	return leftExpression
-}
-
-func (p *Parser) noPrefixParseError(tokenType token.TokenType) {
-	message := fmt.Sprintf("no prefix parse function for %v found", tokenType)
-	p.errors = append(p.errors, message)
 }
