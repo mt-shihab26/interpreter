@@ -75,6 +75,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LT, p.parseInfixExpression)
+	p.registerInfix(token.LPAREN, p.parseCallExpression)
 
 	return p
 }
@@ -210,6 +211,29 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	expression.Right = p.parseExpression(precedence)
 	return expression
 
+}
+
+func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
+	callExpression := &ast.CallExpression{Token: p.curToken, Function: function}
+	callExpression.Arguments = p.parseCallArguments()
+	return callExpression
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	arguments := []ast.Expression{}
+	p.nextToken()
+	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
+		arguments = append(arguments, p.parseExpression(LOWEST))
+		p.nextToken()
+		if p.curTokenIs(token.RPAREN) {
+			break
+		}
+		if !p.curTokenIs(token.COMMA) {
+			return nil
+		}
+		p.nextToken()
+	}
+	return arguments
 }
 
 func (p *Parser) Errors() []string {
