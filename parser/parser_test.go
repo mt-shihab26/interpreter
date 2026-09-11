@@ -73,18 +73,18 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("add's value is not *ast.FunctionExpression. got=%T\n", stmts[2].(*ast.LetStatement).Value)
 	}
-	if len(addFunction.Parameters) != 2 {
-		t.Fatalf("addFunction.Parameters does not contain 2 parameters. got=%v\n", len(addFunction.Parameters))
+	if len(addFunction.ParameterExpressions) != 2 {
+		t.Fatalf("addFunction.Parameters does not contain 2 parameters. got=%v\n", len(addFunction.ParameterExpressions))
 	}
-	testLiteralExpression(t, addFunction.Parameters[0], "x")
-	testLiteralExpression(t, addFunction.Parameters[1], "y")
-	if len(addFunction.Body.Statements) != 1 {
-		t.Fatalf("addFunction.Body.Statements does not contain 1 statement. got=%v\n", len(addFunction.Body.Statements))
+	testLiteralExpression(t, addFunction.ParameterExpressions[0], "x")
+	testLiteralExpression(t, addFunction.ParameterExpressions[1], "y")
+	if len(addFunction.BodyStatement.Statements) != 1 {
+		t.Fatalf("addFunction.Body.Statements does not contain 1 statement. got=%v\n", len(addFunction.BodyStatement.Statements))
 	}
-	if !testReturnStatement(t, addFunction.Body.Statements[0]) {
+	if !testReturnStatement(t, addFunction.BodyStatement.Statements[0]) {
 		return
 	}
-	testBinaryExpression(t, addFunction.Body.Statements[0].(*ast.ReturnStatement).ReturnValue, "x", "+", "y")
+	testBinaryExpression(t, addFunction.BodyStatement.Statements[0].(*ast.ReturnStatement).ReturnValue, "x", "+", "y")
 
 	// let result = add(five, ten);
 	if !testLetStatement(t, stmts[3], "result") {
@@ -112,14 +112,14 @@ max(five * 2, (ten + five) / 3);
 	if outerBang.Operator != "!" {
 		t.Fatalf("outerBang.Operator is not '!'. got=%v\n", outerBang.Operator)
 	}
-	innerMinus, ok := outerBang.Right.(*ast.UnaryExpression)
+	innerMinus, ok := outerBang.RightExpression.(*ast.UnaryExpression)
 	if !ok {
-		t.Fatalf("outerBang.Right is not *ast.UnaryExpression. got=%T\n", outerBang.Right)
+		t.Fatalf("outerBang.Right is not *ast.UnaryExpression. got=%T\n", outerBang.RightExpression)
 	}
 	if innerMinus.Operator != "-" {
 		t.Fatalf("innerMinus.Operator is not '-'. got=%v\n", innerMinus.Operator)
 	}
-	testIdentifierExpression(t, innerMinus.Right, "five")
+	testIdentifierExpression(t, innerMinus.RightExpression, "five")
 
 	// five < ten > five;
 	chainedComparison := testExpressionStatement(t, stmts[5])
@@ -153,24 +153,24 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("expression is not *ast.IfExpression. got=%T\n", testExpressionStatement(t, stmts[11]).Expression)
 	}
-	testBinaryExpression(t, ifElseExpression.Condition, "five", "<", "ten")
-	if len(ifElseExpression.Consequence.Statements) != 1 {
-		t.Fatalf("ifElseExpression.Consequence.Statements does not contain 1 statement. got=%v\n", len(ifElseExpression.Consequence.Statements))
+	testBinaryExpression(t, ifElseExpression.ConditionExpression, "five", "<", "ten")
+	if len(ifElseExpression.ConsequenceStatement.Statements) != 1 {
+		t.Fatalf("ifElseExpression.Consequence.Statements does not contain 1 statement. got=%v\n", len(ifElseExpression.ConsequenceStatement.Statements))
 	}
-	if !testReturnStatement(t, ifElseExpression.Consequence.Statements[0]) {
+	if !testReturnStatement(t, ifElseExpression.ConsequenceStatement.Statements[0]) {
 		return
 	}
-	testIdentifierExpression(t, ifElseExpression.Consequence.Statements[0].(*ast.ReturnStatement).ReturnValue, "five")
-	if ifElseExpression.Alternative == nil {
+	testIdentifierExpression(t, ifElseExpression.ConsequenceStatement.Statements[0].(*ast.ReturnStatement).ReturnValue, "five")
+	if ifElseExpression.AlternativeStatement == nil {
 		t.Fatalf("ifElseExpression.Alternative is nil\n")
 	}
-	if len(ifElseExpression.Alternative.Statements) != 1 {
-		t.Fatalf("ifElseExpression.Alternative.Statements does not contain 1 statement. got=%v\n", len(ifElseExpression.Alternative.Statements))
+	if len(ifElseExpression.AlternativeStatement.Statements) != 1 {
+		t.Fatalf("ifElseExpression.Alternative.Statements does not contain 1 statement. got=%v\n", len(ifElseExpression.AlternativeStatement.Statements))
 	}
-	if !testReturnStatement(t, ifElseExpression.Alternative.Statements[0]) {
+	if !testReturnStatement(t, ifElseExpression.AlternativeStatement.Statements[0]) {
 		return
 	}
-	testIdentifierExpression(t, ifElseExpression.Alternative.Statements[0].(*ast.ReturnStatement).ReturnValue, "ten")
+	testIdentifierExpression(t, ifElseExpression.AlternativeStatement.Statements[0].(*ast.ReturnStatement).ReturnValue, "ten")
 
 	// let max = fn(a, b) { if (a > b) { return a; } return b; };
 	if !testLetStatement(t, stmts[12], "max") {
@@ -180,33 +180,33 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("max's value is not *ast.FunctionExpression. got=%T\n", stmts[12].(*ast.LetStatement).Value)
 	}
-	if len(maxFunction.Parameters) != 2 {
-		t.Fatalf("maxFunction.Parameters does not contain 2 parameters. got=%v\n", len(maxFunction.Parameters))
+	if len(maxFunction.ParameterExpressions) != 2 {
+		t.Fatalf("maxFunction.Parameters does not contain 2 parameters. got=%v\n", len(maxFunction.ParameterExpressions))
 	}
-	testLiteralExpression(t, maxFunction.Parameters[0], "a")
-	testLiteralExpression(t, maxFunction.Parameters[1], "b")
-	if len(maxFunction.Body.Statements) != 2 {
-		t.Fatalf("maxFunction.Body.Statements does not contain 2 statements. got=%v\n", len(maxFunction.Body.Statements))
+	testLiteralExpression(t, maxFunction.ParameterExpressions[0], "a")
+	testLiteralExpression(t, maxFunction.ParameterExpressions[1], "b")
+	if len(maxFunction.BodyStatement.Statements) != 2 {
+		t.Fatalf("maxFunction.Body.Statements does not contain 2 statements. got=%v\n", len(maxFunction.BodyStatement.Statements))
 	}
-	nestedIf, ok := testExpressionStatement(t, maxFunction.Body.Statements[0]).Expression.(*ast.IfExpression)
+	nestedIf, ok := testExpressionStatement(t, maxFunction.BodyStatement.Statements[0]).Expression.(*ast.IfExpression)
 	if !ok {
-		t.Fatalf("expression is not *ast.IfExpression. got=%T\n", testExpressionStatement(t, maxFunction.Body.Statements[0]).Expression)
+		t.Fatalf("expression is not *ast.IfExpression. got=%T\n", testExpressionStatement(t, maxFunction.BodyStatement.Statements[0]).Expression)
 	}
-	testBinaryExpression(t, nestedIf.Condition, "a", ">", "b")
-	if len(nestedIf.Consequence.Statements) != 1 {
-		t.Fatalf("nestedIf.Consequence.Statements does not contain 1 statement. got=%v\n", len(nestedIf.Consequence.Statements))
+	testBinaryExpression(t, nestedIf.ConditionExpression, "a", ">", "b")
+	if len(nestedIf.ConsequenceStatement.Statements) != 1 {
+		t.Fatalf("nestedIf.Consequence.Statements does not contain 1 statement. got=%v\n", len(nestedIf.ConsequenceStatement.Statements))
 	}
-	if !testReturnStatement(t, nestedIf.Consequence.Statements[0]) {
+	if !testReturnStatement(t, nestedIf.ConsequenceStatement.Statements[0]) {
 		return
 	}
-	testIdentifierExpression(t, nestedIf.Consequence.Statements[0].(*ast.ReturnStatement).ReturnValue, "a")
-	if nestedIf.Alternative != nil {
-		t.Fatalf("nestedIf.Alternative was not nil. got=%v\n", nestedIf.Alternative)
+	testIdentifierExpression(t, nestedIf.ConsequenceStatement.Statements[0].(*ast.ReturnStatement).ReturnValue, "a")
+	if nestedIf.AlternativeStatement != nil {
+		t.Fatalf("nestedIf.Alternative was not nil. got=%v\n", nestedIf.AlternativeStatement)
 	}
-	if !testReturnStatement(t, maxFunction.Body.Statements[1]) {
+	if !testReturnStatement(t, maxFunction.BodyStatement.Statements[1]) {
 		return
 	}
-	testIdentifierExpression(t, maxFunction.Body.Statements[1].(*ast.ReturnStatement).ReturnValue, "b")
+	testIdentifierExpression(t, maxFunction.BodyStatement.Statements[1].(*ast.ReturnStatement).ReturnValue, "b")
 
 	// max(five * 2, (ten + five) / 3);
 	finalCall, ok := testExpressionStatement(t, stmts[13]).Expression.(*ast.CallExpression)

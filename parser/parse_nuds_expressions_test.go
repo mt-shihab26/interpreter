@@ -63,21 +63,21 @@ func TestIfExpression(t *testing.T) {
 	if !ok {
 		t.Fatalf("expressionStatement.Expression is not *ast.IfExpression. got=%T\n", expressionStatement.Expression)
 	}
-	if !testBinaryExpression(t, ifExpression.Condition, "x", "<", "y") {
+	if !testBinaryExpression(t, ifExpression.ConditionExpression, "x", "<", "y") {
 		return
 	}
-	if len(ifExpression.Consequence.Statements) != 1 {
-		t.Errorf("ifExpression.Consequence.Statements does not contain %v statements. got=%v\n", 1, len(ifExpression.Consequence.Statements))
+	if len(ifExpression.ConsequenceStatement.Statements) != 1 {
+		t.Errorf("ifExpression.Consequence.Statements does not contain %v statements. got=%v\n", 1, len(ifExpression.ConsequenceStatement.Statements))
 	}
-	consequence, ok := ifExpression.Consequence.Statements[0].(*ast.ExpressionStatement)
+	consequence, ok := ifExpression.ConsequenceStatement.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Fatalf("ifExpression.Consequence.Statements[0] is not *ast.ExpressionStatement. got=%T\n", ifExpression.Consequence.Statements[0])
+		t.Fatalf("ifExpression.Consequence.Statements[0] is not *ast.ExpressionStatement. got=%T\n", ifExpression.ConsequenceStatement.Statements[0])
 	}
 	if !testIdentifierExpression(t, consequence.Expression, "x") {
 		return
 	}
-	if ifExpression.Alternative != nil {
-		t.Errorf("ifExpression.Alternative was not nil. got=%v\n", ifExpression.Alternative)
+	if ifExpression.AlternativeStatement != nil {
+		t.Errorf("ifExpression.Alternative was not nil. got=%v\n", ifExpression.AlternativeStatement)
 	}
 }
 
@@ -89,22 +89,22 @@ func TestIfElseExpression(t *testing.T) {
 	if !ok {
 		t.Fatalf("expressionStatement.Expression is not *ast.IfExpression. got=%T\n", expressionStatement.Expression)
 	}
-	if !testBinaryExpression(t, ifExpression.Condition, "x", "<", "y") {
+	if !testBinaryExpression(t, ifExpression.ConditionExpression, "x", "<", "y") {
 		return
 	}
-	if len(ifExpression.Consequence.Statements) != 1 {
-		t.Errorf("ifExpression.Consequence.Statements does not contain %v statements. got=%v\n", 1, len(ifExpression.Consequence.Statements))
+	if len(ifExpression.ConsequenceStatement.Statements) != 1 {
+		t.Errorf("ifExpression.Consequence.Statements does not contain %v statements. got=%v\n", 1, len(ifExpression.ConsequenceStatement.Statements))
 	}
-	consequence, ok := ifExpression.Consequence.Statements[0].(*ast.ExpressionStatement)
+	consequence, ok := ifExpression.ConsequenceStatement.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Fatalf("ifExpression.Consequence.Statements[0] is not *ast.ExpressionStatement. got=%T\n", ifExpression.Consequence.Statements[0])
+		t.Fatalf("ifExpression.Consequence.Statements[0] is not *ast.ExpressionStatement. got=%T\n", ifExpression.ConsequenceStatement.Statements[0])
 	}
 	if !testIdentifierExpression(t, consequence.Expression, "x") {
 		return
 	}
-	alternative, ok := ifExpression.Alternative.Statements[0].(*ast.ExpressionStatement)
+	alternative, ok := ifExpression.AlternativeStatement.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Fatalf("ifExpression.Alternative.Statements[0] is not *ast.ExpressionStatement. got=%T\n", ifExpression.Alternative.Statements[0])
+		t.Fatalf("ifExpression.Alternative.Statements[0] is not *ast.ExpressionStatement. got=%T\n", ifExpression.AlternativeStatement.Statements[0])
 	}
 	if !testIdentifierExpression(t, alternative.Expression, "y") {
 		return
@@ -119,15 +119,15 @@ func TestFunctionLiteralExpression(t *testing.T) {
 	if !ok {
 		t.Fatalf("expressionStatement.Expression is not *ast.FunctionExpression. got=%T\n", expressionStatement.Expression)
 	}
-	if len(functionLiteralExpression.Parameters) != 2 {
-		t.Fatalf("functionLiteralExpression.Parameters does not contain %v parameters. got=%v\n", 2, len(functionLiteralExpression.Parameters))
+	if len(functionLiteralExpression.ParameterExpressions) != 2 {
+		t.Fatalf("functionLiteralExpression.Parameters does not contain %v parameters. got=%v\n", 2, len(functionLiteralExpression.ParameterExpressions))
 	}
-	testLiteralExpression(t, functionLiteralExpression.Parameters[0], "x")
-	testLiteralExpression(t, functionLiteralExpression.Parameters[1], "y")
-	if len(functionLiteralExpression.Body.Statements) != 1 {
-		t.Fatalf("functionLiteralExpression.Body.Statements does not contain %v statements. got=%v\n", 1, len(functionLiteralExpression.Body.Statements))
+	testLiteralExpression(t, functionLiteralExpression.ParameterExpressions[0], "x")
+	testLiteralExpression(t, functionLiteralExpression.ParameterExpressions[1], "y")
+	if len(functionLiteralExpression.BodyStatement.Statements) != 1 {
+		t.Fatalf("functionLiteralExpression.Body.Statements does not contain %v statements. got=%v\n", 1, len(functionLiteralExpression.BodyStatement.Statements))
 	}
-	bodyStatement := testExpressionStatement(t, functionLiteralExpression.Body.Statements[0])
+	bodyStatement := testExpressionStatement(t, functionLiteralExpression.BodyStatement.Statements[0])
 	testBinaryExpression(t, bodyStatement.Expression, "x", "+", "y")
 }
 
@@ -147,11 +147,11 @@ func TestFunctionLiteralParsing(t *testing.T) {
 		if !ok {
 			t.Fatalf("expressionStatement.Expression is not *ast.FunctionExpression. got=%T\n", expressionStatement.Expression)
 		}
-		if len(functionLiteralExpression.Parameters) != len(test.expectedParams) {
-			t.Fatalf("functionLiteralExpression.Parameters does not contain %v parameters. got=%v\n", len(test.expectedParams), len(functionLiteralExpression.Parameters))
+		if len(functionLiteralExpression.ParameterExpressions) != len(test.expectedParams) {
+			t.Fatalf("functionLiteralExpression.Parameters does not contain %v parameters. got=%v\n", len(test.expectedParams), len(functionLiteralExpression.ParameterExpressions))
 		}
 		for i, identifier := range test.expectedParams {
-			testLiteralExpression(t, functionLiteralExpression.Parameters[i], identifier)
+			testLiteralExpression(t, functionLiteralExpression.ParameterExpressions[i], identifier)
 
 		}
 	}
@@ -165,11 +165,11 @@ func TestParseEmptyFunctionLiteral(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.FunctionExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if len(functionExpression.Parameters) != 0 {
-		t.Fatalf("functionExpression.Parameters is not empty. got=%v\n", len(functionExpression.Parameters))
+	if len(functionExpression.ParameterExpressions) != 0 {
+		t.Fatalf("functionExpression.Parameters is not empty. got=%v\n", len(functionExpression.ParameterExpressions))
 	}
-	if len(functionExpression.Body.Statements) != 0 {
-		t.Fatalf("functionExpression.Body.Statements is not empty. got=%v\n", len(functionExpression.Body.Statements))
+	if len(functionExpression.BodyStatement.Statements) != 0 {
+		t.Fatalf("functionExpression.Body.Statements is not empty. got=%v\n", len(functionExpression.BodyStatement.Statements))
 	}
 }
 
@@ -181,14 +181,14 @@ func TestParseEmptyIfBlock(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.IfExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if !testIdentifierExpression(t, ifExpression.Condition, "x") {
+	if !testIdentifierExpression(t, ifExpression.ConditionExpression, "x") {
 		return
 	}
-	if len(ifExpression.Consequence.Statements) != 0 {
-		t.Fatalf("ifExpression.Consequence.Statements is not empty. got=%v\n", len(ifExpression.Consequence.Statements))
+	if len(ifExpression.ConsequenceStatement.Statements) != 0 {
+		t.Fatalf("ifExpression.Consequence.Statements is not empty. got=%v\n", len(ifExpression.ConsequenceStatement.Statements))
 	}
-	if ifExpression.Alternative != nil {
-		t.Fatalf("ifExpression.Alternative was not nil. got=%v\n", ifExpression.Alternative)
+	if ifExpression.AlternativeStatement != nil {
+		t.Fatalf("ifExpression.Alternative was not nil. got=%v\n", ifExpression.AlternativeStatement)
 	}
 }
 
@@ -211,7 +211,7 @@ func TestParseDoubleUnaryMinus(t *testing.T) {
 	if outer.Operator != "-" {
 		t.Fatalf("outer.Operator is not '-'. got=%v\n", outer.Operator)
 	}
-	testUnaryExpression(t, outer.Right, "-", 5)
+	testUnaryExpression(t, outer.RightExpression, "-", 5)
 }
 
 // TestParseTrailingCommaInFunctionParametersIsTolerated documents that the
@@ -224,11 +224,11 @@ func TestParseTrailingCommaInFunctionParametersIsTolerated(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.FunctionExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if len(functionExpression.Parameters) != 2 {
-		t.Fatalf("functionExpression.Parameters does not contain 2 parameters. got=%v\n", len(functionExpression.Parameters))
+	if len(functionExpression.ParameterExpressions) != 2 {
+		t.Fatalf("functionExpression.Parameters does not contain 2 parameters. got=%v\n", len(functionExpression.ParameterExpressions))
 	}
-	testLiteralExpression(t, functionExpression.Parameters[0], "x")
-	testLiteralExpression(t, functionExpression.Parameters[1], "y")
+	testLiteralExpression(t, functionExpression.ParameterExpressions[0], "x")
+	testLiteralExpression(t, functionExpression.ParameterExpressions[1], "y")
 }
 
 // TestParseUnterminatedGroupedExpressionRecordsError checks that a missing

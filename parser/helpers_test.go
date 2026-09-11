@@ -134,7 +134,7 @@ func testUnaryExpression(t *testing.T, expression ast.Expression, operator strin
 		t.Fatalf("unaryExpression.Operator is not %v. got=%v\n", operator, unaryExpression.Operator)
 		return false
 	}
-	if !testLiteralExpression(t, unaryExpression.Right, right) {
+	if !testLiteralExpression(t, unaryExpression.RightExpression, right) {
 		return false
 	}
 	return true

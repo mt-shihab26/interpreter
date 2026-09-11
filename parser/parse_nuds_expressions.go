@@ -33,7 +33,7 @@ func (p *Parser) parseUnaryExpression() ast.Expression {
 		Operator: p.curToken.Literal,
 	}
 	p.advanceToken()
-	unaryExpression.Right = p.parseExpression(UNARY)
+	unaryExpression.RightExpression = p.parseExpression(UNARY)
 	return unaryExpression
 }
 
@@ -84,20 +84,20 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		return nil
 	}
 	p.advanceToken()
-	ifExpression.Condition = p.parseExpression(LOWEST)
+	ifExpression.ConditionExpression = p.parseExpression(LOWEST)
 	if !p.expectAdvancePeek(token.RPAREN) {
 		return nil
 	}
 	if !p.expectAdvancePeek(token.LBRACE) {
 		return nil
 	}
-	ifExpression.Consequence = p.parseBlockStatement()
+	ifExpression.ConsequenceStatement = p.parseBlockStatement()
 	if p.peekTokenIs(token.ELSE) {
 		p.advanceToken()
 		if !p.expectAdvancePeek(token.LBRACE) {
 			return nil
 		}
-		ifExpression.Alternative = p.parseBlockStatement()
+		ifExpression.AlternativeStatement = p.parseBlockStatement()
 	}
 	return ifExpression
 }
@@ -117,10 +117,10 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	}
 	p.advanceToken()
 	// x, y) { x + y ;}
-	functionExpression.Parameters = []*ast.IdentifierExpression{}
+	functionExpression.ParameterExpressions = []*ast.IdentifierExpression{}
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
 		parameter := &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
-		functionExpression.Parameters = append(functionExpression.Parameters, parameter)
+		functionExpression.ParameterExpressions = append(functionExpression.ParameterExpressions, parameter)
 		p.advanceToken()
 		if p.curTokenIs(token.RPAREN) {
 			break
@@ -139,7 +139,7 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	if !p.curTokenIs(token.LBRACE) {
 		return nil
 	}
-	functionExpression.Body = p.parseBlockStatement()
+	functionExpression.BodyStatement = p.parseBlockStatement()
 	return functionExpression
 }
 

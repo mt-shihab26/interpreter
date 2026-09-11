@@ -79,7 +79,7 @@ func TestParseImmediatelyInvokedFunctionExpression(t *testing.T) {
 	if !ok {
 		t.Fatalf("callExpression.Function is not *ast.FunctionExpression. got=%T\n", callExpression.Function)
 	}
-	testLiteralExpression(t, functionExpression.Parameters[0], "x")
+	testLiteralExpression(t, functionExpression.ParameterExpressions[0], "x")
 	if len(callExpression.Arguments) != 1 {
 		t.Fatalf("callExpression.Arguments does not contain 1 argument. got=%v\n", len(callExpression.Arguments))
 	}

@@ -6,6 +6,29 @@ import (
 	"strings"
 )
 
+// UnaryExpression implements the Expression interface.
+type UnaryExpression struct {
+	Token    token.Token
+	Operator string
+	RightExpression    Expression
+}
+
+func (ue *UnaryExpression) expressionNode() {
+
+}
+func (ue *UnaryExpression) TokenLiteral() string {
+	return ue.Token.Literal
+}
+
+func (ue *UnaryExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(ue.Operator)
+	out.WriteString(ue.RightExpression.String())
+	out.WriteString(")")
+	return out.String()
+}
+
 // IdentifierExpression implements the Expression interface.
 type IdentifierExpression struct {
 	Token token.Token
@@ -57,35 +80,12 @@ func (b *BooleanExpression) String() string {
 	return b.Token.Literal
 }
 
-// UnaryExpression implements the Expression interface.
-type UnaryExpression struct {
-	Token    token.Token
-	Operator string
-	Right    Expression
-}
-
-func (ue *UnaryExpression) expressionNode() {
-
-}
-func (ue *UnaryExpression) TokenLiteral() string {
-	return ue.Token.Literal
-}
-
-func (ue *UnaryExpression) String() string {
-	var out bytes.Buffer
-	out.WriteString("(")
-	out.WriteString(ue.Operator)
-	out.WriteString(ue.Right.String())
-	out.WriteString(")")
-	return out.String()
-}
-
 // IfExpression implements the Expression interface.
 type IfExpression struct {
 	Token       token.Token
-	Condition   Expression
-	Consequence *BlockStatement
-	Alternative *BlockStatement
+	ConditionExpression   Expression
+	ConsequenceStatement *BlockStatement
+	AlternativeStatement *BlockStatement
 }
 
 func (ie *IfExpression) expressionNode() {
@@ -98,12 +98,12 @@ func (ie *IfExpression) TokenLiteral() string {
 func (ie *IfExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString(ie.TokenLiteral())
-	out.WriteString(ie.Condition.String())
+	out.WriteString(ie.ConditionExpression.String())
 	out.WriteString(" ")
-	out.WriteString(ie.Consequence.String())
-	if ie.Alternative != nil {
+	out.WriteString(ie.ConsequenceStatement.String())
+	if ie.AlternativeStatement != nil {
 		out.WriteString("else ")
-		out.WriteString(ie.Alternative.String())
+		out.WriteString(ie.AlternativeStatement.String())
 	}
 	return out.String()
 }
@@ -111,8 +111,8 @@ func (ie *IfExpression) String() string {
 // FunctionExpression implements the Expression interface.
 type FunctionExpression struct {
 	Token      token.Token
-	Parameters []*IdentifierExpression
-	Body       *BlockStatement
+	ParameterExpressions []*IdentifierExpression
+	BodyStatement       *BlockStatement
 }
 
 func (fe *FunctionExpression) expressionNode() {
@@ -125,13 +125,13 @@ func (fe *FunctionExpression) TokenLiteral() string {
 func (fe *FunctionExpression) String() string {
 	var out bytes.Buffer
 	params := []string{}
-	for _, parameter := range fe.Parameters {
+	for _, parameter := range fe.ParameterExpressions {
 		params = append(params, parameter.String())
 	}
 	out.WriteString(fe.TokenLiteral())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
-	out.WriteString(fe.Body.String())
+	out.WriteString(fe.BodyStatement.String())
 	return out.String()
 }
