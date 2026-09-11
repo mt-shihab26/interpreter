@@ -76,7 +76,3 @@ func (p *Parser) curPrecedence() int {
 func (p *Parser) registerNud(tokenType token.TokenType, nudFunc nudFuncType) {
 	p.nuds[tokenType] = nudFunc
 }
-
-func (p *Parser) registerLed(tokenType token.TokenType, ledFunc ledFuncType) {
-	p.leds[tokenType] = ledFunc
-}

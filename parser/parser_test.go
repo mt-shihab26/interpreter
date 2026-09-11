@@ -422,7 +422,7 @@ func testPrefixExpression(t *testing.T, expression ast.Expression, operator stri
 }
 
 func testInfixExpression(t *testing.T, expression ast.Expression, left any, operator string, right any) bool {
-	infixExpression, ok := expression.(*ast.InfixExpression)
+	infixExpression, ok := expression.(*ast.BinaryExpression)
 	if !ok {
 		t.Fatalf("expression is not *ast.InfixExpression. got=%T\n", expression)
 		return false

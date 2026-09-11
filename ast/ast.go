@@ -110,21 +110,21 @@ func (pe *UnaryExpression) String() string {
 	return out.String()
 }
 
-type InfixExpression struct {
+type BinaryExpression struct {
 	Token    token.Token
 	Left     Expression
 	Operator string
 	Right    Expression
 }
 
-func (ie *InfixExpression) expressionNode() {
+func (ie *BinaryExpression) expressionNode() {
 
 }
-func (ie *InfixExpression) TokenLiteral() string {
+func (ie *BinaryExpression) TokenLiteral() string {
 	return ie.Token.Literal
 }
 
-func (ie *InfixExpression) String() string {
+func (ie *BinaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
 	out.WriteString(ie.Left.String())
