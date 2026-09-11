@@ -14,10 +14,10 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	if !p.expectPeek(token.ASSIGN) {
 		return nil
 	}
-	p.nextToken()
+	p.advance()
 	letStatement.Value = p.parseExpression(LOWEST)
 	if p.peekTokenIs(token.SEMICOLON) {
-		p.nextToken()
+		p.advance()
 	}
 	return letStatement
 }

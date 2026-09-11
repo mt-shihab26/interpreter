@@ -10,7 +10,7 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	expressionStatement := &ast.ExpressionStatement{Token: p.curToken}
 	expressionStatement.Expression = p.parseExpression(LOWEST)
 	if p.peekTokenIs(token.SEMICOLON) {
-		p.nextToken()
+		p.advance()
 	}
 	return expressionStatement
 }
@@ -27,7 +27,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 		if infixParseFn == nil {
 			return leftExpression
 		}
-		p.nextToken()
+		p.advance()
 		leftExpression = infixParseFn(leftExpression)
 	}
 	return leftExpression

@@ -9,10 +9,10 @@ import (
 type Parser struct {
 	l         *lexer.Lexer
 	errors    []string
-	curToken  token.Token
-	peekToken token.Token
 	nuds      map[token.TokenType]nudFunc
 	leds      map[token.TokenType]ledFunc
+	curToken  token.Token
+	peekToken token.Token
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -22,8 +22,8 @@ func New(l *lexer.Lexer) *Parser {
 		nuds:   make(map[token.TokenType]nudFunc),
 		leds:   make(map[token.TokenType]ledFunc),
 	}
-	p.nextToken()
-	p.nextToken()
+	p.advance()
+	p.advance()
 	p.registerNuds()
 	p.registerLeds()
 	return p
@@ -33,11 +33,11 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 	for p.curToken.Type != token.EOF {
-		stmt := p.parseStatement()
-		if stmt != nil {
-			program.Statements = append(program.Statements, stmt)
+		statement := p.parseStatement()
+		if statement != nil {
+			program.Statements = append(program.Statements, statement)
 		}
-		p.nextToken()
+		p.advance()
 	}
 	return program
 }

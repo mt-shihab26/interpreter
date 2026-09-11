@@ -34,7 +34,7 @@ type (
 	ledFunc func(ast.Expression) ast.Expression
 )
 
-func (p *Parser) nextToken() {
+func (p *Parser) advance() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
 }
@@ -53,7 +53,7 @@ func (p *Parser) peekTokenIs(t token.TokenType) bool {
 
 func (p *Parser) expectPeek(t token.TokenType) bool {
 	if p.peekTokenIs(t) {
-		p.nextToken()
+		p.advance()
 		return true
 	} else {
 		p.peekError(t)

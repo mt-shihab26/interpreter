@@ -24,7 +24,7 @@ func (p *Parser) parseUnaryExpression() ast.Expression {
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
 	}
-	p.nextToken()
+	p.advance()
 	unaryExpression.Right = p.parseExpression(PREFIX)
 	return unaryExpression
 }
@@ -55,7 +55,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if !p.expectPeek(token.LPAREN) {
 		return nil
 	}
-	p.nextToken()
+	p.advance()
 	ifExpression.Condition = p.parseExpression(LOWEST)
 	if !p.expectPeek(token.RPAREN) {
 		return nil
@@ -65,7 +65,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	}
 	ifExpression.Consequence = p.parseBlockStatement()
 	if p.peekTokenIs(token.ELSE) {
-		p.nextToken()
+		p.advance()
 		if !p.expectPeek(token.LBRACE) {
 			return nil
 		}
@@ -77,31 +77,31 @@ func (p *Parser) parseIfExpression() ast.Expression {
 func (p *Parser) parseFunctionExpression() ast.Expression {
 	// fn (x, y) { x + y ;}
 	functionExpression := &ast.FunctionExpression{Token: p.curToken}
-	p.nextToken()
+	p.advance()
 	// (x, y) { x + y ;}
 	if !p.curTokenIs(token.LPAREN) {
 		return nil
 	}
-	p.nextToken()
+	p.advance()
 	// x, y) { x + y ;}
 	functionExpression.Parameters = []*ast.IdentifierExpression{}
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
 		parameter := &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
 		functionExpression.Parameters = append(functionExpression.Parameters, parameter)
-		p.nextToken()
+		p.advance()
 		if p.curTokenIs(token.RPAREN) {
 			break
 		}
 		if !p.curTokenIs(token.COMMA) {
 			return nil
 		}
-		p.nextToken()
+		p.advance()
 	}
 	// ) { x + y ;}
 	if !p.curTokenIs(token.RPAREN) {
 		return nil
 	}
-	p.nextToken()
+	p.advance()
 	// { x + y ;}
 	if !p.curTokenIs(token.LBRACE) {
 		return nil
@@ -111,7 +111,7 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 }
 
 func (p *Parser) parseGroupedExpression() ast.Expression {
-	p.nextToken()
+	p.advance()
 	insideGroupExpression := p.parseExpression(LOWEST)
 	if !p.expectPeek(token.RPAREN) {
 		return nil
@@ -127,13 +127,13 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	blockStatement := &ast.BlockStatement{Token: p.curToken}
 	blockStatement.Statements = []ast.Statement{}
-	p.nextToken()
+	p.advance()
 	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
 		statement := p.parseStatement()
 		if statement != nil {
 			blockStatement.Statements = append(blockStatement.Statements, statement)
 		}
-		p.nextToken()
+		p.advance()
 	}
 	return blockStatement
 }
