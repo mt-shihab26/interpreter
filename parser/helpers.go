@@ -39,27 +39,23 @@ func (p *Parser) advance() {
 	p.peekToken = p.l.NextToken()
 }
 
-func (p *Parser) curTokenIs(t token.TokenType) bool {
-	return p.curToken.Type == t
+func (p *Parser) curTokenIs(tokenType token.TokenType) bool {
+	return p.curToken.Type == tokenType
 }
 
-func (p *Parser) peekTokenIs(t token.TokenType) bool {
-	return p.peekToken.Type == t
+func (p *Parser) peekTokenIs(tokenType token.TokenType) bool {
+	return p.peekToken.Type == tokenType
 }
 
-func (p *Parser) expectPeek(t token.TokenType) bool {
-	if p.peekTokenIs(t) {
+func (p *Parser) expectPeek(tokenType token.TokenType) bool {
+	if p.peekTokenIs(tokenType) {
 		p.advance()
 		return true
 	} else {
-		p.peekError(t)
+		message := fmt.Sprintf("expected next token to be %v, got %v instead", tokenType, p.peekToken.Type)
+		p.errors = append(p.errors, message)
 		return false
 	}
-}
-
-func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %v, got %v instead", t, p.peekToken.Type)
-	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) peekPrecedence() int {
