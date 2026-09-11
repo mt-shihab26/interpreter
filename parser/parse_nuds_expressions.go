@@ -102,7 +102,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	return ifExpression
 }
 
-// parseFunctionExpression parses a "fn(<parameters>) { <body> }" function literal.
+// parseFunctionExpression parses a "fn(<name>, <name>, ...) { <body> }" function literal.
 //
 // It expects tokens on entry: fn(x, y) { x + y; }  (curToken must be "fn").
 //
