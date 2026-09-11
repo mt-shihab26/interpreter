@@ -7,6 +7,18 @@ import (
 	"strconv"
 )
 
+func (p *Parser) registerNuds() {
+	p.registerNud(token.MINUS, p.parseUnaryExpression)
+	p.registerNud(token.BANG, p.parseUnaryExpression)
+	p.registerNud(token.IDENT, p.parseIdentifierExpression)
+	p.registerNud(token.INT, p.parseIntegerExpression)
+	p.registerNud(token.TRUE, p.parseBooleanExpression)
+	p.registerNud(token.FALSE, p.parseBooleanExpression)
+	p.registerNud(token.IF, p.parseIfExpression)
+	p.registerNud(token.FUNCTION, p.parseFunctionExpression)
+	p.registerNud(token.LPAREN, p.parseGroupedExpression)
+}
+
 func (p *Parser) parseUnaryExpression() ast.Expression {
 	unaryExpression := &ast.UnaryExpression{
 		Token:    p.curToken,

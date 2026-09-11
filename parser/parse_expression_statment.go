@@ -16,14 +16,14 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefixParseFn := p.prefixParseFns[p.curToken.Type]
+	prefixParseFn := p.nuds[p.curToken.Type]
 	if prefixParseFn == nil {
 		p.noPrefixParseError(p.curToken.Type)
 		return nil
 	}
 	leftExpression := prefixParseFn()
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infixParseFn := p.infixParseFns[p.peekToken.Type]
+		infixParseFn := p.leds[p.peekToken.Type]
 		if infixParseFn == nil {
 			return leftExpression
 		}
