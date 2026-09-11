@@ -6,6 +6,11 @@ import (
 	"monkey/token"
 )
 
+type (
+	nudFuncType func() ast.Expression
+	ledFuncType func(ast.Expression) ast.Expression
+)
+
 const (
 	_ int = iota
 	LOWEST
@@ -29,12 +34,7 @@ var precedences = map[token.TokenType]int{
 	token.LPAREN:   CALL,
 }
 
-type (
-	nudFunc func() ast.Expression
-	ledFunc func(ast.Expression) ast.Expression
-)
-
-func (p *Parser) advance() {
+func (p *Parser) advanceToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
 }
@@ -47,35 +47,36 @@ func (p *Parser) peekTokenIs(tokenType token.TokenType) bool {
 	return p.peekToken.Type == tokenType
 }
 
-func (p *Parser) expectPeek(tokenType token.TokenType) bool {
-	if p.peekTokenIs(tokenType) {
-		p.advance()
-		return true
-	} else {
-		message := fmt.Sprintf("expected next token to be %v, got %v instead", tokenType, p.peekToken.Type)
+func (p *Parser) expectAdvancePeek(tokenType token.TokenType) bool {
+	if !p.peekTokenIs(tokenType) {
+		message := fmt.Sprintf("expected token to be %v, got %v instead", tokenType, p.peekToken.Type)
 		p.errors = append(p.errors, message)
 		return false
 	}
+	p.advanceToken()
+	return true
 }
 
 func (p *Parser) peekPrecedence() int {
-	if p, ok := precedences[p.peekToken.Type]; ok {
-		return p
+	precedence, ok := precedences[p.peekToken.Type]
+	if !ok {
+		return LOWEST
 	}
-	return LOWEST
+	return precedence
 }
 
 func (p *Parser) curPrecedence() int {
-	if p, ok := precedences[p.curToken.Type]; ok {
-		return p
+	precedence, ok := precedences[p.curToken.Type]
+	if !ok {
+		return LOWEST
 	}
-	return LOWEST
+	return precedence
 }
 
-func (p *Parser) registerNud(tokenType token.TokenType, fn nudFunc) {
-	p.nuds[tokenType] = fn
+func (p *Parser) registerNud(tokenType token.TokenType, nudFunc nudFuncType) {
+	p.nuds[tokenType] = nudFunc
 }
 
-func (p *Parser) registerLed(tokenType token.TokenType, fn ledFunc) {
-	p.leds[tokenType] = fn
+func (p *Parser) registerLed(tokenType token.TokenType, ledFunc ledFuncType) {
+	p.leds[tokenType] = ledFunc
 }

@@ -7,17 +7,17 @@ import (
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
 	letStatement := &ast.LetStatement{Token: p.curToken}
-	if !p.expectPeek(token.IDENT) {
+	if !p.expectAdvancePeek(token.IDENT) {
 		return nil
 	}
 	letStatement.Name = &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
-	if !p.expectPeek(token.ASSIGN) {
+	if !p.expectAdvancePeek(token.ASSIGN) {
 		return nil
 	}
-	p.advance()
+	p.advanceToken()
 	letStatement.Value = p.parseExpression(LOWEST)
 	if p.peekTokenIs(token.SEMICOLON) {
-		p.advance()
+		p.advanceToken()
 	}
 	return letStatement
 }

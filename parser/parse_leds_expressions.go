@@ -24,7 +24,7 @@ func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expres
 		Left:     leftExpression,
 	}
 	precedence := p.curPrecedence()
-	p.advance()
+	p.advanceToken()
 	expression.Right = p.parseExpression(precedence)
 	return expression
 }
@@ -37,17 +37,17 @@ func (p *Parser) parseCallExpression(functionExpression ast.Expression) ast.Expr
 
 func (p *Parser) parseCallArguments() []ast.Expression {
 	callArguments := []ast.Expression{}
-	p.advance()
+	p.advanceToken()
 	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
 		callArguments = append(callArguments, p.parseExpression(LOWEST))
-		p.advance()
+		p.advanceToken()
 		if p.curTokenIs(token.RPAREN) {
 			break
 		}
 		if !p.curTokenIs(token.COMMA) {
 			return nil
 		}
-		p.advance()
+		p.advanceToken()
 	}
 	return callArguments
 }
