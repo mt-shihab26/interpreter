@@ -2,7 +2,7 @@ package ast
 
 import "bytes"
 
-// Program is implementing the Node interface
+// Program implements the Node interface.
 type Program struct {
 	Statements []Statement
 }

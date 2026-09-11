@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// BinaryExpression implements the Expression interface.
 type BinaryExpression struct {
 	Token    token.Token
 	Left     Expression
@@ -32,6 +33,7 @@ func (be *BinaryExpression) String() string {
 	return out.String()
 }
 
+// CallExpression implements the Expression interface.
 type CallExpression struct {
 	Token     token.Token // The '(' Token
 	Function  Expression  // IdentifierExpression or FunctionExpression

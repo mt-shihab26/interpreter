@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// IdentifierExpression implements the Expression interface.
 type IdentifierExpression struct {
 	Token token.Token
 	Value string
@@ -22,6 +23,7 @@ func (i *IdentifierExpression) String() string {
 	return i.Value
 }
 
+// IntegerExpression implements the Expression interface.
 type IntegerExpression struct {
 	Token token.Token
 	Value int64
@@ -38,6 +40,7 @@ func (il *IntegerExpression) String() string {
 	return il.Token.Literal
 }
 
+// BooleanExpression implements the Expression interface.
 type BooleanExpression struct {
 	Token token.Token
 	Value bool
@@ -54,6 +57,7 @@ func (b *BooleanExpression) String() string {
 	return b.Token.Literal
 }
 
+// UnaryExpression implements the Expression interface.
 type UnaryExpression struct {
 	Token    token.Token
 	Operator string
@@ -76,6 +80,7 @@ func (ue *UnaryExpression) String() string {
 	return out.String()
 }
 
+// IfExpression implements the Expression interface.
 type IfExpression struct {
 	Token       token.Token
 	Condition   Expression
@@ -103,6 +108,7 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
+// FunctionExpression implements the Expression interface.
 type FunctionExpression struct {
 	Token      token.Token
 	Parameters []*IdentifierExpression

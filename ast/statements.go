@@ -5,6 +5,7 @@ import (
 	"monkey/token"
 )
 
+// LetStatement implements the Statement interface.
 type LetStatement struct {
 	Token token.Token
 	Name  *IdentifierExpression
@@ -31,6 +32,7 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
+// ReturnStatement implements the Statement interface.
 type ReturnStatement struct {
 	Token       token.Token
 	ReturnValue Expression
@@ -54,6 +56,7 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
+// ExpressionStatement implements the Statement interface.
 type ExpressionStatement struct {
 	Token      token.Token
 	Expression Expression
@@ -73,6 +76,7 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 
+// BlockStatement implements the Statement interface.
 type BlockStatement struct {
 	Token      token.Token
 	Statements []Statement
