@@ -6,6 +6,7 @@ import (
 	"monkey/token"
 )
 
+// Parser turns a token stream from the lexer into an *ast.Program via Pratt parsing.
 type Parser struct {
 	l         *lexer.Lexer
 	errors    []string
@@ -15,6 +16,7 @@ type Parser struct {
 	peekToken token.Token
 }
 
+// New creates a Parser for l, priming curToken/peekToken and registering all nuds and leds.
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
 		l:      l,
@@ -29,10 +31,12 @@ func New(l *lexer.Lexer) *Parser {
 	return p
 }
 
+// Errors returns the parser errors accumulated while parsing.
 func (p *Parser) Errors() []string {
 	return p.errors
 }
 
+// ParseProgram parses the whole token stream into an *ast.Program of top-level statements.
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
@@ -46,6 +50,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 	return program
 }
 
+// parseStatement dispatches on curToken's type to parse one top-level or block statement.
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.LET:
