@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -e
+
+cd "$(dirname "$0")/.."
+
 PORT=6060
 URL="http://localhost:${PORT}/pkg/monkey/"
 

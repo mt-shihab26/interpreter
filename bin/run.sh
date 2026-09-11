@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-go test ./...
+go run main.go "$@"

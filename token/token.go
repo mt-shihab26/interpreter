@@ -25,16 +25,17 @@ const (
 	ASTERISK = "ASTERISK"
 	SLASH    = "SLASH"
 
+	// Comparison operators
 	LESS_THAN    = "LESS_THAN"
 	GREATER_THAN = "GREATER_THAN"
+	EQUAL        = "EQUAL"
+	NOT_EQUAL    = "NOT_EQUAL"
 
-	EQUAL     = "EQUAL"
-	NOT_EQUAL = "NOT_EQUAL"
-
-	// Delimiters
+	// Separators
 	COMMA     = "COMMA"
 	SEMICOLON = "SEMICOLON"
 
+	// Brackets
 	LEFT_PAREN  = "LEFT_PAREN"
 	RIGHT_PAREN = "RIGHT_PAREN"
 	LEFT_BRACE  = "LEFT_BRACE"
