@@ -2,15 +2,16 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"monkey/token"
 	"strings"
 )
 
 // UnaryExpression implements the Expression interface.
 type UnaryExpression struct {
-	Token    token.Token
-	Operator string
-	RightExpression    Expression
+	Token           token.Token
+	Operator        string
+	RightExpression Expression
 }
 
 func (ue *UnaryExpression) expressionNode() {
@@ -27,6 +28,14 @@ func (ue *UnaryExpression) String() string {
 	out.WriteString(ue.RightExpression.String())
 	out.WriteString(")")
 	return out.String()
+}
+
+func (ue *UnaryExpression) Tree() string {
+	children := []treeChild{}
+	if ue.RightExpression != nil {
+		children = append(children, treeChild{"Right", ue.RightExpression})
+	}
+	return renderTree(fmt.Sprintf("UnaryExpression %q", ue.Operator), children...)
 }
 
 // IdentifierExpression implements the Expression interface.
@@ -46,6 +55,10 @@ func (i *IdentifierExpression) String() string {
 	return i.Value
 }
 
+func (i *IdentifierExpression) Tree() string {
+	return fmt.Sprintf("IdentifierExpression %q", i.Value)
+}
+
 // IntegerExpression implements the Expression interface.
 type IntegerExpression struct {
 	Token token.Token
@@ -61,6 +74,10 @@ func (il *IntegerExpression) TokenLiteral() string {
 
 func (il *IntegerExpression) String() string {
 	return il.Token.Literal
+}
+
+func (il *IntegerExpression) Tree() string {
+	return fmt.Sprintf("IntegerExpression %d", il.Value)
 }
 
 // BooleanExpression implements the Expression interface.
@@ -80,10 +97,14 @@ func (b *BooleanExpression) String() string {
 	return b.Token.Literal
 }
 
+func (b *BooleanExpression) Tree() string {
+	return fmt.Sprintf("BooleanExpression %v", b.Value)
+}
+
 // IfExpression implements the Expression interface.
 type IfExpression struct {
-	Token       token.Token
-	ConditionExpression   Expression
+	Token                token.Token
+	ConditionExpression  Expression
 	ConsequenceStatement *BlockStatement
 	AlternativeStatement *BlockStatement
 }
@@ -108,11 +129,25 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
+func (ie *IfExpression) Tree() string {
+	children := []treeChild{}
+	if ie.ConditionExpression != nil {
+		children = append(children, treeChild{"Condition", ie.ConditionExpression})
+	}
+	if ie.ConsequenceStatement != nil {
+		children = append(children, treeChild{"Consequence", ie.ConsequenceStatement})
+	}
+	if ie.AlternativeStatement != nil {
+		children = append(children, treeChild{"Alternative", ie.AlternativeStatement})
+	}
+	return renderTree("IfExpression", children...)
+}
+
 // FunctionExpression implements the Expression interface.
 type FunctionExpression struct {
-	Token      token.Token
+	Token                token.Token
 	ParameterExpressions []*IdentifierExpression
-	BodyStatement       *BlockStatement
+	BodyStatement        *BlockStatement
 }
 
 func (fe *FunctionExpression) expressionNode() {
@@ -134,4 +169,18 @@ func (fe *FunctionExpression) String() string {
 	out.WriteString(")")
 	out.WriteString(fe.BodyStatement.String())
 	return out.String()
+}
+
+func (fe *FunctionExpression) Tree() string {
+	children := make([]treeChild, 0, len(fe.ParameterExpressions)+1)
+	for i, parameter := range fe.ParameterExpressions {
+		if parameter == nil {
+			continue
+		}
+		children = append(children, treeChild{fmt.Sprintf("Parameter[%d]", i), parameter})
+	}
+	if fe.BodyStatement != nil {
+		children = append(children, treeChild{"Body", fe.BodyStatement})
+	}
+	return renderTree("FunctionExpression", children...)
 }

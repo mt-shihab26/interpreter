@@ -2,14 +2,15 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"monkey/token"
 )
 
 // LetStatement implements the Statement interface.
 type LetStatement struct {
-	Token token.Token
-	IdentifierExpression  *IdentifierExpression
-	ValueExpression Expression
+	Token                token.Token
+	IdentifierExpression *IdentifierExpression
+	ValueExpression      Expression
 }
 
 func (ls *LetStatement) statementNode() {
@@ -32,9 +33,20 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
+func (ls *LetStatement) Tree() string {
+	children := []treeChild{}
+	if ls.IdentifierExpression != nil {
+		children = append(children, treeChild{"Name", ls.IdentifierExpression})
+	}
+	if ls.ValueExpression != nil {
+		children = append(children, treeChild{"Value", ls.ValueExpression})
+	}
+	return renderTree("LetStatement", children...)
+}
+
 // ReturnStatement implements the Statement interface.
 type ReturnStatement struct {
-	Token       token.Token
+	Token           token.Token
 	ValueExpression Expression
 }
 
@@ -54,6 +66,14 @@ func (rs *ReturnStatement) String() string {
 	}
 	out.WriteString(";")
 	return out.String()
+}
+
+func (rs *ReturnStatement) Tree() string {
+	children := []treeChild{}
+	if rs.ValueExpression != nil {
+		children = append(children, treeChild{"Value", rs.ValueExpression})
+	}
+	return renderTree("ReturnStatement", children...)
 }
 
 // ExpressionStatement implements the Statement interface.
@@ -76,6 +96,14 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 
+func (es *ExpressionStatement) Tree() string {
+	children := []treeChild{}
+	if es.Expression != nil {
+		children = append(children, treeChild{"Expression", es.Expression})
+	}
+	return renderTree("ExpressionStatement", children...)
+}
+
 // BlockStatement implements the Statement interface.
 type BlockStatement struct {
 	Token      token.Token
@@ -96,4 +124,15 @@ func (bs *BlockStatement) String() string {
 		out.WriteString(s.String())
 	}
 	return out.String()
+}
+
+func (bs *BlockStatement) Tree() string {
+	children := make([]treeChild, 0, len(bs.Statements))
+	for i, statement := range bs.Statements {
+		if statement == nil {
+			continue
+		}
+		children = append(children, treeChild{fmt.Sprintf("[%d]", i), statement})
+	}
+	return renderTree("BlockStatement", children...)
 }

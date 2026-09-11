@@ -1,6 +1,9 @@
 package ast
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 // Program implements the Node interface.
 type Program struct {
@@ -20,4 +23,15 @@ func (p *Program) String() string {
 		out.WriteString(s.String())
 	}
 	return out.String()
+}
+
+func (p *Program) Tree() string {
+	children := make([]treeChild, 0, len(p.Statements))
+	for i, statement := range p.Statements {
+		if statement == nil {
+			continue
+		}
+		children = append(children, treeChild{fmt.Sprintf("[%d]", i), statement})
+	}
+	return renderTree("Program", children...)
 }

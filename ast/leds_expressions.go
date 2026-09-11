@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"monkey/token"
 	"strings"
 )
@@ -33,6 +34,17 @@ func (be *BinaryExpression) String() string {
 	return out.String()
 }
 
+func (be *BinaryExpression) Tree() string {
+	children := []treeChild{}
+	if be.Left != nil {
+		children = append(children, treeChild{"Left", be.Left})
+	}
+	if be.Right != nil {
+		children = append(children, treeChild{"Right", be.Right})
+	}
+	return renderTree(fmt.Sprintf("BinaryExpression %q", be.Operator), children...)
+}
+
 // CallExpression implements the Expression interface.
 type CallExpression struct {
 	Token     token.Token // The '(' Token
@@ -58,4 +70,18 @@ func (ce *CallExpression) String() string {
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
 	return out.String()
+}
+
+func (ce *CallExpression) Tree() string {
+	children := make([]treeChild, 0, len(ce.Arguments)+1)
+	if ce.Function != nil {
+		children = append(children, treeChild{"Function", ce.Function})
+	}
+	for i, argument := range ce.Arguments {
+		if argument == nil {
+			continue
+		}
+		children = append(children, treeChild{fmt.Sprintf("Argument[%d]", i), argument})
+	}
+	return renderTree("CallExpression", children...)
 }
