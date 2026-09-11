@@ -11,11 +11,11 @@ func TestString(t *testing.T) {
 			&LetStatement{
 				Token: token.Token{Type: token.LET, Literal: "let"},
 				IdentifierExpression: &IdentifierExpression{
-					Token: token.Token{Type: token.IDENT, Literal: "myVar"},
+					Token: token.Token{Type: token.IDENTIFIER, Literal: "myVar"},
 					Value: "myVar",
 				},
 				ValueExpression: &IdentifierExpression{
-					Token: token.Token{Type: token.IDENT, Literal: "anotherVar"},
+					Token: token.Token{Type: token.IDENTIFIER, Literal: "anotherVar"},
 					Value: "anotherVar",
 				},
 			},
@@ -35,11 +35,11 @@ func TestTree(t *testing.T) {
 			&LetStatement{
 				Token: token.Token{Type: token.LET, Literal: "let"},
 				IdentifierExpression: &IdentifierExpression{
-					Token: token.Token{Type: token.IDENT, Literal: "myVar"},
+					Token: token.Token{Type: token.IDENTIFIER, Literal: "myVar"},
 					Value: "myVar",
 				},
 				ValueExpression: &IdentifierExpression{
-					Token: token.Token{Type: token.IDENT, Literal: "anotherVar"},
+					Token: token.Token{Type: token.IDENTIFIER, Literal: "anotherVar"},
 					Value: "anotherVar",
 				},
 			},

@@ -23,15 +23,15 @@ const (
 )
 
 var precedences = map[token.TokenType]int{
-	token.EQ:       EQUALS,
-	token.NOT_EQ:   EQUALS,
-	token.LT:       COMPARISON,
-	token.GT:       COMPARISON,
+	token.EQUALUAL:       EQUALS,
+	token.NOT_EQUAL:   EQUALS,
+	token.LESS_THAN:       COMPARISON,
+	token.GREATER_THAN:       COMPARISON,
 	token.PLUS:     ADDITIVE,
 	token.MINUS:    ADDITIVE,
 	token.ASTERISK: MULTIPLICATIVE,
 	token.SLASH:    MULTIPLICATIVE,
-	token.LPAREN:   CALL,
+	token.LEFT_PAREN:   CALL,
 }
 
 // advanceToken shifts peekToken into curToken and reads a new peekToken from the lexer.

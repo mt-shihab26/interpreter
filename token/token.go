@@ -11,32 +11,34 @@ const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	// Indentifiers + Literals
-	IDENT = "IDENT" // add, foobar, x, y, ...
-	INT   = "INT"   // 123456
+	// Indentifiers
+	IDENTIFIER = "IDENTIFIER" // add, foobar, x, y, ...
+
+	// Literals
+	INTEGER = "INTEGER" // 123456
 
 	// Operators
-	ASSIGN   = "="
-	PLUS     = "+"
-	MINUS    = "-"
-	BANG     = "!"
-	ASTERISK = "*"
-	SLASH    = "/"
+	ASSIGN   = "ASSIGN"
+	PLUS     = "PLUS"
+	MINUS    = "MINUS"
+	BANG     = "BANG"
+	ASTERISK = "ASTERISK"
+	SLASH    = "SLASH"
 
-	LT = "<"
-	GT = ">"
+	LESS_THAN    = "LESS_THAN"
+	GREATER_THAN = "GREATER_THAN"
 
-	EQ     = "=="
-	NOT_EQ = "!="
+	EQUAL     = "EQUAL"
+	NOT_EQUAL = "NOT_EQUAL"
 
 	// Delimiters
-	COMMA     = ","
-	SEMICOLON = ";"
+	COMMA     = "COMMA"
+	SEMICOLON = "SEMICOLON"
 
-	LPAREN = "("
-	RPAREN = ")"
-	LBRACE = "{"
-	RBRACE = "}"
+	LEFT_PAREN  = "LEFT_PAREN"
+	RIGHT_PAREN = "RIGHT_PAREN"
+	LEFT_BRACE  = "LEFT_BRACE"
+	RIGHT_BRACE = "RIGHT_BRACE"
 
 	// Keywords
 	FUNCTION = "FUNCTION"
@@ -58,9 +60,9 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
-func LookupIdent(ident string) TokenType {
+func LookupKeyword(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}
-	return IDENT
+	return IDENTIFIER
 }

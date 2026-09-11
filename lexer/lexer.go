@@ -33,7 +33,7 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.chracter
 			l.readChar()
-			tok = token.Token{Type: token.EQ, Literal: string(ch) + string(l.chracter)}
+			tok = token.Token{Type: token.EQUALUAL, Literal: string(ch) + string(l.chracter)}
 		} else {
 			tok = newToken(token.ASSIGN, l.chracter)
 		}
@@ -45,7 +45,7 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.chracter
 			l.readChar()
-			tok = token.Token{Type: token.NOT_EQ, Literal: string(ch) + string(l.chracter)}
+			tok = token.Token{Type: token.NOT_EQUAL, Literal: string(ch) + string(l.chracter)}
 		} else {
 			tok = newToken(token.BANG, l.chracter)
 		}
@@ -54,31 +54,31 @@ func (l *Lexer) NextToken() token.Token {
 	case '/':
 		tok = newToken(token.SLASH, l.chracter)
 	case '<':
-		tok = newToken(token.LT, l.chracter)
+		tok = newToken(token.LESS_THAN, l.chracter)
 	case '>':
-		tok = newToken(token.GT, l.chracter)
+		tok = newToken(token.GREATER_THAN, l.chracter)
 	case ',':
 		tok = newToken(token.COMMA, l.chracter)
 	case ';':
 		tok = newToken(token.SEMICOLON, l.chracter)
 	case '(':
-		tok = newToken(token.LPAREN, l.chracter)
+		tok = newToken(token.LEFT_PAREN, l.chracter)
 	case ')':
-		tok = newToken(token.RPAREN, l.chracter)
+		tok = newToken(token.RIGHT_PAREN, l.chracter)
 	case '{':
-		tok = newToken(token.LBRACE, l.chracter)
+		tok = newToken(token.LEFT_BRACE, l.chracter)
 	case '}':
-		tok = newToken(token.RBRACE, l.chracter)
+		tok = newToken(token.RIGHT_BRACE, l.chracter)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
 		if isLetter(l.chracter) {
 			tok.Literal = l.readIdentifier()
-			tok.Type = token.LookupIdent(tok.Literal)
+			tok.Type = token.LookupKeyword(tok.Literal)
 			return tok
 		} else if isDigit(l.chracter) {
-			tok.Type = token.INT
+			tok.Type = token.INTEGER
 			tok.Literal = l.readNumber()
 			return tok
 		} else {

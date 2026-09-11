@@ -13,13 +13,13 @@ import (
 func (p *Parser) registerNuds() {
 	p.nuds[token.MINUS] = p.parseUnaryExpression
 	p.nuds[token.BANG] = p.parseUnaryExpression
-	p.nuds[token.IDENT] = p.parseIdentifierExpression
-	p.nuds[token.INT] = p.parseIntegerExpression
+	p.nuds[token.IDENTIFIER] = p.parseIdentifierExpression
+	p.nuds[token.INTEGER] = p.parseIntegerExpression
 	p.nuds[token.TRUE] = p.parseBooleanExpression
 	p.nuds[token.FALSE] = p.parseBooleanExpression
 	p.nuds[token.IF] = p.parseIfExpression
 	p.nuds[token.FUNCTION] = p.parseFunctionExpression
-	p.nuds[token.LPAREN] = p.parseGroupedExpression
+	p.nuds[token.LEFT_PAREN] = p.parseGroupedExpression
 }
 
 // parseUnaryExpression parses a "-<expression>" or "!<expression>" unary expression.
@@ -80,21 +80,21 @@ func (p *Parser) parseBooleanExpression() ast.Expression {
 // It leaves curToken on the closing "}" of whichever block was parsed last (the consequence if there's no "else", otherwise the alternative).
 func (p *Parser) parseIfExpression() ast.Expression {
 	ifExpression := &ast.IfExpression{Token: p.curToken}
-	if !p.expectAdvancePeek(token.LPAREN) {
+	if !p.expectAdvancePeek(token.LEFT_PAREN) {
 		return nil
 	}
 	p.advanceToken()
 	ifExpression.ConditionExpression = p.parseExpression(LOWEST)
-	if !p.expectAdvancePeek(token.RPAREN) {
+	if !p.expectAdvancePeek(token.RIGHT_PAREN) {
 		return nil
 	}
-	if !p.expectAdvancePeek(token.LBRACE) {
+	if !p.expectAdvancePeek(token.LEFT_BRACE) {
 		return nil
 	}
 	ifExpression.ConsequenceStatement = p.parseBlockStatement()
 	if p.peekTokenIs(token.ELSE) {
 		p.advanceToken()
-		if !p.expectAdvancePeek(token.LBRACE) {
+		if !p.expectAdvancePeek(token.LEFT_BRACE) {
 			return nil
 		}
 		ifExpression.AlternativeStatement = p.parseBlockStatement()
@@ -112,17 +112,17 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	functionExpression := &ast.FunctionExpression{Token: p.curToken}
 	p.advanceToken()
 	// (x, y) { x + y ;}
-	if !p.curTokenIs(token.LPAREN) {
+	if !p.curTokenIs(token.LEFT_PAREN) {
 		return nil
 	}
 	p.advanceToken()
 	// x, y) { x + y ;}
 	functionExpression.ParameterExpressions = []*ast.IdentifierExpression{}
-	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
+	for !p.curTokenIs(token.RIGHT_PAREN) && !p.curTokenIs(token.EOF) {
 		parameter := &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
 		functionExpression.ParameterExpressions = append(functionExpression.ParameterExpressions, parameter)
 		p.advanceToken()
-		if p.curTokenIs(token.RPAREN) {
+		if p.curTokenIs(token.RIGHT_PAREN) {
 			break
 		}
 		if !p.curTokenIs(token.COMMA) {
@@ -131,12 +131,12 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 		p.advanceToken()
 	}
 	// ) { x + y ;}
-	if !p.curTokenIs(token.RPAREN) {
+	if !p.curTokenIs(token.RIGHT_PAREN) {
 		return nil
 	}
 	p.advanceToken()
 	// { x + y ;}
-	if !p.curTokenIs(token.LBRACE) {
+	if !p.curTokenIs(token.LEFT_BRACE) {
 		return nil
 	}
 	functionExpression.BodyStatement = p.parseBlockStatement()
@@ -151,7 +151,7 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 func (p *Parser) parseGroupedExpression() ast.Expression {
 	p.advanceToken()
 	insideGroupExpression := p.parseExpression(LOWEST)
-	if !p.expectAdvancePeek(token.RPAREN) {
+	if !p.expectAdvancePeek(token.RIGHT_PAREN) {
 		return nil
 	}
 	return insideGroupExpression
@@ -166,7 +166,7 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	blockStatement := &ast.BlockStatement{Token: p.curToken}
 	blockStatement.Statements = []ast.Statement{}
 	p.advanceToken()
-	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
+	for !p.curTokenIs(token.RIGHT_BRACE) && !p.curTokenIs(token.EOF) {
 		statement := p.parseStatement()
 		if statement != nil {
 			blockStatement.Statements = append(blockStatement.Statements, statement)

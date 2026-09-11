@@ -12,7 +12,7 @@ import (
 // It leaves curToken on the trailing ";" if present, otherwise on the value expression's last token (e.g. "5").
 func (p *Parser) parseLetStatement() *ast.LetStatement {
 	letStatement := &ast.LetStatement{Token: p.curToken}
-	if !p.expectAdvancePeek(token.IDENT) {
+	if !p.expectAdvancePeek(token.IDENTIFIER) {
 		return nil
 	}
 	letStatement.IdentifierExpression = &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}

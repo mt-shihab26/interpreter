@@ -13,11 +13,11 @@ func (p *Parser) registerLeds() {
 	p.leds[token.MINUS] = p.parseBinaryExpression
 	p.leds[token.ASTERISK] = p.parseBinaryExpression
 	p.leds[token.SLASH] = p.parseBinaryExpression
-	p.leds[token.EQ] = p.parseBinaryExpression
-	p.leds[token.NOT_EQ] = p.parseBinaryExpression
-	p.leds[token.GT] = p.parseBinaryExpression
-	p.leds[token.LT] = p.parseBinaryExpression
-	p.leds[token.LPAREN] = p.parseCallExpression
+	p.leds[token.EQUALUAL] = p.parseBinaryExpression
+	p.leds[token.NOT_EQUAL] = p.parseBinaryExpression
+	p.leds[token.GREATER_THAN] = p.parseBinaryExpression
+	p.leds[token.LESS_THAN] = p.parseBinaryExpression
+	p.leds[token.LEFT_PAREN] = p.parseCallExpression
 }
 
 // parseBinaryExpression parses a "<left expression> <operator> <right expression>" binary expression.
@@ -46,10 +46,10 @@ func (p *Parser) parseCallExpression(calleeExpression ast.Expression) ast.Expres
 	callExpression := &ast.CallExpression{Token: p.curToken, Function: calleeExpression}
 	p.advanceToken()
 	callExpression.Arguments = []ast.Expression{}
-	for !p.curTokenIs(token.RPAREN) && !p.curTokenIs(token.EOF) {
+	for !p.curTokenIs(token.RIGHT_PAREN) && !p.curTokenIs(token.EOF) {
 		callExpression.Arguments = append(callExpression.Arguments, p.parseExpression(LOWEST))
 		p.advanceToken()
-		if p.curTokenIs(token.RPAREN) {
+		if p.curTokenIs(token.RIGHT_PAREN) {
 			break
 		}
 		if !p.curTokenIs(token.COMMA) {
