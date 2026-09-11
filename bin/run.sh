@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-go run main.go "$@"
+go run ./cmd/monkey "$@"
