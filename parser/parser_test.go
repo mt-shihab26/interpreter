@@ -9,36 +9,45 @@ import (
 )
 
 func TestLetStatements(t *testing.T) {
-	input := `
-let x = 5;
-let y = 10;
-let foobar = 838383;
-`
-	program := testParseProgram(t, input, 3)
 	tests := []struct {
+		input      string
 		identifier string
+		value      any
 	}{
-		{"x"},
-		{"y"},
-		{"foobar"},
+		{"let x = 5;", "x", 5},
+		{"let y = true;", "y", true},
+		{"let foobar = y;", "foobar", "y"},
 	}
-	for i, test := range tests {
-		statement := program.Statements[i]
-		if !testLetStatement(t, statement, test.identifier) {
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		letStatement := program.Statements[0]
+		if !testLetStatement(t, letStatement, test.identifier) {
+			return
+		}
+		value := letStatement.(*ast.LetStatement).Value
+		if !testLiteralExpression(t, value, test.value) {
 			return
 		}
 	}
 }
 
 func TestReturnStatements(t *testing.T) {
-	input := `
-return 5;
-return 10;
-return add(15);
-`
-	program := testParseProgram(t, input, 3)
-	for _, statement := range program.Statements {
-		if !testReturnStatement(t, statement) {
+	tests := []struct {
+		input       string
+		returnValue any
+	}{
+		{"return 5;", 5},
+		{"return true;", true},
+		{"return foobar;", "foobar"},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		returnStatement := program.Statements[0]
+		if !testReturnStatement(t, returnStatement) {
+			return
+		}
+		value := returnStatement.(*ast.ReturnStatement).ReturnValue
+		if !testLiteralExpression(t, value, test.returnValue) {
 			return
 		}
 	}
