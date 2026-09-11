@@ -8,8 +8,8 @@ import (
 // LetStatement implements the Statement interface.
 type LetStatement struct {
 	Token token.Token
-	Name  *IdentifierExpression
-	Value Expression
+	IdentifierExpression  *IdentifierExpression
+	ValueExpression Expression
 }
 
 func (ls *LetStatement) statementNode() {
@@ -23,10 +23,10 @@ func (ls *LetStatement) String() string {
 	var out bytes.Buffer
 	out.WriteString(ls.TokenLiteral())
 	out.WriteString(" ")
-	out.WriteString(ls.Name.String())
+	out.WriteString(ls.IdentifierExpression.String())
 	out.WriteString(" = ")
-	if ls.Value != nil {
-		out.WriteString(ls.Value.String())
+	if ls.ValueExpression != nil {
+		out.WriteString(ls.ValueExpression.String())
 	}
 	out.WriteString(";")
 	return out.String()
@@ -35,7 +35,7 @@ func (ls *LetStatement) String() string {
 // ReturnStatement implements the Statement interface.
 type ReturnStatement struct {
 	Token       token.Token
-	ReturnValue Expression
+	ValueExpression Expression
 }
 
 func (rs *ReturnStatement) statementNode() {
@@ -49,8 +49,8 @@ func (rs *ReturnStatement) String() string {
 	var out bytes.Buffer
 	out.WriteString(rs.TokenLiteral())
 	out.WriteString(" ")
-	if rs.ReturnValue != nil {
-		out.WriteString(rs.ReturnValue.String())
+	if rs.ValueExpression != nil {
+		out.WriteString(rs.ValueExpression.String())
 	}
 	out.WriteString(";")
 	return out.String()

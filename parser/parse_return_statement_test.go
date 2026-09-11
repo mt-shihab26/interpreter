@@ -21,7 +21,7 @@ func TestReturnStatements(t *testing.T) {
 		if !testReturnStatement(t, returnStatement) {
 			return
 		}
-		value := returnStatement.(*ast.ReturnStatement).ReturnValue
+		value := returnStatement.(*ast.ReturnStatement).ValueExpression
 		if !testLiteralExpression(t, value, test.returnValue) {
 			return
 		}

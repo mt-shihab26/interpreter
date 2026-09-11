@@ -23,7 +23,7 @@ func TestLetStatements(t *testing.T) {
 		if !testLetStatement(t, letStatement, test.identifier) {
 			return
 		}
-		value := letStatement.(*ast.LetStatement).Value
+		value := letStatement.(*ast.LetStatement).ValueExpression
 		if !testLiteralExpression(t, value, test.value) {
 			return
 		}

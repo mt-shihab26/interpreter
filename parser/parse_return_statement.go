@@ -13,7 +13,7 @@ import (
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	returnStatement := &ast.ReturnStatement{Token: p.curToken}
 	p.advanceToken()
-	returnStatement.ReturnValue = p.parseExpression(LOWEST)
+	returnStatement.ValueExpression = p.parseExpression(LOWEST)
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.advanceToken()
 	}

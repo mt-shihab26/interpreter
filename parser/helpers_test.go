@@ -43,12 +43,12 @@ func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {
 		t.Errorf("statement is not *ast.LetStatement. got=%T\n", statement)
 		return false
 	}
-	if letStatement.Name.Value != name {
-		t.Errorf("letStatement.Name.Value not %v. got=%v\n", name, letStatement.Name.Value)
+	if letStatement.IdentifierExpression.Value != name {
+		t.Errorf("letStatement.Name.Value not %v. got=%v\n", name, letStatement.IdentifierExpression.Value)
 		return false
 	}
-	if letStatement.Name.TokenLiteral() != name {
-		t.Errorf("letStatement.Name.TokenLiteral() not %v. got=%v\n", name, letStatement.Name.TokenLiteral())
+	if letStatement.IdentifierExpression.TokenLiteral() != name {
+		t.Errorf("letStatement.Name.TokenLiteral() not %v. got=%v\n", name, letStatement.IdentifierExpression.TokenLiteral())
 		return false
 	}
 	return true

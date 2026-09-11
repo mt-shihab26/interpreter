@@ -15,12 +15,12 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	if !p.expectAdvancePeek(token.IDENT) {
 		return nil
 	}
-	letStatement.Name = &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
+	letStatement.IdentifierExpression = &ast.IdentifierExpression{Token: p.curToken, Value: p.curToken.Literal}
 	if !p.expectAdvancePeek(token.ASSIGN) {
 		return nil
 	}
 	p.advanceToken()
-	letStatement.Value = p.parseExpression(LOWEST)
+	letStatement.ValueExpression = p.parseExpression(LOWEST)
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.advanceToken()
 	}
