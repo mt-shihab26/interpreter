@@ -9,6 +9,19 @@ import (
 	"monkey/parser"
 )
 
+const MONKEY_FACE = `            __,__
+   .--.  .-"     "-.  .--.
+  / .. \/  .-. .-.  \/ .. \
+ | |  '|  /   Y   \  |'  | |
+ | \   \  \ 0 | 0 /  /   / |
+  \ '- ,\.-"""""""-./, -' /
+   ''-' /_   ^ ^   _\ '-''
+       |  \._   _./  |
+       \   \ '~' /   /
+        '._ '-=-' _.'
+           '-----'
+`
+
 const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
@@ -40,6 +53,9 @@ func executeLine(out io.Writer, line string) {
 }
 
 func printParseErrors(out io.Writer, errors []string) {
+	io.WriteString(out, MONKEY_FACE)
+	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
+	io.WriteString(out, " parser errors:\n")
 	for _, message := range errors {
 		io.WriteString(out, "\t"+message+"\n")
 	}
