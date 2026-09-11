@@ -2,6 +2,8 @@ package parser
 
 import (
 	"testing"
+
+	"monkey/lexer"
 )
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
@@ -42,5 +44,34 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		if actual != test.expected {
 			t.Errorf("expected=%v, got=%v\n", test.expected, actual)
 		}
+	}
+}
+
+// TestExpressionStatementWithoutTrailingSemicolon checks that the trailing
+// ";" is optional, since parseExpressionStatement only consumes it when
+// present.
+func TestExpressionStatementWithoutTrailingSemicolon(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"5", "5"},
+		{"x + y", "(x + y)"},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		if actual := program.String(); actual != test.expected {
+			t.Errorf("input=%q expected=%v, got=%v\n", test.input, test.expected, actual)
+		}
+	}
+}
+
+// TestParseIllegalTokenRecordsError checks that a token the lexer can't
+// classify records a parser error instead of panicking.
+func TestParseIllegalTokenRecordsError(t *testing.T) {
+	parser := New(lexer.New("@"))
+	parser.ParseProgram()
+	if len(parser.Errors()) == 0 {
+		t.Fatalf("expected at least 1 error for an illegal token, got 0\n")
 	}
 }

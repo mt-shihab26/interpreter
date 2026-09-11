@@ -27,3 +27,12 @@ func TestReturnStatements(t *testing.T) {
 		}
 	}
 }
+
+// TestReturnStatementWithoutTrailingSemicolon checks that the trailing ";" is
+// optional, since parseReturnStatement only consumes it when present.
+func TestReturnStatementWithoutTrailingSemicolon(t *testing.T) {
+	program := testParseProgram(t, "return 5", 1)
+	if actual := program.String(); actual != "return 5;" {
+		t.Errorf("expected=%v, got=%v\n", "return 5;", actual)
+	}
+}
