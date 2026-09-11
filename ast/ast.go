@@ -88,20 +88,20 @@ func (b *Boolean) String() string {
 	return b.Token.Literal
 }
 
-type PrefixExpression struct {
+type UnaryExpression struct {
 	Token    token.Token
 	Operator string
 	Right    Expression
 }
 
-func (pe *PrefixExpression) expressionNode() {
+func (pe *UnaryExpression) expressionNode() {
 
 }
-func (pe *PrefixExpression) TokenLiteral() string {
+func (pe *UnaryExpression) TokenLiteral() string {
 	return pe.Token.Literal
 }
 
-func (pe *PrefixExpression) String() string {
+func (pe *UnaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
 	out.WriteString(pe.Operator)

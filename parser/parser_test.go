@@ -406,7 +406,7 @@ func testBooleanExpression(t *testing.T, expression ast.Expression, value bool) 
 }
 
 func testPrefixExpression(t *testing.T, expression ast.Expression, operator string, right any) bool {
-	prefixExpression, ok := expression.(*ast.PrefixExpression)
+	prefixExpression, ok := expression.(*ast.UnaryExpression)
 	if !ok {
 		t.Fatalf("expression is not *ast.PrefixExpression. got=%T\n", expression)
 		return false
