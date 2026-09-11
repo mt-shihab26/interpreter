@@ -5,7 +5,7 @@ import (
 	"monkey/token"
 )
 
-// parseLetStatement parses a "let x = 5;" let statement.
+// parseLetStatement parses a "let <name> = <expression>;" let statement.
 //
 // It expects tokens on entry: let x = 5;  (curToken must be "let").
 //

@@ -22,7 +22,7 @@ func (p *Parser) registerNuds() {
 	p.nuds[token.LPAREN] = p.parseGroupedExpression
 }
 
-// parseUnaryExpression parses a "-x" or "!x" unary expression.
+// parseUnaryExpression parses a "-<expression>" or "!<expression>" unary expression.
 //
 // It expects tokens on entry: -x  (curToken must be the operator, e.g. "-").
 //
@@ -73,7 +73,7 @@ func (p *Parser) parseBooleanExpression() ast.Expression {
 	return booleanExpression
 }
 
-// parseIfExpression parses an "if (cond) { ... } else { ... }" expression.
+// parseIfExpression parses an "if (<condition>) { <consequence> } else { <alternative> }" expression.
 //
 // It expects tokens on entry: if (x < y) { x } else { y }  (curToken must be "if").
 //
@@ -102,7 +102,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	return ifExpression
 }
 
-// parseFunctionExpression parses a "fn(x, y) { ... }" function literal.
+// parseFunctionExpression parses a "fn(<parameters>) { <body> }" function literal.
 //
 // It expects tokens on entry: fn(x, y) { x + y; }  (curToken must be "fn").
 //
@@ -143,7 +143,7 @@ func (p *Parser) parseFunctionExpression() ast.Expression {
 	return functionExpression
 }
 
-// parseGroupedExpression parses a parenthesized "(x + y)" expression.
+// parseGroupedExpression parses a parenthesized "(<expression>)" expression.
 //
 // It expects tokens on entry: (x + y)  (curToken must be "(").
 //

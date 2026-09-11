@@ -5,7 +5,7 @@ import (
 	"monkey/token"
 )
 
-// parseReturnStatement parses a "return 5;" return statement.
+// parseReturnStatement parses a "return <expression>;" return statement.
 //
 // It expects tokens on entry: return 5;  (curToken must be "return").
 //
