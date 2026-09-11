@@ -5,6 +5,11 @@ import (
 	"monkey/token"
 )
 
+// parseLetStatement parses a "let x = 5;" let statement.
+//
+// It expects tokens on entry: let x = 5;  (curToken must be "let").
+//
+// It leaves curToken on the trailing ";" if present, otherwise on the value expression's last token (e.g. "5").
 func (p *Parser) parseLetStatement() *ast.LetStatement {
 	letStatement := &ast.LetStatement{Token: p.curToken}
 	if !p.expectAdvancePeek(token.IDENT) {
