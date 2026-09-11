@@ -48,8 +48,13 @@ func executeLine(out io.Writer, line string) {
 		printParseErrors(out, parse.Errors())
 		return
 	}
+	io.WriteString(out, "---\n")
 	io.WriteString(out, program.String())
 	io.WriteString(out, "\n")
+	io.WriteString(out, "---\n")
+	io.WriteString(out, program.Tree())
+	io.WriteString(out, "\n")
+	io.WriteString(out, "---\n")
 }
 
 func printParseErrors(out io.Writer, errors []string) {
