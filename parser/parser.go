@@ -107,6 +107,17 @@ func New(l *lexer.Lexer) *Parser {
 	p.nextToken()
 	p.nextToken()
 
+	p.registerNudsAndLeds()
+
+	return p
+}
+
+// registerNudsAndLeds wires up the parse functions for every token type.
+// In Pratt's "Top Down Operator Precedence" paper these are called nuds
+// (null denotations -- tokens parsed with no left-hand expression, i.e.
+// our prefixParseFns) and leds (left denotations -- tokens parsed given
+// an already-parsed left-hand expression, i.e. our infixParseFns).
+func (p *Parser) registerNudsAndLeds() {
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 
 	p.registerPrefix(token.MINUS, p.parseUnaryExpression)
@@ -120,7 +131,6 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
-
 	p.registerInfix(token.PLUS, p.parseBinaryExpression)
 	p.registerInfix(token.MINUS, p.parseBinaryExpression)
 	p.registerInfix(token.ASTERISK, p.parseBinaryExpression)
@@ -130,8 +140,6 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.GT, p.parseBinaryExpression)
 	p.registerInfix(token.LT, p.parseBinaryExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
-
-	return p
 }
 
 func (p *Parser) ParseProgram() *ast.Program {
