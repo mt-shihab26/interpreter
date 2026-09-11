@@ -77,8 +77,7 @@ func (p *Parser) parseBooleanExpression() ast.Expression {
 //
 // It expects tokens on entry: if (x < y) { x } else { y }  (curToken must be "if").
 //
-// It leaves curToken on the closing "}" of whichever block was parsed last
-// (the consequence if there's no "else", otherwise the alternative).
+// It leaves curToken on the closing "}" of whichever block was parsed last (the consequence if there's no "else", otherwise the alternative).
 func (p *Parser) parseIfExpression() ast.Expression {
 	ifExpression := &ast.IfExpression{Token: p.curToken}
 	if !p.expectAdvancePeek(token.LPAREN) {

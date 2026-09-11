@@ -5,6 +5,11 @@ import (
 	"monkey/token"
 )
 
+// parseReturnStatement parses a "return 5;" return statement.
+//
+// It expects tokens on entry: return 5;  (curToken must be "return").
+//
+// It leaves curToken on the trailing ";" if present, otherwise on the value expression's last token (e.g. "5").
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	returnStatement := &ast.ReturnStatement{Token: p.curToken}
 	p.advanceToken()

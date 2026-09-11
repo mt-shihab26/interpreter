@@ -94,18 +94,18 @@ type UnaryExpression struct {
 	Right    Expression
 }
 
-func (pe *UnaryExpression) expressionNode() {
+func (ue *UnaryExpression) expressionNode() {
 
 }
-func (pe *UnaryExpression) TokenLiteral() string {
-	return pe.Token.Literal
+func (ue *UnaryExpression) TokenLiteral() string {
+	return ue.Token.Literal
 }
 
-func (pe *UnaryExpression) String() string {
+func (ue *UnaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
-	out.WriteString(pe.Operator)
-	out.WriteString(pe.Right.String())
+	out.WriteString(ue.Operator)
+	out.WriteString(ue.Right.String())
 	out.WriteString(")")
 	return out.String()
 }
@@ -117,21 +117,21 @@ type BinaryExpression struct {
 	Right    Expression
 }
 
-func (ie *BinaryExpression) expressionNode() {
+func (be *BinaryExpression) expressionNode() {
 
 }
-func (ie *BinaryExpression) TokenLiteral() string {
-	return ie.Token.Literal
+func (be *BinaryExpression) TokenLiteral() string {
+	return be.Token.Literal
 }
 
-func (ie *BinaryExpression) String() string {
+func (be *BinaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
-	out.WriteString(ie.Left.String())
+	out.WriteString(be.Left.String())
 	out.WriteString(" ")
-	out.WriteString(ie.Operator)
+	out.WriteString(be.Operator)
 	out.WriteString(" ")
-	out.WriteString(ie.Right.String())
+	out.WriteString(be.Right.String())
 	out.WriteString(")")
 	return out.String()
 }
@@ -258,30 +258,30 @@ type FunctionExpression struct {
 	Body       *BlockStatement
 }
 
-func (fl *FunctionExpression) expressionNode() {
+func (fe *FunctionExpression) expressionNode() {
 
 }
-func (fl *FunctionExpression) TokenLiteral() string {
-	return fl.Token.Literal
+func (fe *FunctionExpression) TokenLiteral() string {
+	return fe.Token.Literal
 }
 
-func (fl *FunctionExpression) String() string {
+func (fe *FunctionExpression) String() string {
 	var out bytes.Buffer
 	params := []string{}
-	for _, parameter := range fl.Parameters {
+	for _, parameter := range fe.Parameters {
 		params = append(params, parameter.String())
 	}
-	out.WriteString(fl.TokenLiteral())
+	out.WriteString(fe.TokenLiteral())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
-	out.WriteString(fl.Body.String())
+	out.WriteString(fe.Body.String())
 	return out.String()
 }
 
 type CallExpression struct {
 	Token     token.Token // The '(' Token
-	Function  Expression  // Identifier or FunctionLiteral
+	Function  Expression  // IdentifierExpression or FunctionExpression
 	Arguments []Expression
 }
 
