@@ -1,4 +1,4 @@
-package evaluator
+package eval
 
 import (
 	"monkey/ast"
@@ -92,7 +92,6 @@ func Eval(node ast.Node) object.Object {
 		default:
 			return NULL
 		}
-
 	default:
 		return NULL
 	}
