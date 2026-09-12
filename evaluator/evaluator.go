@@ -78,6 +78,17 @@ func Eval(node ast.Node) object.Object {
 			default:
 				return NULL
 			}
+		case left.Type() == object.BOOLEAN && right.Type() == object.BOOLEAN:
+			leftValue := left.(*object.Boolean).Value
+			rightValue := right.(*object.Boolean).Value
+			switch node.Operator {
+			case "==":
+				return newBooleanObject(leftValue == rightValue)
+			case "!=":
+				return newBooleanObject(leftValue != rightValue)
+			default:
+				return NULL
+			}
 		default:
 			return NULL
 		}
