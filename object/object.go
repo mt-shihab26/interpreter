@@ -26,7 +26,7 @@ type Null struct {
 
 // Type returns NULL.
 func (i *Null) Type() Type {
-	return INTEGER
+	return NULL
 }
 
 // Inspect returns "null".

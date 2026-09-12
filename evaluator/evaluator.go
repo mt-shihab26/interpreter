@@ -79,6 +79,6 @@ func Eval(node ast.Node) object.Object {
 			return NULL
 		}
 	default:
-		return nil
+		return NULL
 	}
 }
