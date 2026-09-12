@@ -22,7 +22,7 @@ const (
 	CALL           // myFunction(x)
 )
 
-var precedences = map[token.TokenType]int{
+var precedences = map[token.Type]int{
 	token.EQUAL:        EQUALS,
 	token.NOT_EQUAL:    EQUALS,
 	token.LESS_THAN:    COMPARISON,
@@ -41,17 +41,17 @@ func (p *Parser) advanceToken() {
 }
 
 // curTokenIs reports whether curToken is of the given type.
-func (p *Parser) curTokenIs(tokenType token.TokenType) bool {
+func (p *Parser) curTokenIs(tokenType token.Type) bool {
 	return p.curToken.Type == tokenType
 }
 
 // peekTokenIs reports whether peekToken is of the given type.
-func (p *Parser) peekTokenIs(tokenType token.TokenType) bool {
+func (p *Parser) peekTokenIs(tokenType token.Type) bool {
 	return p.peekToken.Type == tokenType
 }
 
 // expectAdvancePeek advances past peekToken if it matches tokenType, else records a parser error.
-func (p *Parser) expectAdvancePeek(tokenType token.TokenType) bool {
+func (p *Parser) expectAdvancePeek(tokenType token.Type) bool {
 	if !p.peekTokenIs(tokenType) {
 		message := fmt.Sprintf("expected token to be %v, got %v instead", tokenType, p.peekToken.Type)
 		p.errors = append(p.errors, message)

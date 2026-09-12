@@ -8,7 +8,7 @@ import (
 func TestNextToken(t *testing.T) {
 	input := "=+(){},;"
 	tests := []struct {
-		Type    token.TokenType
+		Type    token.Type
 		Literal string
 	}{
 		{token.ASSIGN, "="},
@@ -54,7 +54,7 @@ if (5 < 10) {
 10 != 9;
 `
 	tests := []struct {
-		Type    token.TokenType
+		Type    token.Type
 		Literal string
 	}{
 		{token.LET, "let"},

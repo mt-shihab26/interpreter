@@ -10,8 +10,8 @@ import (
 type Parser struct {
 	lexer     *lexer.Lexer
 	errors    []string
-	nuds      map[token.TokenType]nudFuncType
-	leds      map[token.TokenType]ledFuncType
+	nuds      map[token.Type]nudFuncType
+	leds      map[token.Type]ledFuncType
 	curToken  token.Token
 	peekToken token.Token
 }
@@ -21,8 +21,8 @@ func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
 		lexer:  l,
 		errors: []string{},
-		nuds:   make(map[token.TokenType]nudFuncType),
-		leds:   make(map[token.TokenType]ledFuncType),
+		nuds:   make(map[token.Type]nudFuncType),
+		leds:   make(map[token.Type]ledFuncType),
 	}
 	p.advanceToken()
 	p.advanceToken()

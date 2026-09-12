@@ -100,7 +100,7 @@ func (l *Lexer) NextToken() token.Token {
 }
 
 // newToken builds a single-character token.Token of the given type from ch.
-func newToken(tokenType token.TokenType, ch byte) token.Token {
+func newToken(tokenType token.Type, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
