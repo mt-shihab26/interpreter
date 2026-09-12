@@ -60,13 +60,21 @@ func Eval(node ast.Node) object.Object {
 			rightValue := right.(*object.Integer).Value
 			switch node.Operator {
 			case "+":
-				return &object.Integer{Value: leftValue + rightValue}
+				return newIntegerObject(leftValue + rightValue)
 			case "-":
-				return &object.Integer{Value: leftValue - rightValue}
+				return newIntegerObject(leftValue - rightValue)
 			case "*":
-				return &object.Integer{Value: leftValue * rightValue}
+				return newIntegerObject(leftValue * rightValue)
 			case "/":
-				return &object.Integer{Value: leftValue / rightValue}
+				return newIntegerObject(leftValue / rightValue)
+			case "<":
+				return newBooleanObject(leftValue < rightValue)
+			case ">":
+				return newBooleanObject(leftValue > rightValue)
+			case "==":
+				return newBooleanObject(leftValue == rightValue)
+			case "!=":
+				return newBooleanObject(leftValue != rightValue)
 			default:
 				return NULL
 			}
@@ -77,4 +85,15 @@ func Eval(node ast.Node) object.Object {
 	default:
 		return NULL
 	}
+}
+
+func newIntegerObject(value int64) *object.Integer {
+	return &object.Integer{Value: value}
+}
+
+func newBooleanObject(value bool) *object.Boolean {
+	if value {
+		return TRUE
+	}
+	return FALSE
 }
