@@ -1,7 +1,9 @@
 package token
 
+// TokenType identifies the kind of a Token, e.g. IDENTIFIER or LEFT_PAREN.
 type TokenType string
 
+// Token is a single lexical token produced by the lexer: its kind and the source text it came from.
 type Token struct {
 	Type    TokenType
 	Literal string
@@ -51,6 +53,7 @@ const (
 	RETURN   = "RETURN"
 )
 
+// keywords maps each reserved word to its TokenType.
 var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
 	"let":    LET,
@@ -61,6 +64,7 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
+// LookupKeyword returns ident's keyword TokenType, or IDENTIFIER if ident is not a reserved word.
 func LookupKeyword(ident string) TokenType {
 	tok, ok := keywords[ident]
 	if !ok {

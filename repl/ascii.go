@@ -1,5 +1,6 @@
 package repl
 
+// MONKEY_FACE_HAPPY is printed as a greeting banner when the REPL starts.
 const MONKEY_FACE_HAPPY = `            __,__
    .--.  .-"     "-.  .--.
   / .. \/  .-. .-.  \/ .. \
@@ -13,6 +14,7 @@ const MONKEY_FACE_HAPPY = `            __,__
            '-----'
 `
 
+// MONKEY_FACE_SAD is printed alongside parser errors when a line fails to parse.
 const MONKEY_FACE_SAD = `            __,__
    .--.  .-"     "-.  .--.
   / .. \/  .-. .-.  \/ .. \

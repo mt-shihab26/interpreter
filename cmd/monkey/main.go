@@ -7,6 +7,7 @@ import (
 	"os/user"
 )
 
+// main greets the current OS user and hands off to the REPL on stdin/stdout.
 func main() {
 	user, err := user.Current()
 	if err != nil {

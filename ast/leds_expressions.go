@@ -15,13 +15,17 @@ type BinaryExpression struct {
 	RightExpression Expression
 }
 
+// expressionNode marks BinaryExpression as an ast.Expression.
 func (be *BinaryExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the operator token's literal, e.g. "+".
 func (be *BinaryExpression) TokenLiteral() string {
 	return be.Token.Literal
 }
 
+// String reconstructs the expression as "(<left> <operator> <right>)", fully parenthesized.
 func (be *BinaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
@@ -34,6 +38,7 @@ func (be *BinaryExpression) String() string {
 	return out.String()
 }
 
+// Tree renders the expression with the operator in its header and its two operands as "Left"/"Right" children.
 func (be *BinaryExpression) Tree() string {
 	children := []treeChild{}
 	if be.LeftExpression != nil {
@@ -52,13 +57,17 @@ type CallExpression struct {
 	ArgumentExpressions []Expression
 }
 
+// expressionNode marks CallExpression as an ast.Expression.
 func (ce *CallExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the literal of the opening "(" token.
 func (ce *CallExpression) TokenLiteral() string {
 	return ce.Token.Literal
 }
 
+// String reconstructs the expression as "<callee>(<arg>, <arg>, ...)".
 func (ce *CallExpression) String() string {
 	var out bytes.Buffer
 	params := []string{}
@@ -72,6 +81,7 @@ func (ce *CallExpression) String() string {
 	return out.String()
 }
 
+// Tree renders the expression with the callee as a "Function" child and each argument as an indexed "Argument[i]" child.
 func (ce *CallExpression) Tree() string {
 	children := make([]treeChild, 0, len(ce.ArgumentExpressions)+1)
 	if ce.FunctionExpression != nil {

@@ -11,6 +11,9 @@ import (
 
 const PROMPT = ">> "
 
+// Start runs a read-eval-print loop that reads lines from in, parses each
+// as a Monkey program, and writes its reconstructed source and AST tree
+// (or parse errors) to out. It returns once in is exhausted.
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	for {
@@ -27,6 +30,9 @@ func Start(in io.Reader, out io.Writer) {
 	}
 }
 
+// executeLine lexes and parses one line of Monkey source and writes the
+// result to out: on success, the reconstructed source and the AST tree;
+// on failure, the accumulated parser errors via printParseErrors.
 func executeLine(out io.Writer, line string) {
 	lex := lexer.New(line)
 	parse := parser.New(lex)
@@ -44,6 +50,7 @@ func executeLine(out io.Writer, line string) {
 	io.WriteString(out, "---\n")
 }
 
+// printParseErrors writes the sad monkey face followed by each parser error message to out.
 func printParseErrors(out io.Writer, errors []string) {
 	io.WriteString(out, MONKEY_FACE_SAD)
 	io.WriteString(out, "Woops! We ran into some monkey business here!\n")

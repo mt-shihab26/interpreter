@@ -14,13 +14,17 @@ type UnaryExpression struct {
 	RightExpression Expression
 }
 
+// expressionNode marks UnaryExpression as an ast.Expression.
 func (ue *UnaryExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the operator token's literal, e.g. "-".
 func (ue *UnaryExpression) TokenLiteral() string {
 	return ue.Token.Literal
 }
 
+// String reconstructs the expression as "(<operator><operand>)", e.g. "(-x)".
 func (ue *UnaryExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
@@ -30,6 +34,7 @@ func (ue *UnaryExpression) String() string {
 	return out.String()
 }
 
+// Tree renders the expression with the operator in its header and its operand as a "Right" child.
 func (ue *UnaryExpression) Tree() string {
 	children := []treeChild{}
 	if ue.RightExpression != nil {
@@ -44,17 +49,22 @@ type IdentifierExpression struct {
 	Value string
 }
 
+// expressionNode marks IdentifierExpression as an ast.Expression.
 func (i *IdentifierExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the identifier token's literal, e.g. "foobar".
 func (i *IdentifierExpression) TokenLiteral() string {
 	return i.Token.Literal
 }
 
+// String reconstructs the expression as the bare identifier name.
 func (i *IdentifierExpression) String() string {
 	return i.Value
 }
 
+// Tree renders the expression as a single leaf line naming its value.
 func (i *IdentifierExpression) Tree() string {
 	return fmt.Sprintf("IdentifierExpression %q", i.Value)
 }
@@ -65,17 +75,22 @@ type IntegerExpression struct {
 	Value int64
 }
 
+// expressionNode marks IntegerExpression as an ast.Expression.
 func (il *IntegerExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the integer token's literal, e.g. "5".
 func (il *IntegerExpression) TokenLiteral() string {
 	return il.Token.Literal
 }
 
+// String reconstructs the expression as its original digit literal.
 func (il *IntegerExpression) String() string {
 	return il.Token.Literal
 }
 
+// Tree renders the expression as a single leaf line naming its parsed value.
 func (il *IntegerExpression) Tree() string {
 	return fmt.Sprintf("IntegerExpression %d", il.Value)
 }
@@ -86,17 +101,22 @@ type BooleanExpression struct {
 	Value bool
 }
 
+// expressionNode marks BooleanExpression as an ast.Expression.
 func (b *BooleanExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the boolean token's literal, "true" or "false".
 func (b *BooleanExpression) TokenLiteral() string {
 	return b.Token.Literal
 }
 
+// String reconstructs the expression as "true" or "false".
 func (b *BooleanExpression) String() string {
 	return b.Token.Literal
 }
 
+// Tree renders the expression as a single leaf line naming its value.
 func (b *BooleanExpression) Tree() string {
 	return fmt.Sprintf("BooleanExpression %v", b.Value)
 }
@@ -109,13 +129,17 @@ type IfExpression struct {
 	AlternativeStatement *BlockStatement
 }
 
+// expressionNode marks IfExpression as an ast.Expression.
 func (ie *IfExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the literal of the "if" token.
 func (ie *IfExpression) TokenLiteral() string {
 	return ie.Token.Literal
 }
 
+// String reconstructs the expression as "if<condition> <consequence>else <alternative>", omitting the else clause if there is none.
 func (ie *IfExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString(ie.TokenLiteral())
@@ -129,6 +153,7 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
+// Tree renders the expression with its condition, consequence, and (if present) alternative as labeled children.
 func (ie *IfExpression) Tree() string {
 	children := []treeChild{}
 	if ie.ConditionExpression != nil {
@@ -150,13 +175,17 @@ type FunctionExpression struct {
 	BodyStatement        *BlockStatement
 }
 
+// expressionNode marks FunctionExpression as an ast.Expression.
 func (fe *FunctionExpression) expressionNode() {
 
 }
+
+// TokenLiteral returns the literal of the "fn" token.
 func (fe *FunctionExpression) TokenLiteral() string {
 	return fe.Token.Literal
 }
 
+// String reconstructs the expression as "fn(<param>, <param>, ...)<body>".
 func (fe *FunctionExpression) String() string {
 	var out bytes.Buffer
 	params := []string{}
@@ -171,6 +200,7 @@ func (fe *FunctionExpression) String() string {
 	return out.String()
 }
 
+// Tree renders the expression with each parameter as an indexed "Parameter[i]" child and the body as a "Body" child.
 func (fe *FunctionExpression) Tree() string {
 	children := make([]treeChild, 0, len(fe.ParameterExpressions)+1)
 	for i, parameter := range fe.ParameterExpressions {
