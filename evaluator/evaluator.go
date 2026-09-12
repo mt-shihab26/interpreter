@@ -51,6 +51,33 @@ func Eval(node ast.Node) object.Object {
 			}
 		}
 		return NULL
+	case *ast.BinaryExpression:
+		left := Eval(node.LeftExpression)
+		right := Eval(node.RightExpression)
+		switch node.Operator {
+		case "+":
+			if left.Type() != object.INTEGER {
+				return NULL
+			}
+			if right.Type() != object.INTEGER {
+				return NULL
+			}
+			return &object.Integer{
+				Value: (left.(*object.Integer).Value) + (right.(*object.Integer).Value),
+			}
+		case "-":
+			if left.Type() != object.INTEGER {
+				return NULL
+			}
+			if right.Type() != object.INTEGER {
+				return NULL
+			}
+			return &object.Integer{
+				Value: (left.(*object.Integer).Value) - (right.(*object.Integer).Value),
+			}
+		default:
+			return NULL
+		}
 	default:
 		return nil
 	}
