@@ -41,10 +41,10 @@ func (ls *LetStatement) String() string {
 func (ls *LetStatement) Tree() string {
 	children := []treeChild{}
 	if ls.IdentifierExpression != nil {
-		children = append(children, treeChild{"Name", ls.IdentifierExpression})
+		children = append(children, treeChild{"IdentifierExpression", ls.IdentifierExpression})
 	}
 	if ls.ValueExpression != nil {
-		children = append(children, treeChild{"Value", ls.ValueExpression})
+		children = append(children, treeChild{"ValueExpression", ls.ValueExpression})
 	}
 	return renderTree("LetStatement", children...)
 }
@@ -81,7 +81,7 @@ func (rs *ReturnStatement) String() string {
 func (rs *ReturnStatement) Tree() string {
 	children := []treeChild{}
 	if rs.ValueExpression != nil {
-		children = append(children, treeChild{"Value", rs.ValueExpression})
+		children = append(children, treeChild{"ValueExpression", rs.ValueExpression})
 	}
 	return renderTree("ReturnStatement", children...)
 }
@@ -151,7 +151,7 @@ func (bs *BlockStatement) Tree() string {
 		if statement == nil {
 			continue
 		}
-		children = append(children, treeChild{fmt.Sprintf("[%d]", i), statement})
+		children = append(children, treeChild{fmt.Sprintf("Statement[%d]", i), statement})
 	}
 	return renderTree("BlockStatement", children...)
 }

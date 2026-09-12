@@ -34,7 +34,7 @@ func (p *Program) Tree() string {
 		if statement == nil {
 			continue
 		}
-		children = append(children, treeChild{fmt.Sprintf("[%d]", i), statement})
+		children = append(children, treeChild{fmt.Sprintf("Statement[%d]", i), statement})
 	}
 	return renderTree("Program", children...)
 }

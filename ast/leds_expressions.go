@@ -42,10 +42,10 @@ func (be *BinaryExpression) String() string {
 func (be *BinaryExpression) Tree() string {
 	children := []treeChild{}
 	if be.LeftExpression != nil {
-		children = append(children, treeChild{"Left", be.LeftExpression})
+		children = append(children, treeChild{"LeftExpression", be.LeftExpression})
 	}
 	if be.RightExpression != nil {
-		children = append(children, treeChild{"Right", be.RightExpression})
+		children = append(children, treeChild{"RightExpression", be.RightExpression})
 	}
 	return renderTree(fmt.Sprintf("BinaryExpression %q", be.Operator), children...)
 }
@@ -85,13 +85,13 @@ func (ce *CallExpression) String() string {
 func (ce *CallExpression) Tree() string {
 	children := make([]treeChild, 0, len(ce.ArgumentExpressions)+1)
 	if ce.FunctionExpression != nil {
-		children = append(children, treeChild{"Function", ce.FunctionExpression})
+		children = append(children, treeChild{"FunctionExpression", ce.FunctionExpression})
 	}
 	for i, argument := range ce.ArgumentExpressions {
 		if argument == nil {
 			continue
 		}
-		children = append(children, treeChild{fmt.Sprintf("Argument[%d]", i), argument})
+		children = append(children, treeChild{fmt.Sprintf("ArgumentExpression[%d]", i), argument})
 	}
 	return renderTree("CallExpression", children...)
 }

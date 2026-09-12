@@ -157,13 +157,13 @@ func (ie *IfExpression) String() string {
 func (ie *IfExpression) Tree() string {
 	children := []treeChild{}
 	if ie.ConditionExpression != nil {
-		children = append(children, treeChild{"Condition", ie.ConditionExpression})
+		children = append(children, treeChild{"ConditionExpression", ie.ConditionExpression})
 	}
 	if ie.ConsequenceStatement != nil {
-		children = append(children, treeChild{"Consequence", ie.ConsequenceStatement})
+		children = append(children, treeChild{"ConsequenceExpression", ie.ConsequenceStatement})
 	}
 	if ie.AlternativeStatement != nil {
-		children = append(children, treeChild{"Alternative", ie.AlternativeStatement})
+		children = append(children, treeChild{"AlternativeExpression", ie.AlternativeStatement})
 	}
 	return renderTree("IfExpression", children...)
 }
@@ -207,10 +207,10 @@ func (fe *FunctionExpression) Tree() string {
 		if parameter == nil {
 			continue
 		}
-		children = append(children, treeChild{fmt.Sprintf("Parameter[%d]", i), parameter})
+		children = append(children, treeChild{fmt.Sprintf("ParameterExpression[%d]", i), parameter})
 	}
 	if fe.BodyStatement != nil {
-		children = append(children, treeChild{"Body", fe.BodyStatement})
+		children = append(children, treeChild{"BodyStatement", fe.BodyStatement})
 	}
 	return renderTree("FunctionExpression", children...)
 }
