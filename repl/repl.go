@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"monkey/debug"
 	"monkey/evaluator"
 	"monkey/lexer"
 	"monkey/parser"
@@ -39,16 +40,7 @@ func executeLine(out io.Writer, line string) {
 		return
 	}
 	evaluated := evaluator.Eval(program)
-	io.WriteString(out, "---CODE---\n")
-	io.WriteString(out, program.String())
-	io.WriteString(out, "\n---AST---\n")
-	io.WriteString(out, program.Tree())
-	io.WriteString(out, "\n")
-	if evaluated != nil {
-		io.WriteString(out, "\n---OUT---\n")
-		io.WriteString(out, evaluated.Inspect())
-		io.WriteString(out, "\n")
-	}
+	debug.PrintProgram(out, program, evaluated)
 }
 
 // printParseErrors writes the sad monkey face followed by each parser error message to out.
