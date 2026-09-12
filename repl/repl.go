@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"monkey/evaluator"
 	"monkey/lexer"
 	"monkey/parser"
 )
@@ -30,20 +31,25 @@ func Start(in io.Reader, out io.Writer) {
 
 // executeLine lexes and parses one line, writing its source/tree to out or its parser errors on failure.
 func executeLine(out io.Writer, line string) {
-	lex := lexer.New(line)
-	parse := parser.New(lex)
-	program := parse.ParseProgram()
-	if len(parse.Errors()) != 0 {
-		printParseErrors(out, parse.Errors())
+	l := lexer.New(line)
+	p := parser.New(l)
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		printParseErrors(out, p.Errors())
 		return
 	}
-	io.WriteString(out, "---\n")
+	evaluated := evaluator.Eval(program)
+	io.WriteString(out, "---CODE---\n")
 	io.WriteString(out, program.String())
-	io.WriteString(out, "\n")
-	io.WriteString(out, "---\n")
+	io.WriteString(out, "\n---AST---\n")
 	io.WriteString(out, program.Tree())
-	io.WriteString(out, "\n")
-	io.WriteString(out, "---\n")
+	if evaluated == nil {
+		io.WriteString(out, "\n---\n")
+	} else {
+		io.WriteString(out, "\n---OUT---\n")
+		io.WriteString(out, evaluated.Inspect())
+		io.WriteString(out, "\n")
+	}
 }
 
 // printParseErrors writes the sad monkey face followed by each parser error message to out.
