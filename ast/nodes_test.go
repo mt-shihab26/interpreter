@@ -45,9 +45,9 @@ func TestTree(t *testing.T) {
 		},
 	}
 	expected := "Program\n" +
-		"└─ [0]: LetStatement\n" +
-		"   ├─ Name: IdentifierExpression \"myVar\"\n" +
-		"   └─ Value: IdentifierExpression \"anotherVar\""
+		"└─ Statement[0]: LetStatement\n" +
+		"   ├─ IdentifierExpression: IdentifierExpression \"myVar\"\n" +
+		"   └─ ValueExpression: IdentifierExpression \"anotherVar\""
 	if actual := program.Tree(); actual != expected {
 		t.Errorf("program.Tree() wrong.\nexpected=\n%v\ngot=\n%v", expected, actual)
 	}
