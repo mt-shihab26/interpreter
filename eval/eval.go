@@ -14,20 +14,15 @@ var (
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
-		var result object.Object
-		for _, statement := range node.Statements {
-			result = Eval(statement)
-		}
-		return result
+		return evalStatements(node.Statements)
+	case *ast.BlockStatement:
+		return evalStatements(node.Statements)
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression)
 	case *ast.IntegerExpression:
-		return &object.Integer{Value: node.Value}
+		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
-		if node.Value {
-			return TRUE
-		}
-		return FALSE
+		return newBooleanObject(node.Value)
 	case *ast.UnaryExpression:
 		right := Eval(node.RightExpression)
 		switch node.Operator {
@@ -92,9 +87,27 @@ func Eval(node ast.Node) object.Object {
 		default:
 			return NULL
 		}
-	default:
+	case *ast.IfExpression:
+		condition := Eval(node.ConditionExpression)
+		if isTruthy(condition) {
+			return Eval(node.ConsequenceStatement)
+		} else {
+			if node.AlternativeStatement != nil {
+				return Eval(node.AlternativeStatement)
+			}
+		}
 		return NULL
+	default:
+		return nil
 	}
+}
+
+func evalStatements(statements []ast.Statement) object.Object {
+	var result object.Object
+	for _, statement := range statements {
+		result = Eval(statement)
+	}
+	return result
 }
 
 func newIntegerObject(value int64) *object.Integer {
@@ -106,4 +119,22 @@ func newBooleanObject(value bool) *object.Boolean {
 		return TRUE
 	}
 	return FALSE
+}
+
+func isTruthy(obj object.Object) bool {
+	if obj.Type() == object.INTEGER {
+		if obj.(*object.Integer).Value == 0 {
+			return false
+		} else {
+			return true
+		}
+	}
+	switch obj {
+	case NULL:
+		return false
+	case FALSE:
+		return false
+	default:
+		return true
+	}
 }

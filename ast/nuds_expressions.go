@@ -143,11 +143,12 @@ func (ie *IfExpression) TokenLiteral() string {
 func (ie *IfExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString(ie.TokenLiteral())
+	out.WriteString(" (")
 	out.WriteString(ie.ConditionExpression.String())
-	out.WriteString(" ")
+	out.WriteString(") ")
 	out.WriteString(ie.ConsequenceStatement.String())
 	if ie.AlternativeStatement != nil {
-		out.WriteString("else ")
+		out.WriteString(" else ")
 		out.WriteString(ie.AlternativeStatement.String())
 	}
 	return out.String()

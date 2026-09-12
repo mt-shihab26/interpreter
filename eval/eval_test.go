@@ -93,6 +93,44 @@ func TestUnaryExpressionBangOperator(t *testing.T) {
 	}
 }
 
+func TestIfElseExpressions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected any
+	}{
+		{"if (true) { 10 }", 10},
+		{"if (false) { 10 }", nil},
+		{"if (1) { 10 }", 10},
+		{"if (0) { 10 } else { 20 }", 20},
+		{"if (1 < 2) { 10 }", 10},
+		{"if (1 > 2) { 10 }", nil},
+		{"if (1 > 2) { 10 } else { 20 }", 20},
+		{"if (1 < 2) { 10 } else { 20 }", 10},
+	}
+	for _, test := range tests {
+		program, evaluated := testEval(test.input)
+		integer, ok := test.expected.(int)
+		if !ok {
+			if !testNullObject(t, evaluated) {
+				printDebugInfo(t, program, evaluated)
+			}
+		} else {
+			if !testIntegerObject(t, evaluated, int64(integer)) {
+				printDebugInfo(t, program, evaluated)
+			}
+		}
+	}
+}
+
+func testNullObject(t *testing.T, objectValue object.Object) bool {
+	_, ok := objectValue.(*object.Null)
+	if !ok {
+		t.Errorf("object is not null. got=%T\n", objectValue)
+		return false
+	}
+	return true
+}
+
 func testIntegerObject(t *testing.T, objectValue object.Object, expected int64) bool {
 	result, ok := objectValue.(*object.Integer)
 	if !ok {
