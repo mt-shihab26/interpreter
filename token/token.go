@@ -1,6 +1,6 @@
 package token
 
-// Type identifies the kind of a Token, e.g. IDENTIFIER or LEFT_PAREN.
+// Type identifies the kind of a Token.
 type Type string
 
 // Token is a single lexical token produced by the lexer: its kind and the source text it came from.
