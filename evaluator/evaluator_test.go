@@ -97,6 +97,9 @@ func testEval(input string) (*ast.Program, object.Object) {
 
 func printDebugInfo(t *testing.T, program *ast.Program, evaluated object.Object) {
 	var out bytes.Buffer
+	out.WriteString("\n")
+	out.WriteString("----------------------START DEBUG-----------------------\n")
 	debug.PrintProgram(&out, program, evaluated)
+	out.WriteString("----------------------END DEBUG-------------------------\n")
 	t.Error(out.String())
 }
