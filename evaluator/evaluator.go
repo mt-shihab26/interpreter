@@ -28,6 +28,9 @@ func Eval(node ast.Node) object.Object {
 			return TRUE
 		}
 		return FALSE
+	case *ast.UnaryExpression:
+		result := Eval(node.RightExpression)
+		return result
 	}
 	return nil
 }

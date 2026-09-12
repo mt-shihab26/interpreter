@@ -38,7 +38,7 @@ func (ue *UnaryExpression) String() string {
 func (ue *UnaryExpression) Tree() string {
 	children := []treeChild{}
 	if ue.RightExpression != nil {
-		children = append(children, treeChild{"Right", ue.RightExpression})
+		children = append(children, treeChild{"RightExpression", ue.RightExpression})
 	}
 	return renderTree(fmt.Sprintf("UnaryExpression %q", ue.Operator), children...)
 }
