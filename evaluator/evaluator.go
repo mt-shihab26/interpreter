@@ -17,6 +17,8 @@ func Eval(node ast.Node) object.Object {
 		return Eval(node.Expression)
 	case *ast.IntegerExpression:
 		return &object.Integer{Value: node.Value}
+	case *ast.BooleanExpression:
+		return &object.Boolean{Value: node.Value}
 	}
 	return nil
 }

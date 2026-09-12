@@ -43,9 +43,8 @@ func executeLine(out io.Writer, line string) {
 	io.WriteString(out, program.String())
 	io.WriteString(out, "\n---AST---\n")
 	io.WriteString(out, program.Tree())
-	if evaluated == nil {
-		io.WriteString(out, "\n---\n")
-	} else {
+	io.WriteString(out, "\n")
+	if evaluated != nil {
 		io.WriteString(out, "\n---OUT---\n")
 		io.WriteString(out, evaluated.Inspect())
 		io.WriteString(out, "\n")
