@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	NULL  = &object.Null{}
-	TRUE  = &object.Boolean{Value: true}
-	FALSE = &object.Boolean{Value: false}
+	NULL_OBJECT  = &object.Null{}
+	TRUE_OBJECT  = &object.Boolean{Value: true}
+	FALSE_OBJECT = &object.Boolean{Value: false}
 )
 
 func Eval(node ast.Node) object.Object {
@@ -29,25 +29,16 @@ func Eval(node ast.Node) object.Object {
 		right := Eval(node.RightExpression)
 		switch node.Operator {
 		case "!":
-			switch right {
-			case TRUE:
-				return FALSE
-			case FALSE:
-				return TRUE
-			case NULL:
-				return TRUE
-			default:
-				return FALSE
-			}
+			return newBooleanObject(!isTruthy(right))
 		case "-":
 			switch right.Type() {
 			case object.INTEGER:
-				return &object.Integer{Value: -(right.(*object.Integer).Value)}
+				return newIntegerObject(-(right.(*object.Integer).Value))
 			default:
-				return NULL
+				return NULL_OBJECT
 			}
 		}
-		return NULL
+		return NULL_OBJECT
 	case *ast.BinaryExpression:
 		left := Eval(node.LeftExpression)
 		right := Eval(node.RightExpression)
@@ -73,7 +64,7 @@ func Eval(node ast.Node) object.Object {
 			case "!=":
 				return newBooleanObject(leftValue != rightValue)
 			default:
-				return NULL
+				return NULL_OBJECT
 			}
 		case left.Type() == object.BOOLEAN && right.Type() == object.BOOLEAN:
 			leftValue := left.(*object.Boolean).Value
@@ -84,10 +75,10 @@ func Eval(node ast.Node) object.Object {
 			case "!=":
 				return newBooleanObject(leftValue != rightValue)
 			default:
-				return NULL
+				return NULL_OBJECT
 			}
 		default:
-			return NULL
+			return NULL_OBJECT
 		}
 	case *ast.IfExpression:
 		condition := Eval(node.ConditionExpression)
@@ -98,7 +89,7 @@ func Eval(node ast.Node) object.Object {
 				return Eval(node.AlternativeStatement)
 			}
 		}
-		return NULL
+		return NULL_OBJECT
 
 	default:
 		return nil
@@ -122,9 +113,9 @@ func newIntegerObject(value int64) *object.Integer {
 
 func newBooleanObject(value bool) *object.Boolean {
 	if value {
-		return TRUE
+		return TRUE_OBJECT
 	}
-	return FALSE
+	return FALSE_OBJECT
 }
 
 func isTruthy(obj object.Object) bool {
@@ -136,9 +127,9 @@ func isTruthy(obj object.Object) bool {
 		}
 	}
 	switch obj {
-	case NULL:
+	case NULL_OBJECT:
 		return false
-	case FALSE:
+	case FALSE_OBJECT:
 		return false
 	default:
 		return true
