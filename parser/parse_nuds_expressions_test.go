@@ -7,6 +7,7 @@ import (
 	"monkey/lexer"
 )
 
+// TestIdentifierExpression checks that a bare identifier parses as an *ast.IdentifierExpression.
 func TestIdentifierExpression(t *testing.T) {
 	input := "foobar;"
 	program := testParseProgram(t, input, 1)
@@ -14,6 +15,7 @@ func TestIdentifierExpression(t *testing.T) {
 	testIdentifierExpression(t, expressionStatement.Expression, "foobar")
 }
 
+// TestIntegerExpression checks that an integer literal parses as an *ast.IntegerExpression.
 func TestIntegerExpression(t *testing.T) {
 	input := "5;"
 	program := testParseProgram(t, input, 1)
@@ -21,6 +23,7 @@ func TestIntegerExpression(t *testing.T) {
 	testIntegerExpression(t, expressionStatement.Expression, 5)
 }
 
+// TestBooleanExpression checks that "true"/"false" literals parse as *ast.BooleanExpression.
 func TestBooleanExpression(t *testing.T) {
 	tests := []struct {
 		input string
@@ -37,6 +40,7 @@ func TestBooleanExpression(t *testing.T) {
 
 }
 
+// TestParsingUnaryExpressions checks unary "!"/"-" expressions parse with the right operator and operand.
 func TestParsingUnaryExpressions(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -55,6 +59,7 @@ func TestParsingUnaryExpressions(t *testing.T) {
 	}
 }
 
+// TestIfExpression checks an "if" expression with no else branch.
 func TestIfExpression(t *testing.T) {
 	input := `if (x < y) { x }`
 	program := testParseProgram(t, input, 1)
@@ -81,6 +86,7 @@ func TestIfExpression(t *testing.T) {
 	}
 }
 
+// TestIfElseExpression checks an "if/else" expression's consequence and alternative branches.
 func TestIfElseExpression(t *testing.T) {
 	input := `if (x < y) { x } else { y }`
 	program := testParseProgram(t, input, 1)
@@ -111,6 +117,7 @@ func TestIfElseExpression(t *testing.T) {
 	}
 }
 
+// TestFunctionLiteralExpression checks a function literal's parameters and body.
 func TestFunctionLiteralExpression(t *testing.T) {
 	input := `fn(x, y) { x + y; }`
 	program := testParseProgram(t, input, 1)
@@ -131,6 +138,7 @@ func TestFunctionLiteralExpression(t *testing.T) {
 	testBinaryExpression(t, bodyStatement.Expression, "x", "+", "y")
 }
 
+// TestFunctionLiteralParsing checks function literals with varying parameter counts.
 func TestFunctionLiteralParsing(t *testing.T) {
 	tests := []struct {
 		input          string
@@ -157,8 +165,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 	}
 }
 
-// TestParseEmptyFunctionLiteral checks a function literal with no parameters
-// and an empty body.
+// TestParseEmptyFunctionLiteral checks a function literal with no parameters and an empty body.
 func TestParseEmptyFunctionLiteral(t *testing.T) {
 	program := testParseProgram(t, "fn() {};", 1)
 	functionExpression, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.FunctionExpression)
@@ -173,8 +180,7 @@ func TestParseEmptyFunctionLiteral(t *testing.T) {
 	}
 }
 
-// TestParseEmptyIfBlock checks an if expression whose consequence has no
-// statements and that has no else branch.
+// TestParseEmptyIfBlock checks an if expression with an empty consequence and no else branch.
 func TestParseEmptyIfBlock(t *testing.T) {
 	program := testParseProgram(t, "if (x) {};", 1)
 	ifExpression, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.IfExpression)
@@ -192,16 +198,13 @@ func TestParseEmptyIfBlock(t *testing.T) {
 	}
 }
 
-// TestParseDeeplyNestedGroupedExpression checks that repeated parentheses
-// around a single literal still resolve to that literal.
+// TestParseDeeplyNestedGroupedExpression checks that repeated parentheses around a literal still resolve to it.
 func TestParseDeeplyNestedGroupedExpression(t *testing.T) {
 	program := testParseProgram(t, "(((5)));", 1)
 	testIntegerExpression(t, testExpressionStatement(t, program.Statements[0]).Expression, 5)
 }
 
-// TestParseDoubleUnaryMinus checks "--5", which is only unambiguous because
-// MINUS is registered as both a nud (unary "-x") and a led (binary "a - b");
-// here the second "-" is parsed as another unary nud, not a binary operator.
+// TestParseDoubleUnaryMinus checks that "--5" parses as two nested unary minuses, not one binary operator.
 func TestParseDoubleUnaryMinus(t *testing.T) {
 	program := testParseProgram(t, "--5;", 1)
 	outer, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.UnaryExpression)
@@ -214,10 +217,7 @@ func TestParseDoubleUnaryMinus(t *testing.T) {
 	testUnaryExpression(t, outer.RightExpression, "-", 5)
 }
 
-// TestParseTrailingCommaInFunctionParametersIsTolerated documents that the
-// parameter loop accepts (and silently ignores) a trailing comma before the
-// closing delimiter, since it only requires a COMMA between two identifiers
-// rather than rejecting one right before RPAREN.
+// TestParseTrailingCommaInFunctionParametersIsTolerated checks that a trailing comma before the closing ")" is silently accepted.
 func TestParseTrailingCommaInFunctionParametersIsTolerated(t *testing.T) {
 	program := testParseProgram(t, "fn(x, y,) {};", 1)
 	functionExpression, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.FunctionExpression)
@@ -231,9 +231,7 @@ func TestParseTrailingCommaInFunctionParametersIsTolerated(t *testing.T) {
 	testLiteralExpression(t, functionExpression.ParameterExpressions[1], "y")
 }
 
-// TestParseUnterminatedGroupedExpressionRecordsError checks that a missing
-// closing ")" is reported as a parser error rather than panicking or
-// silently accepting the input.
+// TestParseUnterminatedGroupedExpressionRecordsError checks that a missing closing ")" is reported as a parser error.
 func TestParseUnterminatedGroupedExpressionRecordsError(t *testing.T) {
 	parser := New(lexer.New("(1 + 2"))
 	parser.ParseProgram()
@@ -242,8 +240,7 @@ func TestParseUnterminatedGroupedExpressionRecordsError(t *testing.T) {
 	}
 }
 
-// TestParseUnterminatedIfConditionRecordsError checks that a missing closing
-// ")" on an if condition is reported as a parser error.
+// TestParseUnterminatedIfConditionRecordsError checks that a missing closing ")" on an if condition is a parser error.
 func TestParseUnterminatedIfConditionRecordsError(t *testing.T) {
 	parser := New(lexer.New("if (x < y"))
 	parser.ParseProgram()
@@ -252,12 +249,7 @@ func TestParseUnterminatedIfConditionRecordsError(t *testing.T) {
 	}
 }
 
-// TestParseUnterminatedFunctionParametersIsSilentlyDropped documents a known
-// parser limitation: unlike grouped expressions and if conditions,
-// parseFunctionExpression returns nil (as the ast.Expression interface, so
-// no typed-nil trap here) without recording an error when its parameter list
-// runs into EOF instead of a closing ")". Parsing still completes without
-// panicking, but the caller gets no diagnostic for genuinely malformed input.
+// TestParseUnterminatedFunctionParametersIsSilentlyDropped checks that a parameter list running into EOF drops the function expression without recording an error.
 func TestParseUnterminatedFunctionParametersIsSilentlyDropped(t *testing.T) {
 	input := "fn(x, y"
 	parser := New(lexer.New(input))

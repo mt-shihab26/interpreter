@@ -7,6 +7,7 @@ import (
 	"monkey/lexer"
 )
 
+// TestLetStatements checks that "let <identifier> = <value>;" statements parse with the right identifier and value.
 func TestLetStatements(t *testing.T) {
 	tests := []struct {
 		input      string
@@ -30,8 +31,7 @@ func TestLetStatements(t *testing.T) {
 	}
 }
 
-// TestLetStatementWithoutTrailingSemicolon checks that the trailing ";" is
-// optional, since parseLetStatement only consumes it when present.
+// TestLetStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a let statement.
 func TestLetStatementWithoutTrailingSemicolon(t *testing.T) {
 	program := testParseProgram(t, "let x = 5", 1)
 	if actual := program.String(); actual != "let x = 5;" {
@@ -39,13 +39,7 @@ func TestLetStatementWithoutTrailingSemicolon(t *testing.T) {
 	}
 }
 
-// TestParseMalformedLetStatementDoesNotPanic exercises every way a "let"
-// statement can be malformed (missing identifier, missing "=", missing
-// value). Each case must record a parser error and must not panic: a
-// dropped/broken let statement is a concrete *ast.LetStatement returned as
-// nil from parseLetStatement, and parseStatement must convert that into a
-// true nil ast.Statement -- not a non-nil interface wrapping a typed nil --
-// or later calls like .String() on it will nil-dereference and panic.
+// TestParseMalformedLetStatementDoesNotPanic checks that a malformed "let" statement records a parser error and never leaves behind a nil-panicking statement.
 func TestParseMalformedLetStatementDoesNotPanic(t *testing.T) {
 	inputs := []string{
 		"let = 5;",  // missing identifier

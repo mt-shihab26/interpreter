@@ -7,6 +7,7 @@ import (
 	"monkey/lexer"
 )
 
+// TestParsingBinaryExpression checks that binary operator expressions parse with the right left operand, operator, and right operand.
 func TestParsingBinaryExpression(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -33,6 +34,7 @@ func TestParsingBinaryExpression(t *testing.T) {
 	}
 }
 
+// TestCallExpressionParsing checks that a call expression parses its callee and each argument correctly.
 func TestCallExpressionParsing(t *testing.T) {
 	input := "add(1, 2 * 3, 4 + 5)"
 	program := testParseProgram(t, input, 1)
@@ -67,8 +69,7 @@ func TestParseEmptyCallArguments(t *testing.T) {
 	}
 }
 
-// TestParseImmediatelyInvokedFunctionExpression checks that a call
-// expression's callee can be a function literal, not just an identifier.
+// TestParseImmediatelyInvokedFunctionExpression checks that a call expression's callee can be a function literal, not just an identifier.
 func TestParseImmediatelyInvokedFunctionExpression(t *testing.T) {
 	program := testParseProgram(t, "fn(x) { x; }(5);", 1)
 	callExpression, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.CallExpression)
@@ -86,8 +87,7 @@ func TestParseImmediatelyInvokedFunctionExpression(t *testing.T) {
 	testIntegerExpression(t, callExpression.ArgumentExpressions[0], 5)
 }
 
-// TestParseChainedCallExpressions checks that a call's callee can itself be
-// a call expression, e.g. curried invocation "add(1)(2)".
+// TestParseChainedCallExpressions checks that a call's callee can itself be a call expression, e.g. curried invocation "add(1)(2)".
 func TestParseChainedCallExpressions(t *testing.T) {
 	program := testParseProgram(t, "add(1)(2);", 1)
 	outerCall, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.CallExpression)
@@ -111,10 +111,7 @@ func TestParseChainedCallExpressions(t *testing.T) {
 	testIntegerExpression(t, innerCall.ArgumentExpressions[0], 1)
 }
 
-// TestParseTrailingCommaInCallArgumentsIsTolerated documents that the
-// argument loop accepts (and silently ignores) a trailing comma before the
-// closing delimiter, since it only requires a COMMA between two expressions
-// rather than rejecting one right before RPAREN.
+// TestParseTrailingCommaInCallArgumentsIsTolerated checks that a trailing comma before the closing ")" is silently accepted.
 func TestParseTrailingCommaInCallArgumentsIsTolerated(t *testing.T) {
 	program := testParseProgram(t, "foo(1, 2,);", 1)
 	callExpression, ok := testExpressionStatement(t, program.Statements[0]).Expression.(*ast.CallExpression)
@@ -128,12 +125,7 @@ func TestParseTrailingCommaInCallArgumentsIsTolerated(t *testing.T) {
 	testIntegerExpression(t, callExpression.ArgumentExpressions[1], 2)
 }
 
-// TestParseUnterminatedCallArgumentsIsSilentlyDropped documents a known
-// parser limitation: unlike grouped expressions and if conditions,
-// parseCallExpression returns nil (as the ast.Expression interface, so no
-// typed-nil trap here) without recording an error when its argument list
-// runs into EOF instead of a closing ")". Parsing still completes without
-// panicking, but the caller gets no diagnostic for genuinely malformed input.
+// TestParseUnterminatedCallArgumentsIsSilentlyDropped checks that an argument list running into EOF drops the call expression without recording an error.
 func TestParseUnterminatedCallArgumentsIsSilentlyDropped(t *testing.T) {
 	input := "foo(1, 2"
 	parser := New(lexer.New(input))

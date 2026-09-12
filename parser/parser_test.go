@@ -7,11 +7,7 @@ import (
 	"monkey/lexer"
 )
 
-// TestParseFullProgram feeds ParseProgram a single source that exercises every
-// construct the parser supports (let/return statements, identifiers, integers,
-// booleans, prefix and infix expressions, grouped expressions, if/else
-// expressions, function literals and call expressions) and walks the
-// resulting AST to check it was assembled correctly.
+// TestParseFullProgram walks the AST of a source exercising every construct the parser supports, checking it was assembled correctly.
 func TestParseFullProgram(t *testing.T) {
 	input := `
 let five = 5;
@@ -231,8 +227,7 @@ max(five * 2, (ten + five) / 3);
 	testIntegerExpression(t, groupedDivision.RightExpression, 3)
 }
 
-// TestParseEmptyProgram checks that an empty (or whitespace-only) source
-// produces zero statements and zero errors, rather than nil-panicking.
+// TestParseEmptyProgram checks that an empty or whitespace-only source produces zero statements and zero errors.
 func TestParseEmptyProgram(t *testing.T) {
 	for _, input := range []string{"", "   ", "\n\n\t\n"} {
 		parser := New(lexer.New(input))

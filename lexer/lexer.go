@@ -17,9 +17,7 @@ func New(input string) *Lexer {
 	return l
 }
 
-// readChar advances the lexer by one character: it moves peekPosition's
-// character into chracter, then shifts curPosition/peekPosition forward.
-// It sets chracter to 0 (NUL) once the input is exhausted.
+// readChar advances the lexer by one character, setting chracter to 0 (NUL) once input is exhausted.
 func (l *Lexer) readChar() {
 	if l.peekPosition >= len(l.input) {
 		l.chracter = 0
@@ -30,11 +28,7 @@ func (l *Lexer) readChar() {
 	l.peekPosition += 1
 }
 
-// NextToken consumes and returns the next token from the input, skipping
-// leading whitespace first. Two-character operators (e.g. "==", "!=") are
-// recognized by peeking one character ahead before falling back to the
-// single-character token. It leaves chracter on the character right after
-// the returned token.
+// NextToken skips whitespace and returns the next token, peeking ahead to recognize two-character operators.
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhitespace()
@@ -104,8 +98,7 @@ func newToken(tokenType token.Type, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
-// readIdentifier consumes consecutive letters starting at curPosition and
-// returns them as a string, leaving chracter on the first non-letter after it.
+// readIdentifier consumes and returns consecutive letters starting at curPosition.
 func (l *Lexer) readIdentifier() string {
 	position := l.curPosition
 	for isLetter(l.chracter) {
@@ -126,8 +119,7 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-// readNumber consumes consecutive digits starting at curPosition and
-// returns them as a string, leaving chracter on the first non-digit after it.
+// readNumber consumes and returns consecutive digits starting at curPosition.
 func (l *Lexer) readNumber() string {
 	position := l.curPosition
 	for isDigit(l.chracter) {
@@ -141,8 +133,7 @@ func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
-// peekChar returns the character at peekPosition without advancing the
-// lexer, or 0 (NUL) if that position is past the end of the input.
+// peekChar returns the character at peekPosition without advancing, or 0 (NUL) at end of input.
 func (l *Lexer) peekChar() byte {
 	if l.peekPosition >= len(l.input) {
 		return 0

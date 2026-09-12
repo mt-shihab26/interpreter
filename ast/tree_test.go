@@ -2,23 +2,28 @@ package ast
 
 import "testing"
 
-// stubNode is a minimal Node whose Tree() output is fixed, used to test
-// renderTree's connector/indentation logic in isolation from any real AST
-// node's own Tree() formatting.
+// stubNode is a minimal Node with a fixed Tree() output, used to test renderTree in isolation from any real node's formatting.
 type stubNode struct {
 	tree string
 }
 
+// TokenLiteral always returns "" -- stubNode only needs to satisfy the Node interface.
 func (s stubNode) TokenLiteral() string { return "" }
-func (s stubNode) String() string       { return "" }
-func (s stubNode) Tree() string         { return s.tree }
 
+// String always returns "" -- stubNode only needs to satisfy the Node interface.
+func (s stubNode) String() string { return "" }
+
+// Tree returns the fixed tree string the stubNode was constructed with.
+func (s stubNode) Tree() string { return s.tree }
+
+// TestRenderTreeNoChildren checks that a header with no children renders as just that header line.
 func TestRenderTreeNoChildren(t *testing.T) {
 	if actual := renderTree("Header"); actual != "Header" {
 		t.Errorf("renderTree(\"Header\") wrong, got=%q", actual)
 	}
 }
 
+// TestRenderTreeSingleChild checks that a single child is rendered with a "└─" connector.
 func TestRenderTreeSingleChild(t *testing.T) {
 	actual := renderTree("Header", treeChild{"Only", stubNode{"Leaf"}})
 	expected := "Header\n└─ Only: Leaf"
@@ -27,6 +32,7 @@ func TestRenderTreeSingleChild(t *testing.T) {
 	}
 }
 
+// TestRenderTreeMultipleChildren checks that non-last children get a "├─" connector and the last gets "└─".
 func TestRenderTreeMultipleChildren(t *testing.T) {
 	actual := renderTree("Header",
 		treeChild{"First", stubNode{"A"}},
@@ -38,6 +44,7 @@ func TestRenderTreeMultipleChildren(t *testing.T) {
 	}
 }
 
+// TestRenderTreeUnlabeledChild checks that a child with an empty label is rendered without a "label: " prefix.
 func TestRenderTreeUnlabeledChild(t *testing.T) {
 	actual := renderTree("Header", treeChild{"", stubNode{"Leaf"}})
 	expected := "Header\n└─ Leaf"
@@ -46,10 +53,7 @@ func TestRenderTreeUnlabeledChild(t *testing.T) {
 	}
 }
 
-// TestRenderTreeMultilineChild checks that when a child's own Tree() output
-// spans multiple lines, only the first line gets the connector -- every
-// following line is re-indented (not connected) so it nests correctly
-// under the parent instead of looking like a sibling.
+// TestRenderTreeMultilineChild checks that only a multiline child's first line gets a connector, with later lines re-indented instead.
 func TestRenderTreeMultilineChild(t *testing.T) {
 	actual := renderTree("Header",
 		treeChild{"Branch", stubNode{"Sub\n└─ Leaf"}},

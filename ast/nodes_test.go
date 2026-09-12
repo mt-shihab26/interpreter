@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestString checks that Program.String() reconstructs Monkey source code from the AST.
 func TestString(t *testing.T) {
 	program := &Program{
 		Statements: []Statement{
@@ -26,9 +27,7 @@ func TestString(t *testing.T) {
 	}
 }
 
-// TestTree checks that Program.Tree() renders an indented, connector-based
-// tree of the node and its descendants, recursing through a nested
-// LetStatement into its Name/Value children.
+// TestTree checks that Program.Tree() renders a nested LetStatement's Name/Value children as an indented, connector-based tree.
 func TestTree(t *testing.T) {
 	program := &Program{
 		Statements: []Statement{
@@ -54,8 +53,7 @@ func TestTree(t *testing.T) {
 	}
 }
 
-// TestTreeEmptyProgram checks that a Program with no statements renders as
-// just its own header line, with no dangling connectors.
+// TestTreeEmptyProgram checks that a Program with no statements renders as just its own header line.
 func TestTreeEmptyProgram(t *testing.T) {
 	program := &Program{Statements: []Statement{}}
 	if actual := program.Tree(); actual != "Program" {

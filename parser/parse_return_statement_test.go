@@ -6,6 +6,7 @@ import (
 	"monkey/ast"
 )
 
+// TestReturnStatements checks that "return <value>;" statements parse with the right return value.
 func TestReturnStatements(t *testing.T) {
 	tests := []struct {
 		input       string
@@ -28,8 +29,7 @@ func TestReturnStatements(t *testing.T) {
 	}
 }
 
-// TestReturnStatementWithoutTrailingSemicolon checks that the trailing ";" is
-// optional, since parseReturnStatement only consumes it when present.
+// TestReturnStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a return statement.
 func TestReturnStatementWithoutTrailingSemicolon(t *testing.T) {
 	program := testParseProgram(t, "return 5", 1)
 	if actual := program.String(); actual != "return 5;" {

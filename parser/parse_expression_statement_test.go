@@ -6,6 +6,7 @@ import (
 	"monkey/lexer"
 )
 
+// TestOperatorPrecedenceParsing checks that expressions reparse (via String()) with parentheses reflecting the correct operator precedence.
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	tests := []struct {
 		input          string
@@ -47,9 +48,7 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 	}
 }
 
-// TestExpressionStatementWithoutTrailingSemicolon checks that the trailing
-// ";" is optional, since parseExpressionStatement only consumes it when
-// present.
+// TestExpressionStatementWithoutTrailingSemicolon checks that the trailing ";" is optional after a bare expression.
 func TestExpressionStatementWithoutTrailingSemicolon(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -66,8 +65,7 @@ func TestExpressionStatementWithoutTrailingSemicolon(t *testing.T) {
 	}
 }
 
-// TestParseIllegalTokenRecordsError checks that a token the lexer can't
-// classify records a parser error instead of panicking.
+// TestParseIllegalTokenRecordsError checks that a token the lexer can't classify records a parser error instead of panicking.
 func TestParseIllegalTokenRecordsError(t *testing.T) {
 	parser := New(lexer.New("@"))
 	parser.ParseProgram()

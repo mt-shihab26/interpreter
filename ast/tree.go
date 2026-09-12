@@ -8,11 +8,7 @@ type treeChild struct {
 	node  Node
 }
 
-// renderTree builds a node's Tree() output: the node's own header line,
-// followed by each child's own Tree() output nested underneath with
-// box-drawing connectors ("├─ "/"└─ "). A child's continuation lines are
-// re-indented so multi-line children still nest correctly under their
-// parent.
+// renderTree renders header with each child nested underneath as an indented tree.
 func renderTree(header string, children ...treeChild) string {
 	var out strings.Builder
 	out.WriteString(header)

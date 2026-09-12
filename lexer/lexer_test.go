@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestNextToken checks that a run of single-character tokens is lexed correctly.
 func TestNextToken(t *testing.T) {
 	input := "=+(){},;"
 	tests := []struct {
@@ -32,6 +33,7 @@ func TestNextToken(t *testing.T) {
 	}
 }
 
+// TestNextTokenTwo checks that a full multi-line Monkey program lexes into the expected token sequence.
 func TestNextTokenTwo(t *testing.T) {
 	input := `let five = 5;
 let ten = 10;

@@ -8,6 +8,7 @@ import (
 	"monkey/lexer"
 )
 
+// testParseProgram parses input, fails the test on parser errors or a wrong statement count, and returns the resulting program.
 func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Program {
 	parser := New(lexer.New(input))
 	program := parser.ParseProgram()
@@ -21,6 +22,7 @@ func testParseProgram(t *testing.T, input string, statementsCount int) *ast.Prog
 	return program
 }
 
+// checkParserErrors fails the test immediately, logging every accumulated parser error, if parser has any.
 func checkParserErrors(t *testing.T, parser *Parser) {
 	errors := parser.Errors()
 	if len(errors) == 0 {
@@ -33,6 +35,7 @@ func checkParserErrors(t *testing.T, parser *Parser) {
 	t.FailNow()
 }
 
+// testLetStatement checks that statement is a *ast.LetStatement binding the given identifier name.
 func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {
 	if statement.TokenLiteral() != "let" {
 		t.Errorf("statement.TokenLiteral not 'let'. got=%v\n", statement.TokenLiteral())
@@ -54,6 +57,7 @@ func testLetStatement(t *testing.T, statement ast.Statement, name string) bool {
 	return true
 }
 
+// testReturnStatement checks that statement is a *ast.ReturnStatement.
 func testReturnStatement(t *testing.T, statement ast.Statement) bool {
 	returnStatement, ok := statement.(*ast.ReturnStatement)
 	if !ok {
@@ -65,6 +69,7 @@ func testReturnStatement(t *testing.T, statement ast.Statement) bool {
 	return true
 }
 
+// testExpressionStatement asserts that statement is a *ast.ExpressionStatement and returns it.
 func testExpressionStatement(t *testing.T, statement ast.Statement) *ast.ExpressionStatement {
 	expressionStatement, ok := statement.(*ast.ExpressionStatement)
 	if !ok {
@@ -73,6 +78,7 @@ func testExpressionStatement(t *testing.T, statement ast.Statement) *ast.Express
 	return expressionStatement
 }
 
+// testIdentifierExpression checks that expression is a *ast.IdentifierExpression with the given value.
 func testIdentifierExpression(t *testing.T, expression ast.Expression, value string) bool {
 	identifierExpression, ok := expression.(*ast.IdentifierExpression)
 	if !ok {
@@ -90,6 +96,7 @@ func testIdentifierExpression(t *testing.T, expression ast.Expression, value str
 	return true
 }
 
+// testIntegerExpression checks that expression is a *ast.IntegerExpression with the given value.
 func testIntegerExpression(t *testing.T, expression ast.Expression, value int64) bool {
 	integerExpression, ok := expression.(*ast.IntegerExpression)
 	if !ok {
@@ -107,6 +114,7 @@ func testIntegerExpression(t *testing.T, expression ast.Expression, value int64)
 	return true
 }
 
+// testBooleanExpression checks that expression is a *ast.BooleanExpression with the given value.
 func testBooleanExpression(t *testing.T, expression ast.Expression, value bool) bool {
 	booleanExpression, ok := expression.(*ast.BooleanExpression)
 	if !ok {
@@ -124,6 +132,7 @@ func testBooleanExpression(t *testing.T, expression ast.Expression, value bool) 
 	return true
 }
 
+// testUnaryExpression checks that expression is a *ast.UnaryExpression with the given operator and operand.
 func testUnaryExpression(t *testing.T, expression ast.Expression, operator string, right any) bool {
 	unaryExpression, ok := expression.(*ast.UnaryExpression)
 	if !ok {
@@ -140,6 +149,7 @@ func testUnaryExpression(t *testing.T, expression ast.Expression, operator strin
 	return true
 }
 
+// testBinaryExpression checks that expression is a *ast.BinaryExpression with the given left operand, operator, and right operand.
 func testBinaryExpression(t *testing.T, expression ast.Expression, left any, operator string, right any) bool {
 	binaryExpression, ok := expression.(*ast.BinaryExpression)
 	if !ok {
@@ -159,6 +169,7 @@ func testBinaryExpression(t *testing.T, expression ast.Expression, left any, ope
 	return true
 }
 
+// testLiteralExpression dispatches to the matching testXExpression helper based on expected's Go type.
 func testLiteralExpression(t *testing.T, expression ast.Expression, expected any) bool {
 	switch v := expected.(type) {
 	case int:
