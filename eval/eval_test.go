@@ -122,6 +122,24 @@ func TestIfElseExpressions(t *testing.T) {
 	}
 }
 
+func TestReturnExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"return 10;", 10},
+		{"return 10; 9;", 10},
+		{"return 2 * 5; 9;", 10},
+		{"9; return 2; 9;", 2},
+	}
+	for _, test := range tests {
+		program, evaluated := testEval(test.input)
+		if !testIntegerObject(t, evaluated, test.expected) {
+			printDebugInfo(t, program, evaluated)
+		}
+	}
+}
+
 func testNullObject(t *testing.T, objectValue object.Object) bool {
 	_, ok := objectValue.(*object.Null)
 	if !ok {

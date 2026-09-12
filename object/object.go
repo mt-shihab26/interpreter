@@ -10,6 +10,7 @@ const (
 	NULL    = "NULL"
 	INTEGER = "INTEGER"
 	BOOLEAN = "BOOLEAN"
+	RETURN  = "RETURN"
 )
 
 // Object is implemented by every value the Monkey evaluator produces.
@@ -62,4 +63,19 @@ func (b *Boolean) Type() Type {
 // Inspect returns the boolean's value as a string.
 func (b *Boolean) Inspect() string {
 	return fmt.Sprintf("%v", b.Value)
+}
+
+// Return implements the Object interface.
+type Return struct {
+	Value Object
+}
+
+// Type returns BOOLEAN.
+func (b *Return) Type() Type {
+	return RETURN
+}
+
+// Inspect returns the return's value as a string.
+func (b *Return) Inspect() string {
+	return b.Value.Inspect()
 }
