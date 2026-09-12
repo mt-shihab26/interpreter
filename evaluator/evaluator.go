@@ -54,50 +54,26 @@ func Eval(node ast.Node) object.Object {
 	case *ast.BinaryExpression:
 		left := Eval(node.LeftExpression)
 		right := Eval(node.RightExpression)
-		switch node.Operator {
-		case "+":
-			if left.Type() != object.INTEGER {
+		switch {
+		case left.Type() == object.INTEGER && right.Type() == object.INTEGER:
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+			switch node.Operator {
+			case "+":
+				return &object.Integer{Value: leftValue + rightValue}
+			case "-":
+				return &object.Integer{Value: leftValue - rightValue}
+			case "*":
+				return &object.Integer{Value: leftValue * rightValue}
+			case "/":
+				return &object.Integer{Value: leftValue / rightValue}
+			default:
 				return NULL
-			}
-			if right.Type() != object.INTEGER {
-				return NULL
-			}
-			return &object.Integer{
-				Value: (left.(*object.Integer).Value) + (right.(*object.Integer).Value),
-			}
-		case "-":
-			if left.Type() != object.INTEGER {
-				return NULL
-			}
-			if right.Type() != object.INTEGER {
-				return NULL
-			}
-			return &object.Integer{
-				Value: (left.(*object.Integer).Value) - (right.(*object.Integer).Value),
-			}
-		case "*":
-			if left.Type() != object.INTEGER {
-				return NULL
-			}
-			if right.Type() != object.INTEGER {
-				return NULL
-			}
-			return &object.Integer{
-				Value: (left.(*object.Integer).Value) * (right.(*object.Integer).Value),
-			}
-		case "/":
-			if left.Type() != object.INTEGER {
-				return NULL
-			}
-			if right.Type() != object.INTEGER {
-				return NULL
-			}
-			return &object.Integer{
-				Value: (left.(*object.Integer).Value) / (right.(*object.Integer).Value),
 			}
 		default:
 			return NULL
 		}
+
 	default:
 		return NULL
 	}
