@@ -29,8 +29,22 @@ func Eval(node ast.Node) object.Object {
 		}
 		return FALSE
 	case *ast.UnaryExpression:
-		result := Eval(node.RightExpression)
-		return result
+		rightResult := Eval(node.RightExpression)
+		switch node.Operator {
+		case "!":
+			switch rightResult {
+			case TRUE:
+				return FALSE
+			case FALSE:
+				return TRUE
+			case NULL:
+				return TRUE
+			default:
+				return FALSE
+			}
+		}
+		return NULL
+	default:
+		return nil
 	}
-	return nil
 }
