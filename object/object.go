@@ -11,6 +11,7 @@ const (
 	INTEGER = "INTEGER"
 	BOOLEAN = "BOOLEAN"
 	RETURN  = "RETURN"
+	ERROR   = "ERROR"
 )
 
 // Object is implemented by every value the Monkey evaluator produces.
@@ -78,4 +79,19 @@ func (b *Return) Type() Type {
 // Inspect returns the return's value as a string.
 func (b *Return) Inspect() string {
 	return b.Value.Inspect()
+}
+
+// Error implements the Object interface.
+type Error struct {
+	Message string
+}
+
+// Type returns ERROR.
+func (e *Error) Type() Type {
+	return ERROR
+}
+
+// Inspect returns the error's value as a string.
+func (e *Error) Inspect() string {
+	return "ERROR: " + e.Message
 }

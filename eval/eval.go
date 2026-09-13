@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"fmt"
 	"monkey/ast"
 	"monkey/object"
 )
@@ -20,6 +21,9 @@ func Eval(node ast.Node) object.Object {
 			if result, ok := result.(*object.Return); ok {
 				return result.Value
 			}
+			if result, ok := result.(*object.Error); ok {
+				return result
+			}
 		}
 		return result
 	case *ast.BlockStatement:
@@ -27,6 +31,9 @@ func Eval(node ast.Node) object.Object {
 		for _, statement := range node.Statements {
 			result = Eval(statement)
 			if result, ok := result.(*object.Return); ok {
+				return result
+			}
+			if result, ok := result.(*object.Error); ok {
 				return result
 			}
 		}
@@ -49,10 +56,10 @@ func Eval(node ast.Node) object.Object {
 			case object.INTEGER:
 				return newIntegerObject(-(right.(*object.Integer).Value))
 			default:
-				return NULL_OBJECT
+				return newErrorObject("unknown operator: %s%s", node.Operator, right.Type())
 			}
 		}
-		return NULL_OBJECT
+		return newErrorObject("unknown operator: %s%s", node.Operator, right.Type())
 	case *ast.BinaryExpression:
 		left := Eval(node.LeftExpression)
 		right := Eval(node.RightExpression)
@@ -77,8 +84,6 @@ func Eval(node ast.Node) object.Object {
 				return newBooleanObject(leftValue == rightValue)
 			case "!=":
 				return newBooleanObject(leftValue != rightValue)
-			default:
-				return NULL_OBJECT
 			}
 		case left.Type() == object.BOOLEAN && right.Type() == object.BOOLEAN:
 			leftValue := left.(*object.Boolean).Value
@@ -88,12 +93,11 @@ func Eval(node ast.Node) object.Object {
 				return newBooleanObject(leftValue == rightValue)
 			case "!=":
 				return newBooleanObject(leftValue != rightValue)
-			default:
-				return NULL_OBJECT
 			}
-		default:
-			return NULL_OBJECT
+		case left.Type() != right.Type():
+			return newErrorObject("type mismatch: %s %s %s", left.Type(), node.Operator, right.Type())
 		}
+		return newErrorObject("unknown operator: %s %s %s", left.Type(), node.Operator, right.Type())
 	case *ast.IfExpression:
 		condition := Eval(node.ConditionExpression)
 		if isTruthy(condition) {
@@ -118,6 +122,10 @@ func newBooleanObject(value bool) *object.Boolean {
 		return TRUE_OBJECT
 	}
 	return FALSE_OBJECT
+}
+
+func newErrorObject(format string, values ...any) *object.Error {
+	return &object.Error{Message: fmt.Sprintf(format, values...)}
 }
 
 func isTruthy(obj object.Object) bool {

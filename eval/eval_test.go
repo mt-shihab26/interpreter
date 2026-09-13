@@ -141,6 +141,48 @@ func TestReturnExpression(t *testing.T) {
 	}
 }
 
+func TestErrorObject(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"5+true", "type mismatch INTEGER + BOOLEAN"},
+		{"-true", "unknown operator: -BOOLEAN"},
+		{"true + false;", "unknown operator: BOOLEAN + BOOLEAN"},
+		{"5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN"},
+		{"if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN"},
+		{
+			`
+			if (10 > 1) {
+				if (10 > 1) {
+				return true + false;
+				}
+				return 1;
+			}
+			`,
+			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+	}
+	for _, test := range tests {
+		program, evaluated := testEval(test.input)
+		if !testErrorObject(t, evaluated, test.expected) {
+			printDebugInfo(t, program, evaluated)
+		}
+	}
+}
+
+func testErrorObject(t *testing.T, objectValue object.Object, expected string) bool {
+	error, ok := objectValue.(*object.Error)
+	if !ok {
+		t.Errorf("object is not error. got=%T\n", objectValue)
+		return false
+	}
+	if error.Message != expected {
+		t.Errorf("wrong error message. expected=%q, got=%q\n", expected, error.Message)
+	}
+	return true
+}
+
 func testNullObject(t *testing.T, objectValue object.Object) bool {
 	_, ok := objectValue.(*object.Null)
 	if !ok {
