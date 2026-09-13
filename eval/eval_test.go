@@ -176,6 +176,19 @@ func TestErrorObject(t *testing.T) {
 			`,
 			"identifier not found: j",
 		},
+		{
+			`
+			let printNum = fn(i) {
+				i;
+			}
+			printStr(10);
+			printNum(10);
+			let printStr = fn(s) {
+				s;
+			}
+			`,
+			"identifier not found: printStr",
+		},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)
@@ -242,19 +255,6 @@ func TestFunctionCalls(t *testing.T) {
 			}
 			printNum(10);
 			i;
-			`,
-			5,
-		},
-		{
-			`
-			let printNum = fn(i) {
-				i;
-			}
-			printStr(10);
-			printNum(10);
-			let printStr = fn(s) {
-				s;
-			}
 			`,
 			5,
 		},
