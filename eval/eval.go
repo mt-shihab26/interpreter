@@ -50,6 +50,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return val
 		}
 		env.Set(node.IdentifierExpression.Value, val)
+		return NULL_OBJECT
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
 	case *ast.IdentifierExpression:
@@ -160,11 +161,11 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		if isTruthy(condition) {
 			return Eval(node.ConsequenceStatement, env)
-		} else {
-			if node.AlternativeStatement != nil {
-				return Eval(node.AlternativeStatement, env)
-			}
 		}
+		if node.AlternativeStatement != nil {
+			return Eval(node.AlternativeStatement, env)
+		}
+		return NULL_OBJECT
 	}
 	return newErrorObject("unknown operation")
 }

@@ -181,7 +181,7 @@ func TestErrorObject(t *testing.T) {
 			let printNum = fn(i) {
 				i;
 			}
-			printStr("10");
+			printStr(10);
 			printNum(10);
 			let printStr = fn(s) {
 				s;
