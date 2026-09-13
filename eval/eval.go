@@ -166,7 +166,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			}
 		}
 	}
-	return NULL_OBJECT
+	return newErrorObject("unknown operation")
 }
 
 func newIntegerObject(value int64) *object.Integer {
