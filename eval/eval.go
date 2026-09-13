@@ -66,7 +66,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return val
 	case *ast.CallExpression:
-		env := object.NewEnvironmentWith(env)
+		env := object.NewEnclosedEnvironment(env)
 		var args []object.Object
 		for _, argumentExpression := range node.ArgumentExpressions {
 			val := Eval(argumentExpression, env)
