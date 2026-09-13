@@ -163,6 +163,7 @@ func TestErrorObject(t *testing.T) {
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{"foobar", "identifier not found: foobar"},
+		{"let foobar = 5; foobar()", "identifier is not function: foobar"},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)

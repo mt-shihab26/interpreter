@@ -66,16 +66,23 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return val
 	case *ast.CallExpression:
-		functionExpression := Eval(node.FunctionExpression, env)
-		if isError(functionExpression) {
-			return functionExpression
-		}
+		var args []object.Object
 		for _, argumentExpression := range node.ArgumentExpressions {
 			val := Eval(argumentExpression, env)
 			if isError(val) {
 				return val
 			}
+			args = append(args, val)
 		}
+		function := Eval(node.FunctionExpression, env)
+		if isError(function) {
+			return function
+		}
+		functionObject, ok := function.(*object.Function)
+		if !ok {
+			return newErrorObject("identifier is not function: %s")
+		}
+		return Eval(functionObject.Body, env)
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
