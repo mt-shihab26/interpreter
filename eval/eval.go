@@ -12,12 +12,12 @@ var (
 	FALSE_OBJECT = &object.Boolean{Value: false}
 )
 
-func Eval(node ast.Node) object.Object {
+func Eval(node ast.Node, env *object.Environment) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
 		var result object.Object
 		for _, statement := range node.Statements {
-			result = Eval(statement)
+			result = Eval(statement, env)
 			switch result := result.(type) {
 			case *object.Return:
 				return result.Value
@@ -29,7 +29,7 @@ func Eval(node ast.Node) object.Object {
 	case *ast.BlockStatement:
 		var result object.Object
 		for _, statement := range node.Statements {
-			result = Eval(statement)
+			result = Eval(statement, env)
 			switch result := result.(type) {
 			case *object.Return:
 				return result
@@ -39,19 +39,31 @@ func Eval(node ast.Node) object.Object {
 		}
 		return result
 	case *ast.ReturnStatement:
-		val := &object.Return{Value: Eval(node.ValueExpression)}
+		val := &object.Return{Value: Eval(node.ValueExpression, env)}
 		if isError(val) {
 			return val
 		}
 		return val
+	case *ast.LetStatement:
+		val := Eval(node.ValueExpression, env)
+		if isError(val) {
+			return val
+		}
+		env.Set(node.IdentifierExpression.Value, val)
 	case *ast.ExpressionStatement:
-		return Eval(node.Expression)
+		return Eval(node.Expression, env)
+	case *ast.IdentifierExpression:
+		val, ok := env.Get(node.Value)
+		if !ok {
+			return newErrorObject("identifier not found: %s", node.Value)
+		}
+		return val
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
 		return newBooleanObject(node.Value)
 	case *ast.UnaryExpression:
-		right := Eval(node.RightExpression)
+		right := Eval(node.RightExpression, env)
 		if isError(right) {
 			return right
 		}
@@ -68,11 +80,11 @@ func Eval(node ast.Node) object.Object {
 		}
 		return newErrorObject("unknown operator: %s%s", node.Operator, right.Type())
 	case *ast.BinaryExpression:
-		left := Eval(node.LeftExpression)
+		left := Eval(node.LeftExpression, env)
 		if isError(left) {
 			return left
 		}
-		right := Eval(node.RightExpression)
+		right := Eval(node.RightExpression, env)
 		if isError(right) {
 			return right
 		}
@@ -112,15 +124,15 @@ func Eval(node ast.Node) object.Object {
 		}
 		return newErrorObject("unknown operator: %s %s %s", left.Type(), node.Operator, right.Type())
 	case *ast.IfExpression:
-		condition := Eval(node.ConditionExpression)
+		condition := Eval(node.ConditionExpression, env)
 		if isError(condition) {
 			return condition
 		}
 		if isTruthy(condition) {
-			return Eval(node.ConsequenceStatement)
+			return Eval(node.ConsequenceStatement, env)
 		} else {
 			if node.AlternativeStatement != nil {
-				return Eval(node.AlternativeStatement)
+				return Eval(node.AlternativeStatement, env)
 			}
 		}
 	}

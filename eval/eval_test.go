@@ -241,7 +241,8 @@ func testEval(input string) (*ast.Program, object.Object) {
 	l := lexer.New(input)
 	p := parser.New(l)
 	program := p.ParseProgram()
-	return program, Eval(program)
+	env := object.NewEnvironment()
+	return program, Eval(program, env)
 }
 
 func printDebugInfo(t *testing.T, program *ast.Program, evaluated object.Object) {

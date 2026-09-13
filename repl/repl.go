@@ -8,6 +8,7 @@ import (
 	"monkey/debug"
 	"monkey/eval"
 	"monkey/lexer"
+	"monkey/object"
 	"monkey/parser"
 )
 
@@ -39,7 +40,8 @@ func executeLine(out io.Writer, line string) {
 		printParseErrors(out, p.Errors())
 		return
 	}
-	evaluated := eval.Eval(program)
+	env := object.NewEnvironment()
+	evaluated := eval.Eval(program, env)
 	debug.PrintProgram(out, program, evaluated)
 }
 
