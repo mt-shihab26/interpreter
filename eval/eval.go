@@ -83,7 +83,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			}
 			args = append(args, val)
 		}
-		env := object.NewEnclosedEnvironment(env)
+		env := object.NewEnclosedEnvironment(function.Env)
 		for i, arg := range args {
 			name := function.Parameters[i]
 			env.Set(name.Value, arg)

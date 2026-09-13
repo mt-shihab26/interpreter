@@ -271,6 +271,18 @@ func TestFunctionCalls(t *testing.T) {
 			20,
 		},
 		{"let a = fn(x, b) { x + b(5) }; a(5, fn(i) { i * 2 });", 15},
+		{
+			`
+			let newAdder = fn(x) { 
+				fn (y) { 
+					x + y
+				};
+			};
+			let addFive = newAdder(5); 
+			addFive(5);
+			`,
+			10,
+		},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)
