@@ -1,10 +1,8 @@
 package object
 
-import "maps"
-
 type Environment struct {
 	store map[string]Object
-	outer map[string]Object
+	outer *Environment
 }
 
 func NewEnvironment() *Environment {
@@ -14,22 +12,18 @@ func NewEnvironment() *Environment {
 
 func NewEnclosedEnvironment(env *Environment) *Environment {
 	store := make(map[string]Object)
-	outer := make(map[string]Object)
-	maps.Copy(outer, env.outer)
-	maps.Copy(outer, env.store)
-	return &Environment{store: store, outer: outer}
+	return &Environment{store: store, outer: env}
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
-	obj, ok := e.store[name]
-	if ok {
+	if obj, ok := e.store[name]; ok {
 		return obj, ok
 	}
-	if e.outer == nil {
-		return nil, false
+	if e.outer != nil {
+		return e.outer.Get(name)
 	}
-	obj, ok = e.outer[name]
-	return obj, ok
+	return nil, false
+
 }
 
 func (e *Environment) Set(name string, val Object) Object {
