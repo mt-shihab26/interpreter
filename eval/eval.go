@@ -88,7 +88,14 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			name := function.Parameters[i]
 			env.Set(name.Value, arg)
 		}
-		return Eval(function.Body, env)
+		val := Eval(function.Body, env)
+		if isError(val) {
+			return val
+		}
+		if returnValue, ok := val.(*object.Return); ok {
+			return returnValue.Value
+		}
+		return val
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:

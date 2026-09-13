@@ -258,6 +258,18 @@ func TestFunctionCalls(t *testing.T) {
 			`,
 			5,
 		},
+		{
+			`
+			if (true) {
+				let printNum = fn() {
+					return 10;
+				};
+				printNum();
+				20;
+			};
+			`,
+			20,
+		},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)
