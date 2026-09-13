@@ -66,9 +66,15 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return val
 	case *ast.CallExpression:
-		functionName := Eval(node.FunctionExpression, env)
-		if isError(functionName) {
-			return functionName
+		functionExpression := Eval(node.FunctionExpression, env)
+		if isError(functionExpression) {
+			return functionExpression
+		}
+		for _, argumentExpression := range node.ArgumentExpressions {
+			val := Eval(argumentExpression, env)
+			if isError(val) {
+				return val
+			}
 		}
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
