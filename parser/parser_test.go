@@ -90,7 +90,7 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("result's value is not *ast.CallExpression. got=%T\n", stmts[3].(*ast.LetStatement).ValueExpression)
 	}
-	if !testIdentifierExpression(t, resultCall.FunctionExpression, "add") {
+	if !testIdentifierExpression(t, resultCall.NameExpression, "add") {
 		return
 	}
 	if len(resultCall.ArgumentExpressions) != 2 {
@@ -209,7 +209,7 @@ max(five * 2, (ten + five) / 3);
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, stmts[13]).Expression)
 	}
-	if !testIdentifierExpression(t, finalCall.FunctionExpression, "max") {
+	if !testIdentifierExpression(t, finalCall.NameExpression, "max") {
 		return
 	}
 	if len(finalCall.ArgumentExpressions) != 2 {

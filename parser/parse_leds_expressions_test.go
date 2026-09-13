@@ -43,7 +43,7 @@ func TestCallExpressionParsing(t *testing.T) {
 	if !ok {
 		t.Fatalf("callExpression.Expression is not *ast.CallExpression. got=%T\n", callExpression)
 	}
-	if !testIdentifierExpression(t, callExpression.FunctionExpression, "add") {
+	if !testIdentifierExpression(t, callExpression.NameExpression, "add") {
 		return
 	}
 	if len(callExpression.ArgumentExpressions) != 3 {
@@ -61,7 +61,7 @@ func TestParseEmptyCallArguments(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	if !testIdentifierExpression(t, callExpression.FunctionExpression, "foo") {
+	if !testIdentifierExpression(t, callExpression.NameExpression, "foo") {
 		return
 	}
 	if len(callExpression.ArgumentExpressions) != 0 {
@@ -76,9 +76,9 @@ func TestParseImmediatelyInvokedFunctionExpression(t *testing.T) {
 	if !ok {
 		t.Fatalf("expression is not *ast.CallExpression. got=%T\n", testExpressionStatement(t, program.Statements[0]).Expression)
 	}
-	functionExpression, ok := callExpression.FunctionExpression.(*ast.FunctionExpression)
+	functionExpression, ok := callExpression.NameExpression.(*ast.FunctionExpression)
 	if !ok {
-		t.Fatalf("callExpression.Function is not *ast.FunctionExpression. got=%T\n", callExpression.FunctionExpression)
+		t.Fatalf("callExpression.Function is not *ast.FunctionExpression. got=%T\n", callExpression.NameExpression)
 	}
 	testLiteralExpression(t, functionExpression.ParameterExpressions[0], "x")
 	if len(callExpression.ArgumentExpressions) != 1 {
@@ -98,11 +98,11 @@ func TestParseChainedCallExpressions(t *testing.T) {
 		t.Fatalf("outerCall.Arguments does not contain 1 argument. got=%v\n", len(outerCall.ArgumentExpressions))
 	}
 	testIntegerExpression(t, outerCall.ArgumentExpressions[0], 2)
-	innerCall, ok := outerCall.FunctionExpression.(*ast.CallExpression)
+	innerCall, ok := outerCall.NameExpression.(*ast.CallExpression)
 	if !ok {
-		t.Fatalf("outerCall.Function is not *ast.CallExpression. got=%T\n", outerCall.FunctionExpression)
+		t.Fatalf("outerCall.Function is not *ast.CallExpression. got=%T\n", outerCall.NameExpression)
 	}
-	if !testIdentifierExpression(t, innerCall.FunctionExpression, "add") {
+	if !testIdentifierExpression(t, innerCall.NameExpression, "add") {
 		return
 	}
 	if len(innerCall.ArgumentExpressions) != 1 {
