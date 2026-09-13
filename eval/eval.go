@@ -124,7 +124,7 @@ func Eval(node ast.Node) object.Object {
 			}
 		}
 	}
-	return nil
+	return NULL_OBJECT
 }
 
 func newIntegerObject(value int64) *object.Integer {
