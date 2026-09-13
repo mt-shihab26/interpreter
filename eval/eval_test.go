@@ -273,12 +273,12 @@ func TestFunctionCalls(t *testing.T) {
 		{"let a = fn(x, b) { x + b(5) }; a(5, fn(i) { i * 2 });", 15},
 		{
 			`
-			let newAdder = fn(x) { 
-				fn (y) { 
+			let newAdder = fn(x) {
+				fn (y) {
 					x + y
 				};
 			};
-			let addFive = newAdder(5); 
+			let addFive = newAdder(5);
 			addFive(5);
 			`,
 			10,
