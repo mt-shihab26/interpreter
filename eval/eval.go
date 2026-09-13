@@ -39,7 +39,11 @@ func Eval(node ast.Node) object.Object {
 		}
 		return result
 	case *ast.ReturnStatement:
-		return &object.Return{Value: Eval(node.ValueExpression)}
+		val := &object.Return{Value: Eval(node.ValueExpression)}
+		if isError(val) {
+			return val
+		}
+		return val
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression)
 	case *ast.IntegerExpression:
@@ -48,6 +52,9 @@ func Eval(node ast.Node) object.Object {
 		return newBooleanObject(node.Value)
 	case *ast.UnaryExpression:
 		right := Eval(node.RightExpression)
+		if isError(right) {
+			return right
+		}
 		switch node.Operator {
 		case "!":
 			return newBooleanObject(!isTruthy(right))
@@ -62,7 +69,13 @@ func Eval(node ast.Node) object.Object {
 		return newErrorObject("unknown operator: %s%s", node.Operator, right.Type())
 	case *ast.BinaryExpression:
 		left := Eval(node.LeftExpression)
+		if isError(left) {
+			return left
+		}
 		right := Eval(node.RightExpression)
+		if isError(right) {
+			return right
+		}
 		switch {
 		case left.Type() == object.INTEGER && right.Type() == object.INTEGER:
 			leftValue := left.(*object.Integer).Value
@@ -100,6 +113,9 @@ func Eval(node ast.Node) object.Object {
 		return newErrorObject("unknown operator: %s %s %s", left.Type(), node.Operator, right.Type())
 	case *ast.IfExpression:
 		condition := Eval(node.ConditionExpression)
+		if isError(condition) {
+			return condition
+		}
 		if isTruthy(condition) {
 			return Eval(node.ConsequenceStatement)
 		} else {
@@ -107,10 +123,8 @@ func Eval(node ast.Node) object.Object {
 				return Eval(node.AlternativeStatement)
 			}
 		}
-		return NULL_OBJECT
-	default:
-		return nil
 	}
+	return nil
 }
 
 func newIntegerObject(value int64) *object.Integer {
@@ -144,4 +158,8 @@ func isTruthy(obj object.Object) bool {
 	default:
 		return true
 	}
+}
+
+func isError(obj object.Object) bool {
+	return obj.Type() == object.ERROR
 }
