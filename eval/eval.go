@@ -82,6 +82,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		if !ok {
 			return newErrorObject("identifier is not function: %s", node.FunctionExpression.String())
 		}
+		for i, arg := range args {
+			name := functionObject.Parameters[i]
+			env.Set(name.Value, arg)
+		}
 		return Eval(functionObject.Body, env)
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
