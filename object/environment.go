@@ -14,7 +14,9 @@ func NewEnvironment() *Environment {
 
 func NewEnclosedEnvironment(env *Environment) *Environment {
 	store := make(map[string]Object)
-	outer := maps.Clone(env.store)
+	outer := make(map[string]Object)
+	maps.Copy(outer, env.outer)
+	maps.Copy(outer, env.store)
 	return &Environment{store: store, outer: outer}
 }
 
