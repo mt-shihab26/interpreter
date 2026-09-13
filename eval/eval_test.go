@@ -164,6 +164,18 @@ func TestErrorObject(t *testing.T) {
 		},
 		{"foobar", "identifier not found: foobar"},
 		{"let foobar = 5; foobar()", "identifier is not function: foobar"},
+		{
+			`
+			let i = 5;
+			let printNum = fn(i) {
+				let j = 10;
+				i;
+			}
+			printNum(10);
+			j;
+			`,
+			"identifier not found: j",
+		},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)

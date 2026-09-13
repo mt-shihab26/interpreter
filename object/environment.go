@@ -1,11 +1,18 @@
 package object
 
+import "maps"
+
 type Environment struct {
 	store map[string]Object
 }
 
 func NewEnvironment() *Environment {
 	store := make(map[string]Object)
+	return &Environment{store: store}
+}
+
+func NewEnvironmentWith(env *Environment) *Environment {
+	store := maps.Clone(env.store)
 	return &Environment{store: store}
 }
 
