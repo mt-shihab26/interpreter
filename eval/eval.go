@@ -18,10 +18,10 @@ func Eval(node ast.Node) object.Object {
 		var result object.Object
 		for _, statement := range node.Statements {
 			result = Eval(statement)
-			if result, ok := result.(*object.Return); ok {
+			switch result := result.(type) {
+			case *object.Return:
 				return result.Value
-			}
-			if result, ok := result.(*object.Error); ok {
+			case *object.Error:
 				return result
 			}
 		}
@@ -30,10 +30,10 @@ func Eval(node ast.Node) object.Object {
 		var result object.Object
 		for _, statement := range node.Statements {
 			result = Eval(statement)
-			if result, ok := result.(*object.Return); ok {
+			switch result := result.(type) {
+			case *object.Return:
 				return result
-			}
-			if result, ok := result.(*object.Error); ok {
+			case *object.Error:
 				return result
 			}
 		}
