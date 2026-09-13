@@ -241,8 +241,8 @@ func TestFunctionCalls(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let identify = fn(x) { x; }; identify(5);", 5},
-		{"let identify = fn(x) { return x; }; identify(5);", 5},
+		{"let identify = fn(x) { 10; x; }; identify(5);", 5},
+		{"let identify = fn(x) { return x; 10; }; identify(5);", 5},
 		{"let double = fn(x) { x * 2; }; double(5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
