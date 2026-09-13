@@ -222,6 +222,17 @@ func TestFunctionCalls(t *testing.T) {
 		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"fn(x) { x; }(5)", 5},
+		{
+			`
+			let i = 5;
+			let printNum = fn(i) {
+				i;
+			}
+			printNum(10);
+			i;
+			`,
+			5,
+		},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)
