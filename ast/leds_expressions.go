@@ -53,7 +53,7 @@ func (be *BinaryExpression) Tree() string {
 // CallExpression implements the Expression interface.
 type CallExpression struct {
 	Token               token.Token // The '(' Token
-	NameExpression      Expression  // IdentifierExpression or FunctionExpression
+	FunctionExpression  Expression  // IdentifierExpression or FunctionExpression
 	ArgumentExpressions []Expression
 }
 
@@ -74,7 +74,7 @@ func (ce *CallExpression) String() string {
 	for _, parameter := range ce.ArgumentExpressions {
 		params = append(params, parameter.String())
 	}
-	out.WriteString(ce.NameExpression.String())
+	out.WriteString(ce.FunctionExpression.String())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")
@@ -84,8 +84,8 @@ func (ce *CallExpression) String() string {
 // Tree renders the expression with the callee as a "Function" child and each argument as an indexed "Argument[i]" child.
 func (ce *CallExpression) Tree() string {
 	children := make([]treeChild, 0, len(ce.ArgumentExpressions)+1)
-	if ce.NameExpression != nil {
-		children = append(children, treeChild{"NameExpression", ce.NameExpression})
+	if ce.FunctionExpression != nil {
+		children = append(children, treeChild{"FunctionExpression", ce.FunctionExpression})
 	}
 	for i, argument := range ce.ArgumentExpressions {
 		if argument == nil {

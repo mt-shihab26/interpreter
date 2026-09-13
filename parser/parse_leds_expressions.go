@@ -43,7 +43,7 @@ func (p *Parser) parseBinaryExpression(leftExpression ast.Expression) ast.Expres
 //
 // It leaves curToken on the closing ")" -- it does not consume the ")".
 func (p *Parser) parseCallExpression(calleeExpression ast.Expression) ast.Expression {
-	callExpression := &ast.CallExpression{Token: p.curToken, NameExpression: calleeExpression}
+	callExpression := &ast.CallExpression{Token: p.curToken, FunctionExpression: calleeExpression}
 	p.advanceToken()
 	callExpression.ArgumentExpressions = []ast.Expression{}
 	for !p.curTokenIs(token.RIGHT_PAREN) && !p.curTokenIs(token.EOF) {

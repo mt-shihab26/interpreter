@@ -1,17 +1,23 @@
 package object
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"monkey/ast"
+	"strings"
+)
 
 // Type identifies the kind of an Object.
 type Type string
 
 // The Type value for each kind of Object.
 const (
-	NULL    = "NULL"
-	INTEGER = "INTEGER"
-	BOOLEAN = "BOOLEAN"
-	RETURN  = "RETURN"
-	ERROR   = "ERROR"
+	NULL     = "NULL"
+	INTEGER  = "INTEGER"
+	BOOLEAN  = "BOOLEAN"
+	RETURN   = "RETURN"
+	ERROR    = "ERROR"
+	FUNCTION = "FUNCTION"
 )
 
 // Object is implemented by every value the Monkey evaluator produces.
@@ -94,4 +100,32 @@ func (e *Error) Type() Type {
 // Inspect returns the error's value as a string.
 func (e *Error) Inspect() string {
 	return "ERROR: " + e.Message
+}
+
+// Function implements the Object interface.
+type Function struct {
+	Parameters []*ast.IdentifierExpression
+	Body       *ast.BlockStatement
+	Env        *Environment
+}
+
+// Type returns FUNCTION.
+func (f *Function) Type() Type {
+	return FUNCTION
+}
+
+// Inspect returns the function's value as a string.
+func (f *Function) Inspect() string {
+	var out bytes.Buffer
+	params := []string{}
+	for _, p := range f.Parameters {
+		params = append(params, p.String())
+	}
+	out.WriteString("fn")
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") {\n")
+	out.WriteString(f.Body.String())
+	out.WriteString("\n}")
+	return out.String()
 }

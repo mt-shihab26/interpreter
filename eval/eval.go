@@ -58,6 +58,18 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return newErrorObject("identifier not found: %s", node.Value)
 		}
 		return val
+	case *ast.FunctionExpression:
+		val := &object.Function{
+			Parameters: node.ParameterExpressions,
+			Body:       node.BodyStatement,
+			Env:        env,
+		}
+		return val
+	case *ast.CallExpression:
+		functionName := Eval(node.FunctionExpression, env)
+		if isError(functionName) {
+			return functionName
+		}
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
