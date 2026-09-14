@@ -145,3 +145,30 @@ if (5 < 10) {
 		}
 	}
 }
+
+// TestNextToken checks that a run of single-character tokens is lexed correctly.
+func TestNextStingToken(t *testing.T) {
+	input := "\"Hello World\"; let x = 5;"
+	tests := []struct {
+		Type    token.Type
+		Literal string
+	}{
+		{token.STRING, "Hello World"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENTIFIER, "x"},
+		{token.ASSIGN, "="},
+		{token.INTEGER, "5"},
+		{token.SEMICOLON, ";"},
+	}
+	l := New(input)
+	for i, test := range tests {
+		tok := l.NextToken()
+		if tok.Type != test.Type {
+			t.Fatalf("tests[%v] - tokentype wrong, expected=%v, got=%v", i, test.Type, tok.Type)
+		}
+		if tok.Literal != test.Literal {
+			t.Fatalf("tests[%v] - literal wrong, expected=%v, got=%v", i, test.Literal, tok.Literal)
+		}
+	}
+}

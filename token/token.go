@@ -18,6 +18,7 @@ const (
 
 	// Literals
 	INTEGER = "INTEGER" // 123456
+	STRING  = "STRING"  // 123456
 
 	// Operators
 	ASSIGN   = "ASSIGN"
