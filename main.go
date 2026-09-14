@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"monkey/repl"
 	"monkey/source"
 	"os"
@@ -18,5 +19,8 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+	default:
+		fmt.Fprintf(os.Stderr, "usage: %s [source file]\n", os.Args[0])
+		os.Exit(1)
 	}
 }
