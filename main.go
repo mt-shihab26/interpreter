@@ -7,15 +7,16 @@ import (
 )
 
 func main() {
-	if len(os.Args) == 2 {
+	switch len(os.Args) {
+	case 1:
+		err := repl.Run()
+		if err != nil {
+			panic(err)
+		}
+	case 2:
 		err := source.Run()
 		if err != nil {
 			panic(err)
 		}
-		return
-	}
-	err := repl.Run()
-	if err != nil {
-		panic(err)
 	}
 }
