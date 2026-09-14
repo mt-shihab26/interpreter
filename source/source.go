@@ -14,6 +14,10 @@ import (
 
 func Run() error {
 	fileName := os.Args[1]
+	extension := getExtension(fileName)
+	if extension != "mx" {
+		return fmt.Errorf("invalid file extension: .%q, expected .mx", extension)
+	}
 	content, err := os.ReadFile(fileName)
 	if err != nil {
 		return err
@@ -28,4 +32,10 @@ func Run() error {
 	evaluated := eval.Eval(program, env)
 	fmt.Println(evaluated.Inspect())
 	return nil
+}
+
+func getExtension(fileName string) string {
+	split := strings.Split(fileName, "/")
+	fileName = split[len(split)-1]
+	return strings.Split(fileName, ".")[1]
 }
