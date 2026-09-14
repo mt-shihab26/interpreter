@@ -100,6 +100,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
 		return newBooleanObject(node.Value)
+	case *ast.StringExpression:
+		return newStringObject(node.Value)
 	case *ast.UnaryExpression:
 		right := Eval(node.RightExpression, env)
 		if isError(right) {
@@ -127,6 +129,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return right
 		}
 		switch {
+		case left.Type() == object.STRING && right.Type() == object.STRING:
+			leftValue := left.(*object.String).Value
+			rightValue := right.(*object.String).Value
+			switch node.Operator {
+			case "+":
+				return newStringObject(leftValue + rightValue)
+			}
 		case left.Type() == object.INTEGER && right.Type() == object.INTEGER:
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
@@ -179,6 +188,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 func newIntegerObject(value int64) *object.Integer {
 	return &object.Integer{Value: value}
+}
+
+func newStringObject(value string) *object.String {
+	return &object.String{Value: value}
 }
 
 func newBooleanObject(value bool) *object.Boolean {

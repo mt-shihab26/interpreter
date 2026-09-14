@@ -95,6 +95,32 @@ func (il *IntegerExpression) Tree() string {
 	return fmt.Sprintf("IntegerExpression %d", il.Value)
 }
 
+// StringExpression implements the Expression interface.
+type StringExpression struct {
+	Token token.Token
+	Value string
+}
+
+// expressionNode marks IntegerExpression as an ast.Expression.
+func (il *StringExpression) expressionNode() {
+
+}
+
+// TokenLiteral returns the integer token's literal, e.g. "5".
+func (il *StringExpression) TokenLiteral() string {
+	return il.Token.Literal
+}
+
+// String reconstructs the expression as its original digit literal.
+func (il *StringExpression) String() string {
+	return il.Token.Literal
+}
+
+// Tree renders the expression as a single leaf line naming its parsed value.
+func (il *StringExpression) Tree() string {
+	return fmt.Sprintf("StringExpression %s", il.Value)
+}
+
 // BooleanExpression implements the Expression interface.
 type BooleanExpression struct {
 	Token token.Token

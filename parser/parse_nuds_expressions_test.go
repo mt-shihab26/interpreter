@@ -23,6 +23,14 @@ func TestIntegerExpression(t *testing.T) {
 	testIntegerExpression(t, expressionStatement.Expression, 5)
 }
 
+// TestStringExpression checks that an integer literal parses as an *ast.StringExpression.
+func TestStringExpression(t *testing.T) {
+	input := "\"Hello World\""
+	program := testParseProgram(t, input, 1)
+	expressionStatement := testExpressionStatement(t, program.Statements[0])
+	testStringExpression(t, expressionStatement.Expression, "Hello World")
+}
+
 // TestBooleanExpression checks that "true"/"false" literals parse as *ast.BooleanExpression.
 func TestBooleanExpression(t *testing.T) {
 	tests := []struct {

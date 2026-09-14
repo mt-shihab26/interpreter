@@ -114,6 +114,24 @@ func testIntegerExpression(t *testing.T, expression ast.Expression, value int64)
 	return true
 }
 
+// testStringExpression checks that expression is a *ast.StringExpression with the given value.
+func testStringExpression(t *testing.T, expression ast.Expression, value string) bool {
+	stringExpression, ok := expression.(*ast.StringExpression)
+	if !ok {
+		t.Errorf("expression is not *ast.StringExpression. got=%T\n", expression)
+		return false
+	}
+	if stringExpression.Value != value {
+		t.Errorf("stringExpression.Value not %v. got=%v\n", value, stringExpression.Value)
+		return false
+	}
+	if stringExpression.TokenLiteral() != value {
+		t.Errorf("stringExpression.TokenLiteral not %v. got=%v\n", value, stringExpression.TokenLiteral())
+		return false
+	}
+	return true
+}
+
 // testBooleanExpression checks that expression is a *ast.BooleanExpression with the given value.
 func testBooleanExpression(t *testing.T, expression ast.Expression, value bool) bool {
 	booleanExpression, ok := expression.(*ast.BooleanExpression)
