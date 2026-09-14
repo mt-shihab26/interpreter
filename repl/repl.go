@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"os"
+	"os/user"
 
 	"monkey/debug"
 	"monkey/eval"
@@ -14,8 +16,20 @@ import (
 
 const PROMPT = ">> "
 
-// Start runs a read-eval-print loop over in, writing each line's result to out until in is exhausted.
-func Start(in io.Reader, out io.Writer) {
+// Run greets the current OS user and hands off to the REPL on stdin/stdout.
+func Run() error {
+	user, err := user.Current()
+	if err != nil {
+		return err
+	}
+	fmt.Print(MONKEY_FACE_HAPPY)
+	fmt.Printf("Hello %v! This is the Monkey Programming Language!\n", user.Username)
+	start(os.Stdin, os.Stdout)
+	return nil
+}
+
+// start runs a read-eval-print loop over in, writing each line's result to out until in is exhausted.
+func start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	for {
 		fmt.Printf(PROMPT)
