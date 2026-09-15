@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// TestString checks that Program.String() reconstructs Monkey source code from the AST.
+// TestString checks that Program.Code() reconstructs Monkey source code from the AST.
 func TestString(t *testing.T) {
 	program := &Program{
 		Statements: []Statement{
@@ -22,8 +22,8 @@ func TestString(t *testing.T) {
 			},
 		},
 	}
-	if program.Code() != "let myVar = anotherVar;" {
-		t.Errorf("program.String() wrong, got=%v", program.Code())
+	if program.Code() != "let myVar = anotherVar;\n" {
+		t.Errorf("program.Code() wrong, got=%v", program.Code())
 	}
 }
 

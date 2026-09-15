@@ -269,8 +269,8 @@ func TestLetStatements(t *testing.T) {
 // TestLetStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a let statement.
 func TestLetStatementWithoutTrailingSemicolon(t *testing.T) {
 	program := testParseProgram(t, "let x = 5", 1)
-	if actual := program.Code(); actual != "let x = 5;" {
-		t.Errorf("expected=%v, got=%v\n", "let x = 5;", actual)
+	if actual := program.Code(); actual != "let x = 5;\n" {
+		t.Errorf("expected=%v, got=%v\n", "let x = 5;\n", actual)
 	}
 }
 
@@ -323,8 +323,8 @@ func TestReturnStatements(t *testing.T) {
 // TestReturnStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a return statement.
 func TestReturnStatementWithoutTrailingSemicolon(t *testing.T) {
 	program := testParseProgram(t, "return 5", 1)
-	if actual := program.String(); actual != "return 5;" {
-		t.Errorf("expected=%v, got=%v\n", "return 5;", actual)
+	if actual := program.Code(); actual != "return 5;\n" {
+		t.Errorf("expected=%v, got=%v\n", "return 5;\n", actual)
 	}
 }
 
@@ -335,35 +335,35 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		expected       string
 		statementCount int
 	}{
-		{"-a * b", "((-a) * b)", 1},
-		{"!-a", "(!(-a))", 1},
-		{"a + b + c", "((a + b) + c)", 1},
-		{"a + b - c", "((a + b) - c)", 1},
-		{"a * b * c", "((a * b) * c)", 1},
-		{"a * b / c", "((a * b) / c)", 1},
-		{"a + b / c", "(a + (b / c))", 1},
-		{"a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)", 1},
-		{"3 + 4; -5 * 5", "(3 + 4)((-5) * 5)", 2},
-		{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))", 1},
-		{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))", 1},
-		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
-		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
-		{"true", "true", 1},
-		{"false", "false", 1},
-		{"3 > 5 == false", "((3 > 5) == false)", 1},
-		{"3 < 5 == true", "((3 < 5) == true)", 1},
-		{"1 + (2 + 3) + 4", "((1 + (2 + 3)) + 4)", 1},
-		{"(5 + 5) * 2", "((5 + 5) * 2)", 1},
-		{"2 / (5 + 5)", "(2 / (5 + 5))", 1},
-		{"-(5 + 5)", "(-(5 + 5))", 1},
-		{"!(true == true)", "(!(true == true))", 1},
-		{"a + add(b * c) + d", "((a + add((b * c))) + d)", 1},
-		{"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))", 1},
-		{"add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g))", 1},
+		{"-a * b", "((-a) * b);\n", 1},
+		{"!-a", "(!(-a));\n", 1},
+		{"a + b + c", "((a + b) + c);\n", 1},
+		{"a + b - c", "((a + b) - c);\n", 1},
+		{"a * b * c", "((a * b) * c);\n", 1},
+		{"a * b / c", "((a * b) / c);\n", 1},
+		{"a + b / c", "(a + (b / c));\n", 1},
+		{"a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f);\n", 1},
+		{"3 + 4; -5 * 5", "(3 + 4);\n((-5) * 5);\n", 2},
+		{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4));\n", 1},
+		{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4));\n", 1},
+		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)));\n", 1},
+		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)));\n", 1},
+		{"true", "true;\n", 1},
+		{"false", "false;\n", 1},
+		{"3 > 5 == false", "((3 > 5) == false);\n", 1},
+		{"3 < 5 == true", "((3 < 5) == true);\n", 1},
+		{"1 + (2 + 3) + 4", "((1 + (2 + 3)) + 4);\n", 1},
+		{"(5 + 5) * 2", "((5 + 5) * 2);\n", 1},
+		{"2 / (5 + 5)", "(2 / (5 + 5));\n", 1},
+		{"-(5 + 5)", "(-(5 + 5));\n", 1},
+		{"!(true == true)", "(!(true == true));\n", 1},
+		{"a + add(b * c) + d", "((a + add((b * c))) + d);\n", 1},
+		{"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)));\n", 1},
+		{"add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g));\n", 1},
 	}
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, test.statementCount)
-		actual := program.String()
+		actual := program.Code()
 		if actual != test.expected {
 			t.Errorf("expected=%v, got=%v\n", test.expected, actual)
 		}
@@ -376,12 +376,12 @@ func TestExpressionStatementWithoutTrailingSemicolon(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{"5", "5"},
-		{"x + y", "(x + y)"},
+		{"5", "5;\n"},
+		{"x + y", "(x + y);\n"},
 	}
 	for _, test := range tests {
 		program := testParseProgram(t, test.input, 1)
-		if actual := program.String(); actual != test.expected {
+		if actual := program.Code(); actual != test.expected {
 			t.Errorf("input=%q expected=%v, got=%v\n", test.input, test.expected, actual)
 		}
 	}
