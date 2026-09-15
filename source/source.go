@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"monkey/debug"
 	"monkey/eval"
 	"monkey/lexer"
 	"monkey/object"
@@ -30,7 +31,7 @@ func Run() error {
 	}
 	env := object.NewEnvironment()
 	evaluated := eval.Eval(program, env)
-	fmt.Println(evaluated.Inspect())
+	debug.PrintProgram(os.Stdout, program, evaluated)
 	return nil
 }
 

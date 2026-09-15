@@ -111,9 +111,9 @@ func (il *StringExpression) TokenLiteral() string {
 	return il.Token.Literal
 }
 
-// String reconstructs the expression as its original digit literal.
+// String reconstructs the expression as a double-quoted string literal.
 func (il *StringExpression) String() string {
-	return il.Token.Literal
+	return fmt.Sprintf("%q", il.Value)
 }
 
 // Tree renders the expression as a single leaf line naming its parsed value.

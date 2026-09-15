@@ -1,0 +1,11 @@
+let getFullName = fn(firstName, lastName) {
+    return firstName + " " + lastName;
+};
+
+let firstName = "Shihab";
+let lastName = "Mahamud";
+
+let fullName = getFullName(firstName, lastName);
+
+fullName;
+
