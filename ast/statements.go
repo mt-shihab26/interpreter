@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"monkey/token"
+	"strings"
 )
 
 // LetStatement implements the Statement interface.
@@ -102,10 +103,10 @@ func (es *ExpressionStatement) TokenLiteral() string {
 	return es.Token.Literal
 }
 
-// String reconstructs the statement as its wrapped expression's source, or "" if it holds none.
+// String reconstructs the statement as "<expression>;", or "" if it holds none.
 func (es *ExpressionStatement) String() string {
 	if es.Expression != nil {
-		return es.Expression.String()
+		return es.Expression.String() + ";"
 	}
 	return ""
 }
@@ -135,15 +136,25 @@ func (bs *BlockStatement) TokenLiteral() string {
 	return bs.Token.Literal
 }
 
-// String reconstructs the block as its statements' source, concatenated in order.
+// String reconstructs the block as its statements' source, one per indented line.
 func (bs *BlockStatement) String() string {
 	var out bytes.Buffer
-	out.WriteString("{ ")
+	out.WriteString("{\n")
 	for _, s := range bs.Statements {
-		out.WriteString(s.String())
+		out.WriteString(indent(s.String()))
+		out.WriteString("\n")
 	}
-	out.WriteString(" }")
+	out.WriteString("}")
 	return out.String()
+}
+
+// indent prefixes every line of s with a tab, so nested blocks compound their indentation.
+func indent(s string) string {
+	lines := strings.Split(s, "\n")
+	for i, line := range lines {
+		lines[i] = "\t" + line
+	}
+	return strings.Join(lines, "\n")
 }
 
 // Tree renders the block with one indexed child per statement.
