@@ -101,12 +101,12 @@ type StringExpression struct {
 	Value string
 }
 
-// expressionNode marks IntegerExpression as an ast.Expression.
+// expressionNode marks StringExpression as an ast.Expression.
 func (il *StringExpression) expressionNode() {
 
 }
 
-// TokenLiteral returns the integer token's literal, e.g. "5".
+// TokenLiteral returns the string token's literal, e.g. "foobar".
 func (il *StringExpression) TokenLiteral() string {
 	return il.Token.Literal
 }
@@ -187,10 +187,10 @@ func (ie *IfExpression) Tree() string {
 		children = append(children, treeChild{"ConditionExpression", ie.ConditionExpression})
 	}
 	if ie.ConsequenceStatement != nil {
-		children = append(children, treeChild{"ConsequenceExpression", ie.ConsequenceStatement})
+		children = append(children, treeChild{"ConsequenceStatement", ie.ConsequenceStatement})
 	}
 	if ie.AlternativeStatement != nil {
-		children = append(children, treeChild{"AlternativeExpression", ie.AlternativeStatement})
+		children = append(children, treeChild{"AlternativeStatement", ie.AlternativeStatement})
 	}
 	return renderTree("IfExpression", children...)
 }

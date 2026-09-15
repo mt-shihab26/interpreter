@@ -158,11 +158,11 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 	return insideGroupExpression
 }
 
-// parseIntegerExpression parses an integer literal, e.g. "5".
+// parseStringExpression parses a string literal, e.g. "foobar".
 //
-// It expects tokens on entry: 5  (curToken must be the INT token).
+// It expects tokens on entry: "foobar"  (curToken must be the STRING token).
 //
-// It does not advance -- curToken is left unchanged on the integer literal.
+// It does not advance -- curToken is left unchanged on the string literal.
 func (p *Parser) parseStringExpression() ast.Expression {
 	return &ast.StringExpression{Token: p.curToken, Value: p.curToken.Literal}
 }
