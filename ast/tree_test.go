@@ -10,8 +10,8 @@ type stubNode struct {
 // TokenLiteral always returns "" -- stubNode only needs to satisfy the Node interface.
 func (s stubNode) TokenLiteral() string { return "" }
 
-// String always returns "" -- stubNode only needs to satisfy the Node interface.
-func (s stubNode) String() string { return "" }
+// Code always returns "" -- stubNode only needs to satisfy the Node interface.
+func (s stubNode) Code() string { return "" }
 
 // Tree returns the fixed tree string the stubNode was constructed with.
 func (s stubNode) Tree() string { return s.tree }

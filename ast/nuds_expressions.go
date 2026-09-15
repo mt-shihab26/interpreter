@@ -24,12 +24,12 @@ func (ue *UnaryExpression) TokenLiteral() string {
 	return ue.Token.Literal
 }
 
-// String reconstructs the expression as "(<operator><operand>)", e.g. "(-x)".
-func (ue *UnaryExpression) String() string {
+// Code reconstructs the expression as "(<operator><operand>)", e.g. "(-x)".
+func (ue *UnaryExpression) Code() string {
 	var out bytes.Buffer
 	out.WriteString("(")
 	out.WriteString(ue.Operator)
-	out.WriteString(ue.RightExpression.String())
+	out.WriteString(ue.RightExpression.Code())
 	out.WriteString(")")
 	return out.String()
 }
@@ -59,8 +59,8 @@ func (i *IdentifierExpression) TokenLiteral() string {
 	return i.Token.Literal
 }
 
-// String reconstructs the expression as the bare identifier name.
-func (i *IdentifierExpression) String() string {
+// Code reconstructs the expression as the bare identifier name.
+func (i *IdentifierExpression) Code() string {
 	return i.Value
 }
 
@@ -85,8 +85,8 @@ func (il *IntegerExpression) TokenLiteral() string {
 	return il.Token.Literal
 }
 
-// String reconstructs the expression as its original digit literal.
-func (il *IntegerExpression) String() string {
+// Code reconstructs the expression as its original digit literal.
+func (il *IntegerExpression) Code() string {
 	return il.Token.Literal
 }
 
@@ -111,8 +111,8 @@ func (il *StringExpression) TokenLiteral() string {
 	return il.Token.Literal
 }
 
-// String reconstructs the expression as a double-quoted string literal.
-func (il *StringExpression) String() string {
+// Code reconstructs the expression as a double-quoted string literal.
+func (il *StringExpression) Code() string {
 	return fmt.Sprintf("%q", il.Value)
 }
 
@@ -137,8 +137,8 @@ func (b *BooleanExpression) TokenLiteral() string {
 	return b.Token.Literal
 }
 
-// String reconstructs the expression as "true" or "false".
-func (b *BooleanExpression) String() string {
+// Code reconstructs the expression as "true" or "false".
+func (b *BooleanExpression) Code() string {
 	return b.Token.Literal
 }
 
@@ -165,17 +165,17 @@ func (ie *IfExpression) TokenLiteral() string {
 	return ie.Token.Literal
 }
 
-// String reconstructs the expression as "if<condition> <consequence>else <alternative>", omitting the else clause if there is none.
-func (ie *IfExpression) String() string {
+// Code reconstructs the expression as "if<condition> <consequence>else <alternative>", omitting the else clause if there is none.
+func (ie *IfExpression) Code() string {
 	var out bytes.Buffer
 	out.WriteString(ie.TokenLiteral())
 	out.WriteString(" (")
-	out.WriteString(ie.ConditionExpression.String())
+	out.WriteString(ie.ConditionExpression.Code())
 	out.WriteString(") ")
-	out.WriteString(ie.ConsequenceStatement.String())
+	out.WriteString(ie.ConsequenceStatement.Code())
 	if ie.AlternativeStatement != nil {
 		out.WriteString(" else ")
-		out.WriteString(ie.AlternativeStatement.String())
+		out.WriteString(ie.AlternativeStatement.Code())
 	}
 	return out.String()
 }
@@ -212,18 +212,18 @@ func (fe *FunctionExpression) TokenLiteral() string {
 	return fe.Token.Literal
 }
 
-// String reconstructs the expression as "fn(<param>, <param>, ...)<body>".
-func (fe *FunctionExpression) String() string {
+// Code reconstructs the expression as "fn(<param>, <param>, ...)<body>".
+func (fe *FunctionExpression) Code() string {
 	var out bytes.Buffer
 	params := []string{}
 	for _, parameter := range fe.ParameterExpressions {
-		params = append(params, parameter.String())
+		params = append(params, parameter.Code())
 	}
 	out.WriteString(fe.TokenLiteral())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") ")
-	out.WriteString(fe.BodyStatement.String())
+	out.WriteString(fe.BodyStatement.Code())
 	return out.String()
 }
 

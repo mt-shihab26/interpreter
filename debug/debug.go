@@ -10,7 +10,7 @@ import (
 // PrintProgram writes program's source and AST to out, followed by evaluated's inspected value when evaluated is not nil.
 func PrintProgram(out io.Writer, program *ast.Program, evaluated object.Object) {
 	io.WriteString(out, "---CODE---\n")
-	io.WriteString(out, program.String())
+	io.WriteString(out, program.Code())
 	io.WriteString(out, "\n---AST---\n")
 	io.WriteString(out, program.Tree())
 	io.WriteString(out, "\n")

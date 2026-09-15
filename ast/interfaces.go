@@ -4,8 +4,8 @@ package ast
 type Node interface {
 	// TokenLiteral returns the literal of the token the node was built from.
 	TokenLiteral() string
-	// String reconstructs the node (and its descendants) as Monkey source code.
-	String() string
+	// Code reconstructs the node (and its descendants) as Monkey source code.
+	Code() string
 	// Tree returns a multi-line, indented representation of the node and source code
 	Tree() string
 }

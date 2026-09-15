@@ -73,7 +73,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		function, ok := obj.(*object.Function)
 		if !ok {
-			return newErrorObject("identifier is not function: %s", node.FunctionExpression.String())
+			return newErrorObject("identifier is not function: %s", node.FunctionExpression.Code())
 		}
 		var args []object.Object
 		for _, argumentExpression := range node.ArgumentExpressions {

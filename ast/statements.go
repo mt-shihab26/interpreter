@@ -24,15 +24,15 @@ func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
 }
 
-// String reconstructs the statement as "let <identifier> = <value>;".
-func (ls *LetStatement) String() string {
+// Code reconstructs the statement as "let <identifier> = <value>;".
+func (ls *LetStatement) Code() string {
 	var out bytes.Buffer
 	out.WriteString(ls.TokenLiteral())
 	out.WriteString(" ")
-	out.WriteString(ls.IdentifierExpression.String())
+	out.WriteString(ls.IdentifierExpression.Code())
 	out.WriteString(" = ")
 	if ls.ValueExpression != nil {
-		out.WriteString(ls.ValueExpression.String())
+		out.WriteString(ls.ValueExpression.Code())
 	}
 	out.WriteString(";")
 	return out.String()
@@ -66,13 +66,13 @@ func (rs *ReturnStatement) TokenLiteral() string {
 	return rs.Token.Literal
 }
 
-// String reconstructs the statement as "return <value>;".
-func (rs *ReturnStatement) String() string {
+// Code reconstructs the statement as "return <value>;".
+func (rs *ReturnStatement) Code() string {
 	var out bytes.Buffer
 	out.WriteString(rs.TokenLiteral())
 	out.WriteString(" ")
 	if rs.ValueExpression != nil {
-		out.WriteString(rs.ValueExpression.String())
+		out.WriteString(rs.ValueExpression.Code())
 	}
 	out.WriteString(";")
 	return out.String()
@@ -103,10 +103,10 @@ func (es *ExpressionStatement) TokenLiteral() string {
 	return es.Token.Literal
 }
 
-// String reconstructs the statement as "<expression>;", or "" if it holds none.
-func (es *ExpressionStatement) String() string {
+// Code reconstructs the statement as "<expression>;", or "" if it holds none.
+func (es *ExpressionStatement) Code() string {
 	if es.Expression != nil {
-		return es.Expression.String() + ";"
+		return es.Expression.Code() + ";"
 	}
 	return ""
 }
@@ -136,12 +136,12 @@ func (bs *BlockStatement) TokenLiteral() string {
 	return bs.Token.Literal
 }
 
-// String reconstructs the block as its statements' source, one per indented line.
-func (bs *BlockStatement) String() string {
+// Code reconstructs the block as its statements' source, one per indented line.
+func (bs *BlockStatement) Code() string {
 	var out bytes.Buffer
 	out.WriteString("{\n")
 	for _, s := range bs.Statements {
-		out.WriteString(indent(s.String()))
+		out.WriteString(indent(s.Code()))
 		out.WriteString("\n")
 	}
 	out.WriteString("}")

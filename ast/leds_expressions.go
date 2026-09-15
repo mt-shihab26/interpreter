@@ -25,15 +25,15 @@ func (be *BinaryExpression) TokenLiteral() string {
 	return be.Token.Literal
 }
 
-// String reconstructs the expression as "(<left> <operator> <right>)", fully parenthesized.
-func (be *BinaryExpression) String() string {
+// Code reconstructs the expression as "(<left> <operator> <right>)", fully parenthesized.
+func (be *BinaryExpression) Code() string {
 	var out bytes.Buffer
 	out.WriteString("(")
-	out.WriteString(be.LeftExpression.String())
+	out.WriteString(be.LeftExpression.Code())
 	out.WriteString(" ")
 	out.WriteString(be.Operator)
 	out.WriteString(" ")
-	out.WriteString(be.RightExpression.String())
+	out.WriteString(be.RightExpression.Code())
 	out.WriteString(")")
 	return out.String()
 }
@@ -67,14 +67,14 @@ func (ce *CallExpression) TokenLiteral() string {
 	return ce.Token.Literal
 }
 
-// String reconstructs the expression as "<callee>(<arg>, <arg>, ...)".
-func (ce *CallExpression) String() string {
+// Code reconstructs the expression as "<callee>(<arg>, <arg>, ...)".
+func (ce *CallExpression) Code() string {
 	var out bytes.Buffer
 	params := []string{}
 	for _, parameter := range ce.ArgumentExpressions {
-		params = append(params, parameter.String())
+		params = append(params, parameter.Code())
 	}
-	out.WriteString(ce.FunctionExpression.String())
+	out.WriteString(ce.FunctionExpression.Code())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(")")

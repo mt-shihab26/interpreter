@@ -269,7 +269,7 @@ func TestLetStatements(t *testing.T) {
 // TestLetStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a let statement.
 func TestLetStatementWithoutTrailingSemicolon(t *testing.T) {
 	program := testParseProgram(t, "let x = 5", 1)
-	if actual := program.String(); actual != "let x = 5;" {
+	if actual := program.Code(); actual != "let x = 5;" {
 		t.Errorf("expected=%v, got=%v\n", "let x = 5;", actual)
 	}
 }
@@ -292,7 +292,7 @@ func TestParseMalformedLetStatementDoesNotPanic(t *testing.T) {
 				t.Errorf("input=%q: program.Statements contains a nil statement\n", input)
 				continue
 			}
-			_ = statement.String() // must not panic
+			_ = statement.Code() // must not panic
 		}
 	}
 }
