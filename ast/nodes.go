@@ -18,11 +18,12 @@ func (p *Program) TokenLiteral() string {
 	return ""
 }
 
-// String reconstructs the whole program as Monkey source code by concatenating each statement's String().
+// String reconstructs the whole program as Monkey source code, one statement per line.
 func (p *Program) String() string {
 	var out bytes.Buffer
 	for _, s := range p.Statements {
 		out.WriteString(s.String())
+		out.WriteString("\n")
 	}
 	return out.String()
 }

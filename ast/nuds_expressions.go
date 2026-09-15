@@ -118,7 +118,7 @@ func (il *StringExpression) String() string {
 
 // Tree renders the expression as a single leaf line naming its parsed value.
 func (il *StringExpression) Tree() string {
-	return fmt.Sprintf("StringExpression %s", il.Value)
+	return fmt.Sprintf("StringExpression %q", il.Value)
 }
 
 // BooleanExpression implements the Expression interface.
@@ -222,7 +222,7 @@ func (fe *FunctionExpression) String() string {
 	out.WriteString(fe.TokenLiteral())
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
-	out.WriteString(")")
+	out.WriteString(") ")
 	out.WriteString(fe.BodyStatement.String())
 	return out.String()
 }
