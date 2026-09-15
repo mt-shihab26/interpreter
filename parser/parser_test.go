@@ -241,3 +241,157 @@ func TestParseEmptyProgram(t *testing.T) {
 		}
 	}
 }
+
+// TestLetStatements checks that "let <identifier> = <value>;" statements parse with the right identifier and value.
+func TestLetStatements(t *testing.T) {
+	tests := []struct {
+		input      string
+		identifier string
+		value      any
+	}{
+		{"let x = 5;", "x", 5},
+		{"let y = true;", "y", true},
+		{"let foobar = y;", "foobar", "y"},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		letStatement := program.Statements[0]
+		if !testLetStatement(t, letStatement, test.identifier) {
+			return
+		}
+		value := letStatement.(*ast.LetStatement).ValueExpression
+		if !testLiteralExpression(t, value, test.value) {
+			return
+		}
+	}
+}
+
+// TestLetStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a let statement.
+func TestLetStatementWithoutTrailingSemicolon(t *testing.T) {
+	program := testParseProgram(t, "let x = 5", 1)
+	if actual := program.String(); actual != "let x = 5;" {
+		t.Errorf("expected=%v, got=%v\n", "let x = 5;", actual)
+	}
+}
+
+// TestParseMalformedLetStatementDoesNotPanic checks that a malformed "let" statement records a parser error and never leaves behind a nil-panicking statement.
+func TestParseMalformedLetStatementDoesNotPanic(t *testing.T) {
+	inputs := []string{
+		"let = 5;",  // missing identifier
+		"let x 5;",  // missing "="
+		"let x = ;", // missing value expression
+	}
+	for _, input := range inputs {
+		parser := New(lexer.New(input))
+		program := parser.ParseProgram()
+		if len(parser.Errors()) == 0 {
+			t.Errorf("input=%q: expected at least 1 error, got 0\n", input)
+		}
+		for _, statement := range program.Statements {
+			if statement == nil {
+				t.Errorf("input=%q: program.Statements contains a nil statement\n", input)
+				continue
+			}
+			_ = statement.String() // must not panic
+		}
+	}
+}
+
+// TestReturnStatements checks that "return <value>;" statements parse with the right return value.
+func TestReturnStatements(t *testing.T) {
+	tests := []struct {
+		input       string
+		returnValue any
+	}{
+		{"return 5;", 5},
+		{"return true;", true},
+		{"return foobar;", "foobar"},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		returnStatement := program.Statements[0]
+		if !testReturnStatement(t, returnStatement) {
+			return
+		}
+		value := returnStatement.(*ast.ReturnStatement).ValueExpression
+		if !testLiteralExpression(t, value, test.returnValue) {
+			return
+		}
+	}
+}
+
+// TestReturnStatementWithoutTrailingSemicolon checks that the trailing ";" is optional in a return statement.
+func TestReturnStatementWithoutTrailingSemicolon(t *testing.T) {
+	program := testParseProgram(t, "return 5", 1)
+	if actual := program.String(); actual != "return 5;" {
+		t.Errorf("expected=%v, got=%v\n", "return 5;", actual)
+	}
+}
+
+// TestOperatorPrecedenceParsing checks that expressions reparse (via String()) with parentheses reflecting the correct operator precedence.
+func TestOperatorPrecedenceParsing(t *testing.T) {
+	tests := []struct {
+		input          string
+		expected       string
+		statementCount int
+	}{
+		{"-a * b", "((-a) * b)", 1},
+		{"!-a", "(!(-a))", 1},
+		{"a + b + c", "((a + b) + c)", 1},
+		{"a + b - c", "((a + b) - c)", 1},
+		{"a * b * c", "((a * b) * c)", 1},
+		{"a * b / c", "((a * b) / c)", 1},
+		{"a + b / c", "(a + (b / c))", 1},
+		{"a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)", 1},
+		{"3 + 4; -5 * 5", "(3 + 4)((-5) * 5)", 2},
+		{"5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))", 1},
+		{"5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))", 1},
+		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
+		{"3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))", 1},
+		{"true", "true", 1},
+		{"false", "false", 1},
+		{"3 > 5 == false", "((3 > 5) == false)", 1},
+		{"3 < 5 == true", "((3 < 5) == true)", 1},
+		{"1 + (2 + 3) + 4", "((1 + (2 + 3)) + 4)", 1},
+		{"(5 + 5) * 2", "((5 + 5) * 2)", 1},
+		{"2 / (5 + 5)", "(2 / (5 + 5))", 1},
+		{"-(5 + 5)", "(-(5 + 5))", 1},
+		{"!(true == true)", "(!(true == true))", 1},
+		{"a + add(b * c) + d", "((a + add((b * c))) + d)", 1},
+		{"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))", 1},
+		{"add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g))", 1},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, test.statementCount)
+		actual := program.String()
+		if actual != test.expected {
+			t.Errorf("expected=%v, got=%v\n", test.expected, actual)
+		}
+	}
+}
+
+// TestExpressionStatementWithoutTrailingSemicolon checks that the trailing ";" is optional after a bare expression.
+func TestExpressionStatementWithoutTrailingSemicolon(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"5", "5"},
+		{"x + y", "(x + y)"},
+	}
+	for _, test := range tests {
+		program := testParseProgram(t, test.input, 1)
+		if actual := program.String(); actual != test.expected {
+			t.Errorf("input=%q expected=%v, got=%v\n", test.input, test.expected, actual)
+		}
+	}
+}
+
+// TestParseIllegalTokenRecordsError checks that a token the lexer can't classify records a parser error instead of panicking.
+func TestParseIllegalTokenRecordsError(t *testing.T) {
+	parser := New(lexer.New("@"))
+	parser.ParseProgram()
+	if len(parser.Errors()) == 0 {
+		t.Fatalf("expected at least 1 error for an illegal token, got 0\n")
+	}
+}
