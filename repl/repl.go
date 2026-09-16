@@ -7,10 +7,10 @@ import (
 	"os"
 	"os/user"
 
-	"monkey/debug"
 	"monkey/eval"
 	"monkey/lexer"
 	"monkey/object"
+	"monkey/output"
 	"monkey/parser"
 )
 
@@ -50,7 +50,7 @@ func start(in io.Reader, out io.Writer) {
 			return
 		}
 		evaluated := eval.Eval(program, env)
-		debug.PrintProgram(out, program, evaluated)
+		output.PrintProgram(out, program, evaluated)
 	}
 }
 

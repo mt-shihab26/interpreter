@@ -3,9 +3,9 @@ package eval
 import (
 	"bytes"
 	"monkey/ast"
-	"monkey/debug"
 	"monkey/lexer"
 	"monkey/object"
+	"monkey/output"
 	"monkey/parser"
 	"testing"
 )
@@ -418,7 +418,7 @@ func printDebugInfo(t *testing.T, program *ast.Program, evaluated object.Object)
 	var out bytes.Buffer
 	out.WriteString("\n")
 	out.WriteString("----------------------START DEBUG-----------------------\n")
-	debug.PrintProgram(&out, program, evaluated)
+	output.PrintProgram(&out, program, evaluated)
 	out.WriteString("----------------------END DEBUG-------------------------\n")
 	t.Error(out.String())
 }
