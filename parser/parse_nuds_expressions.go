@@ -192,8 +192,14 @@ func (p *Parser) parseArrayExpression() ast.Expression {
 	arrayExpression.Elements = []ast.Expression{}
 	for !p.curTokenIs(token.RIGHT_BRACKET) && !p.curTokenIs(token.EOF) {
 		arrayExpression.Elements = append(arrayExpression.Elements, p.parseExpression(LOWEST))
-		p.advanceToken()
-		p.advanceToken()
+		if !p.peekTokenIs(token.COMMA) {
+			break
+		}
+		p.advanceToken() // consume the comma
+		p.advanceToken() // advance to the next element
+	}
+	if !p.curTokenIs(token.RIGHT_BRACKET) && !p.expectAdvancePeek(token.RIGHT_BRACKET) {
+		return nil
 	}
 	return arrayExpression
 }
