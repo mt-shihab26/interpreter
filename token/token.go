@@ -36,6 +36,7 @@ const (
 
 	// Separators
 	COMMA     = "COMMA"
+	COLON     = "COLON"
 	SEMICOLON = "SEMICOLON"
 
 	// Brackets

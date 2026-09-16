@@ -56,6 +56,8 @@ if (5 < 10) {
 10 != 9;
 
 [1, 2];
+
+{"foo" : "bar"};
 `
 	tests := []struct {
 		Type    token.Type
@@ -139,6 +141,12 @@ if (5 < 10) {
 		{token.COMMA, ","},
 		{token.INTEGER, "2"},
 		{token.RIGHT_BRACKET, "]"},
+		{token.SEMICOLON, ";"},
+		{token.LEFT_BRACE, "{"},
+		{token.STRING, "foo"},
+		{token.COLON, ":"},
+		{token.STRING, "bar"},
+		{token.RIGHT_BRACE, "}"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}

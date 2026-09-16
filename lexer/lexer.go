@@ -7,7 +7,7 @@ type Lexer struct {
 	input        string
 	curPosition  int  // current position in input (points to current char)
 	peekPosition int  // current reading position in input (after current char)
-	character     byte // current char under examination
+	character    byte // current char under examination
 }
 
 // New creates a Lexer over input, priming chracter with the first character.
@@ -72,6 +72,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newChToken(token.LEFT_BRACKET, l.character)
 	case ']':
 		tok = newChToken(token.RIGHT_BRACKET, l.character)
+	case ':':
+		tok = newChToken(token.COLON, l.character)
 	default:
 		if isLetter(l.character) {
 			tok.Literal = l.consumeIdentifier()
