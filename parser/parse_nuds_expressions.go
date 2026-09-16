@@ -21,6 +21,7 @@ func (p *Parser) registerNuds() {
 	p.nuds[token.FUNCTION] = p.parseFunctionExpression
 	p.nuds[token.LEFT_PAREN] = p.parseGroupedExpression
 	p.nuds[token.STRING] = p.parseStringExpression
+	p.nuds[token.LEFT_BRACKET] = p.parseArrayExpression
 }
 
 // parseUnaryExpression parses a "-<expression>" or "!<expression>" unary expression.
@@ -184,4 +185,15 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 		p.advanceToken()
 	}
 	return blockStatement
+}
+func (p *Parser) parseArrayExpression() ast.Expression {
+	arrayExpression := &ast.ArrayExpression{Token: p.curToken}
+	p.advanceToken()
+	arrayExpression.Elements = []ast.Expression{}
+	for !p.curTokenIs(token.RIGHT_BRACKET) && !p.curTokenIs(token.EOF) {
+		arrayExpression.Elements = append(arrayExpression.Elements, p.parseExpression(LOWEST))
+		p.advanceToken()
+		p.advanceToken()
+	}
+	return arrayExpression
 }
