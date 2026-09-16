@@ -132,13 +132,14 @@ func (l *Lexer) consumeNumber() string {
 
 // readNumber consumes and returns consecutive digits starting at curPosition.
 func (l *Lexer) consumeString() string {
-	str := ""
-	l.advanceCharacter()
-	for l.chracter != '"' {
-		str = str + string(l.chracter)
+	position := l.curPosition + 1
+	for {
 		l.advanceCharacter()
+		if l.chracter == '"' || l.chracter == 0 {
+			break
+		}
 	}
-	return str
+	return l.input[position:l.curPosition]
 }
 
 // isLetter reports whether ch is an ASCII letter or underscore, i.e. valid in an identifier.
