@@ -141,3 +141,22 @@ func TestParseUnterminatedCallArgumentsIsSilentlyDropped(t *testing.T) {
 		t.Fatalf("input=%q: expected no recorded errors (documenting current behavior), got=%v\n", input, parser.Errors())
 	}
 }
+
+func TestParsingIndexExpressions(t *testing.T) {
+	input := "myArray[1 + 1]"
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	indexExp, ok := stmt.Expression.(*ast.IndexExpression)
+	if !ok {
+		t.Fatalf("exp not *ast.IndexExpression. got=%T", stmt.Expression)
+	}
+	if !testIdentifierExpression(t, indexExp.LeftExpression, "myArray") {
+		return
+	}
+	if !testBinaryExpression(t, indexExp.NumberExpression, 1, "+", 1) {
+		return
+	}
+}

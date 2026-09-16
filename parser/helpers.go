@@ -20,6 +20,7 @@ const (
 	MULTIPLICATIVE // *, /
 	UNARY          // -x or !x
 	CALL           // myFunction(x)
+	INDEX          // array[1]
 )
 
 var precedences = map[token.Type]int{
@@ -32,6 +33,7 @@ var precedences = map[token.Type]int{
 	token.ASTERISK:     MULTIPLICATIVE,
 	token.SLASH:        MULTIPLICATIVE,
 	token.LEFT_PAREN:   CALL,
+	token.LEFT_BRACKET: INDEX,
 }
 
 // advanceToken shifts peekToken into curToken and reads a new peekToken from the lexer.

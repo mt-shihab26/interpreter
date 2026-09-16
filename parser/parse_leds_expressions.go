@@ -18,6 +18,7 @@ func (p *Parser) registerLeds() {
 	p.leds[token.GREATER_THAN] = p.parseBinaryExpression
 	p.leds[token.LESS_THAN] = p.parseBinaryExpression
 	p.leds[token.LEFT_PAREN] = p.parseCallExpression
+	p.leds[token.LEFT_BRACKET] = p.parseIndexExpression
 }
 
 // parseBinaryExpression parses a "<left expression> <operator> <right expression>" binary expression.
@@ -58,4 +59,14 @@ func (p *Parser) parseCallExpression(calleeExpression ast.Expression) ast.Expres
 		p.advanceToken()
 	}
 	return callExpression
+}
+
+func (p *Parser) parseIndexExpression(leftExpression ast.Expression) ast.Expression {
+	indexExpression := &ast.IndexExpression{Token: p.curToken, LeftExpression: leftExpression}
+	p.advanceToken()
+	indexExpression.NumberExpression = p.parseExpression(LOWEST)
+	if !p.expectAdvancePeek(token.RIGHT_BRACKET) {
+		return nil
+	}
+	return indexExpression
 }

@@ -95,3 +95,48 @@ func (ce *CallExpression) Tree() string {
 	}
 	return renderTree("CallExpression", children...)
 }
+
+// IndexExpression implements the Expression interface.
+type IndexExpression struct {
+	Token            token.Token
+	LeftExpression   Expression
+	NumberExpression Expression
+}
+
+// expressionNode marks IndexExpression as an ast.Expression.
+func (ce *IndexExpression) expressionNode() {
+
+}
+
+// TokenLiteral returns the literal of the opening "(" token.
+func (ce *IndexExpression) TokenLiteral() string {
+	return ce.Token.Literal
+}
+
+// Code reconstructs the expression as "<callee>(<arg>, <arg>, ...)".
+func (ce *IndexExpression) Code() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(ce.LeftExpression.Code())
+	out.WriteString("[")
+	out.WriteString(ce.NumberExpression.Code())
+	out.WriteString("]")
+	out.WriteString(")")
+	return out.String()
+}
+
+// Tree renders the index expression with the left expression and index expression as children.
+func (ie *IndexExpression) Tree() string {
+	children := make([]treeChild, 0, 2)
+	if ie.LeftExpression != nil {
+		children = append(children,
+			treeChild{"LeftExpression", ie.LeftExpression},
+		)
+	}
+	if ie.NumberExpression != nil {
+		children = append(children,
+			treeChild{"NumberExpression", ie.NumberExpression},
+		)
+	}
+	return renderTree("IndexExpression", children...)
+}
