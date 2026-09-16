@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"monkey/token"
+	"sort"
 	"strings"
 )
 
@@ -249,20 +250,20 @@ type ArrayExpression struct {
 }
 
 // expressionNode marks FunctionExpression as an ast.Expression.
-func (fe *ArrayExpression) expressionNode() {
+func (ae *ArrayExpression) expressionNode() {
 
 }
 
 // TokenLiteral returns the literal of the "fn" token.
-func (fe *ArrayExpression) TokenLiteral() string {
-	return fe.Token.Literal
+func (ae *ArrayExpression) TokenLiteral() string {
+	return ae.Token.Literal
 }
 
 // Code reconstructs the expression as "fn(<param>, <param>, ...)<body>".
-func (fe *ArrayExpression) Code() string {
+func (ae *ArrayExpression) Code() string {
 	var out bytes.Buffer
 	params := []string{}
-	for _, parameter := range fe.Elements {
+	for _, parameter := range ae.Elements {
 		params = append(params, parameter.Code())
 	}
 	out.WriteString("[")
@@ -272,13 +273,69 @@ func (fe *ArrayExpression) Code() string {
 }
 
 // Tree renders the expression with each parameter as an indexed "Parameter[i]" child and the body as a "Body" child.
-func (fe *ArrayExpression) Tree() string {
-	children := make([]treeChild, 0, len(fe.Elements)+1)
-	for i, parameter := range fe.Elements {
+func (ae *ArrayExpression) Tree() string {
+	children := make([]treeChild, 0, len(ae.Elements)+1)
+	for i, parameter := range ae.Elements {
 		if parameter == nil {
 			continue
 		}
 		children = append(children, treeChild{fmt.Sprintf("Elements[%d]", i), parameter})
 	}
 	return renderTree("ArrayExpression", children...)
+}
+
+// ArrayExpression implements the Expression interface.
+type HashExpression struct {
+	Token token.Token
+	Pairs map[Expression]Expression
+}
+
+// expressionNode marks HashExpression as an ast.Expression.
+func (ae *HashExpression) expressionNode() {
+
+}
+
+// HashExpression returns the literal of the "{" token.
+func (he *HashExpression) TokenLiteral() string {
+	return he.Token.Literal
+}
+
+// Code reconstructs the expression as "fn(<param>, <param>, ...)<body>".
+func (he *HashExpression) Code() string {
+	var out bytes.Buffer
+	pairs := []string{}
+	for key, value := range he.Pairs {
+		pairs = append(pairs, key.TokenLiteral()+":"+value.TokenLiteral())
+
+	}
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+	return out.String()
+}
+
+// Tree renders each hash pair's key and value as indexed children.
+func (he *HashExpression) Tree() string {
+	type pair struct {
+		key   Expression
+		value Expression
+	}
+	pairs := make([]pair, 0, len(he.Pairs))
+	for key, value := range he.Pairs {
+		pairs = append(pairs, pair{key: key, value: value})
+	}
+	sort.Slice(pairs, func(i, j int) bool {
+		return pairs[i].key.Code() < pairs[j].key.Code()
+	})
+
+	children := make([]treeChild, 0, len(pairs)*2)
+	for i, pair := range pairs {
+		if pair.key != nil {
+			children = append(children, treeChild{fmt.Sprintf("Pairs[%d].Key", i), pair.key})
+		}
+		if pair.value != nil {
+			children = append(children, treeChild{fmt.Sprintf("Pairs[%d].Value", i), pair.value})
+		}
+	}
+	return renderTree("HashExpression", children...)
 }

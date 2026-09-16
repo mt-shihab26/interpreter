@@ -22,6 +22,7 @@ func (p *Parser) registerNuds() {
 	p.nuds[token.LEFT_PAREN] = p.parseGroupedExpression
 	p.nuds[token.STRING] = p.parseStringExpression
 	p.nuds[token.LEFT_BRACKET] = p.parseArrayExpression
+	p.nuds[token.LEFT_BRACE] = p.parseHashExpression
 }
 
 // parseUnaryExpression parses a "-<expression>" or "!<expression>" unary expression.
@@ -186,6 +187,7 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	}
 	return blockStatement
 }
+
 func (p *Parser) parseArrayExpression() ast.Expression {
 	arrayExpression := &ast.ArrayExpression{Token: p.curToken}
 	p.advanceToken()
@@ -202,4 +204,28 @@ func (p *Parser) parseArrayExpression() ast.Expression {
 		return nil
 	}
 	return arrayExpression
+}
+
+func (p *Parser) parseHashExpression() ast.Expression {
+	hash := &ast.HashExpression{Token: p.curToken}
+	hash.Pairs = make(map[ast.Expression]ast.Expression)
+	for !p.peekTokenIs(token.RIGHT_BRACE) {
+		p.advanceToken()
+		key := p.parseExpression(LOWEST)
+		if !p.expectAdvancePeek(token.COLON) {
+			return nil
+		}
+		p.advanceToken()
+		value := p.parseExpression(LOWEST)
+		hash.Pairs[key] = value
+
+		// Each pair is followed by either a comma or the closing brace.
+		if !p.peekTokenIs(token.RIGHT_BRACE) && !p.expectAdvancePeek(token.COMMA) {
+			return nil
+		}
+	}
+	if !p.expectAdvancePeek(token.RIGHT_BRACE) {
+		return nil
+	}
+	return hash
 }
