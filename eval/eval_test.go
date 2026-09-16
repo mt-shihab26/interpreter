@@ -73,6 +73,29 @@ func TestEvalBooleanExpression(t *testing.T) {
 	}
 }
 
+func TestEvalStringExpression(t *testing.T) {
+	input := `"Hello World!"`
+	program, evaluated := testEval(input)
+	if !testStringObject(t, evaluated, "Hello World!") {
+		printDebugInfo(t, program, evaluated)
+	}
+}
+
+func TestEvalStringConcatenation(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"Hello" + " " + "World!"`, "Hello World!"},
+	}
+	for _, test := range tests {
+		program, evaluated := testEval(test.input)
+		if !testStringObject(t, evaluated, test.expected) {
+			printDebugInfo(t, program, evaluated)
+		}
+	}
+}
+
 func TestUnaryExpressionBangOperator(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -149,6 +172,7 @@ func TestErrorObject(t *testing.T) {
 		{"5+true", "type mismatch: INTEGER + BOOLEAN"},
 		{"-true", "unknown operator: -BOOLEAN"},
 		{"true + false;", "unknown operator: BOOLEAN + BOOLEAN"},
+		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
 		{"5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN"},
 		{"if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN"},
 		{
@@ -321,6 +345,19 @@ func testIntegerObject(t *testing.T, objectValue object.Object, expected int64) 
 	}
 	if result.Value != expected {
 		t.Errorf("integer object has wrong value. got=%v, want=%v\n", result.Value, expected)
+		return false
+	}
+	return true
+}
+
+func testStringObject(t *testing.T, objectValue object.Object, expected string) bool {
+	result, ok := objectValue.(*object.String)
+	if !ok {
+		t.Errorf("object is not string object. got=%T\n", objectValue)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("string object has wrong value. got=%q, want=%q\n", result.Value, expected)
 		return false
 	}
 	return true
