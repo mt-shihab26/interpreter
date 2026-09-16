@@ -330,12 +330,33 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len([1, 2, "Hello World"])`, 3},
 		{`let x = [1, 2, "Hello World"]; len(x)`, 3},
 		{`let x = [1, 2, "Hello World"]; first(x)`, 1},
+		{`let x = [1, 2, 100]; last(x)`, 100},
+		{`let x = [1, 2, 100]; rest(x)`, []int{2, 100}},
 	}
 	for _, test := range tests {
 		_, evaluated := testEval(test.input)
 		switch expected := test.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case []int:
+			array, ok := evaluated.(*object.Array)
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if len(array.Elements) != len(expected) {
+				t.Errorf(
+					"wrong number of elements. expected=%d, got=%d",
+					len(expected),
+					len(array.Elements),
+				)
+				continue
+			}
+
+			for i, expectedElement := range expected {
+				testIntegerObject(t, array.Elements[i], int64(expectedElement))
+			}
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
