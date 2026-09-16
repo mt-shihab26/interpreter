@@ -265,10 +265,9 @@ func (fe *ArrayExpression) Code() string {
 	for _, parameter := range fe.Elements {
 		params = append(params, parameter.Code())
 	}
-	out.WriteString(fe.TokenLiteral())
 	out.WriteString("[")
 	out.WriteString(strings.Join(params, ", "))
-	out.WriteString("] ")
+	out.WriteString("]")
 	return out.String()
 }
 
