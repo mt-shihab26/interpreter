@@ -104,7 +104,12 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			}
 			return newErrorObject("unknown operation")
 		}
-
+	case *ast.ArrayExpression:
+		obj := &object.Array{}
+		for _, element := range node.Elements {
+			obj.Elements = append(obj.Elements, Eval(element, env))
+		}
+		return obj
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:

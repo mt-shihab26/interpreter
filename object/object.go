@@ -20,6 +20,7 @@ const (
 	FUNCTION = "FUNCTION"
 	STRING   = "STRING"
 	BUILTIN  = "BUILTIN"
+	ARRAY    = "ARRAY"
 )
 
 // Object is implemented by every value the Monkey evaluator produces.
@@ -162,4 +163,27 @@ func (f *Builtin) Type() Type {
 // Inspect returns the builtin's value as a string.
 func (f *Builtin) Inspect() string {
 	return "Builtin function"
+}
+
+// Array implements the Object interface.
+type Array struct {
+	Elements []Object
+}
+
+// Type returns FUNCTION.
+func (f *Array) Type() Type {
+	return ARRAY
+}
+
+// Inspect returns the array's value as a string.
+func (f *Array) Inspect() string {
+	var out bytes.Buffer
+	elements := []string{}
+	for _, p := range f.Elements {
+		elements = append(elements, p.Inspect())
+	}
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+	return out.String()
 }
