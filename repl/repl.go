@@ -31,6 +31,7 @@ func Run() error {
 // start runs a read-eval-print loop over in, writing each line's result to out until in is exhausted.
 func start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 	for {
 		fmt.Printf(PROMPT)
 		scanned := scanner.Scan()
@@ -41,22 +42,16 @@ func start(in io.Reader, out io.Writer) {
 			return
 		}
 		line := scanner.Text()
-		executeLine(out, line)
+		l := lexer.New(line)
+		p := parser.New(l)
+		program := p.ParseProgram()
+		if len(p.Errors()) != 0 {
+			printParseErrors(out, p.Errors())
+			return
+		}
+		evaluated := eval.Eval(program, env)
+		debug.PrintProgram(out, program, evaluated)
 	}
-}
-
-// executeLine lexes and parses one line, writing its source/tree to out or its parser errors on failure.
-func executeLine(out io.Writer, line string) {
-	l := lexer.New(line)
-	p := parser.New(l)
-	program := p.ParseProgram()
-	if len(p.Errors()) != 0 {
-		printParseErrors(out, p.Errors())
-		return
-	}
-	env := object.NewEnvironment()
-	evaluated := eval.Eval(program, env)
-	debug.PrintProgram(out, program, evaluated)
 }
 
 // printParseErrors writes the sad monkey face followed by each parser error message to out.
