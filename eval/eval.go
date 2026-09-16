@@ -114,6 +114,27 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			obj.Elements = append(obj.Elements, rs)
 		}
 		return obj
+	case *ast.IndexExpression:
+		left := Eval(node.LeftExpression, env)
+		if isError(left) {
+			return left
+		}
+		number := Eval(node.NumberExpression, env)
+		if isError(number) {
+			return number
+		}
+		switch {
+		case left.Type() == object.ARRAY && number.Type() == object.INTEGER:
+			arrayObject := left.(*object.Array)
+			idx := number.(*object.Integer).Value
+			max := int64(len(arrayObject.Elements) - 1)
+			if idx < 0 || idx > max {
+				return NULL_OBJECT
+			}
+			return arrayObject.Elements[idx]
+		default:
+			return newErrorObject("index operator not supported: %s", left.Type())
+		}
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
