@@ -81,9 +81,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			}
 			args = append(args, val)
 		}
-		switch obj.(type) {
+		switch function := obj.(type) {
 		case *object.Function:
-			function := obj.(*object.Function)
 			env := object.NewEnclosedEnvironment(function.Env)
 			for i, arg := range args {
 				name := function.Parameters[i]
@@ -98,7 +97,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			}
 			return val
 		case *object.Builtin:
-			function := obj.(*object.Builtin)
 			return function.Fn(args...)
 		default:
 			return newErrorObject("not a function: %s", obj.Type())
