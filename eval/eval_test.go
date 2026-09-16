@@ -187,7 +187,7 @@ func TestErrorObject(t *testing.T) {
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{"foobar", "identifier not found: foobar"},
-		{"let foobar = 5; foobar()", "identifier is not function: foobar"},
+		{"let foobar = 5; foobar()", "not a function: foobar"},
 		{
 			`
 			let i = 5;
@@ -312,6 +312,35 @@ func TestFunctionCalls(t *testing.T) {
 		program, evaluated := testEval(test.input)
 		if !testIntegerObject(t, evaluated, test.expected) {
 			printDebugInfo(t, program, evaluated)
+		}
+	}
+}
+
+func TestBuiltinFunctions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected any
+	}{
+		{`len("")`, 0},
+		{`len("four")`, 4},
+		{`len("hello world")`, 11},
+		{`len(1)`, "argument to `len` not supported, got INTEGER"},
+		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+	}
+	for _, test := range tests {
+		_, evaluated := testEval(test.input)
+		switch expected := test.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+			if errObj.Message != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
+			}
 		}
 	}
 }

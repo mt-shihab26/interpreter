@@ -19,6 +19,7 @@ const (
 	ERROR    = "ERROR"
 	FUNCTION = "FUNCTION"
 	STRING   = "STRING"
+	BUILTIN  = "BUILTIN"
 )
 
 // Object is implemented by every value the Monkey evaluator produces.
@@ -144,4 +145,21 @@ func (f *Function) Inspect() string {
 	out.WriteString(f.Body.Code())
 	out.WriteString("\n}")
 	return out.String()
+}
+
+type BuiltinFunction func(args ...Object) Object
+
+// Builtin implements the Object interface.
+type Builtin struct {
+	Fn BuiltinFunction
+}
+
+// Type returns Builtin.
+func (f *Builtin) Type() Type {
+	return BUILTIN
+}
+
+// Inspect returns the builtin's value as a string.
+func (f *Builtin) Inspect() string {
+	return "Builtin function"
 }

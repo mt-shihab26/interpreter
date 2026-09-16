@@ -54,11 +54,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
 	case *ast.IdentifierExpression:
-		val, ok := env.Get(node.Value)
-		if !ok {
-			return newErrorObject("identifier not found: %s", node.Value)
+		if val, ok := env.Get(node.Value); ok {
+			return val
 		}
-		return val
+		if builtin, ok := builtins[node.Value]; ok {
+			return builtin
+		}
+		return newErrorObject("identifier not found: %s", node.Value)
 	case *ast.FunctionExpression:
 		val := &object.Function{
 			Parameters: node.ParameterExpressions,
@@ -71,10 +73,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		if isError(obj) {
 			return obj
 		}
-		function, ok := obj.(*object.Function)
-		if !ok {
-			return newErrorObject("identifier is not function: %s", node.FunctionExpression.Code())
-		}
 		var args []object.Object
 		for _, argumentExpression := range node.ArgumentExpressions {
 			val := Eval(argumentExpression, env)
@@ -83,19 +81,29 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			}
 			args = append(args, val)
 		}
-		env := object.NewEnclosedEnvironment(function.Env)
-		for i, arg := range args {
-			name := function.Parameters[i]
-			env.Set(name.Value, arg)
-		}
-		val := Eval(function.Body, env)
-		if isError(val) {
+		switch obj.(type) {
+		case *object.Function:
+			function := obj.(*object.Function)
+			env := object.NewEnclosedEnvironment(function.Env)
+			for i, arg := range args {
+				name := function.Parameters[i]
+				env.Set(name.Value, arg)
+			}
+			val := Eval(function.Body, env)
+			if isError(val) {
+				return val
+			}
+			if returnValue, ok := val.(*object.Return); ok {
+				return returnValue.Value
+			}
 			return val
+		case *object.Builtin:
+			function := obj.(*object.Builtin)
+			return function.Fn(args...)
+		default:
+			return newErrorObject("not a function: %s", obj.Type())
 		}
-		if returnValue, ok := val.(*object.Return); ok {
-			return returnValue.Value
-		}
-		return val
+
 	case *ast.IntegerExpression:
 		return newIntegerObject(node.Value)
 	case *ast.BooleanExpression:
