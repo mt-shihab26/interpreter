@@ -99,7 +99,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		case *object.Builtin:
 			return function.Fn(args...)
 		default:
-			return newErrorObject("not a function: %s", obj.Type())
+			if ide, ok := node.FunctionExpression.(*ast.IdentifierExpression); ok {
+				return newErrorObject("not a function: %s", ide.Value)
+			}
+			return newErrorObject("unknown operation")
 		}
 
 	case *ast.IntegerExpression:
