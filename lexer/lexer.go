@@ -7,7 +7,7 @@ type Lexer struct {
 	input        string
 	curPosition  int  // current position in input (points to current char)
 	peekPosition int  // current reading position in input (after current char)
-	chracter     byte // current char under examination
+	character     byte // current char under examination
 }
 
 // New creates a Lexer over input, priming chracter with the first character.
@@ -21,64 +21,68 @@ func New(input string) *Lexer {
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhitespace()
-	switch l.chracter {
+	switch l.character {
 	case '=':
 		if l.peekCharacter() == '=' {
-			ch := l.chracter
+			ch := l.character
 			l.advanceCharacter()
-			tok = token.Token{Type: token.EQUAL, Literal: string(ch) + string(l.chracter)}
+			tok = token.Token{Type: token.EQUAL, Literal: string(ch) + string(l.character)}
 		} else {
-			tok = newChToken(token.ASSIGN, l.chracter)
+			tok = newChToken(token.ASSIGN, l.character)
 		}
 	case '+':
-		tok = newChToken(token.PLUS, l.chracter)
+		tok = newChToken(token.PLUS, l.character)
 	case '-':
-		tok = newChToken(token.MINUS, l.chracter)
+		tok = newChToken(token.MINUS, l.character)
 	case '!':
 		if l.peekCharacter() == '=' {
-			ch := l.chracter
+			ch := l.character
 			l.advanceCharacter()
-			tok = token.Token{Type: token.NOT_EQUAL, Literal: string(ch) + string(l.chracter)}
+			tok = token.Token{Type: token.NOT_EQUAL, Literal: string(ch) + string(l.character)}
 		} else {
-			tok = newChToken(token.BANG, l.chracter)
+			tok = newChToken(token.BANG, l.character)
 		}
 	case '*':
-		tok = newChToken(token.ASTERISK, l.chracter)
+		tok = newChToken(token.ASTERISK, l.character)
 	case '/':
-		tok = newChToken(token.SLASH, l.chracter)
+		tok = newChToken(token.SLASH, l.character)
 	case '<':
-		tok = newChToken(token.LESS_THAN, l.chracter)
+		tok = newChToken(token.LESS_THAN, l.character)
 	case '>':
-		tok = newChToken(token.GREATER_THAN, l.chracter)
+		tok = newChToken(token.GREATER_THAN, l.character)
 	case ',':
-		tok = newChToken(token.COMMA, l.chracter)
+		tok = newChToken(token.COMMA, l.character)
 	case ';':
-		tok = newChToken(token.SEMICOLON, l.chracter)
+		tok = newChToken(token.SEMICOLON, l.character)
 	case '(':
-		tok = newChToken(token.LEFT_PAREN, l.chracter)
+		tok = newChToken(token.LEFT_PAREN, l.character)
 	case ')':
-		tok = newChToken(token.RIGHT_PAREN, l.chracter)
+		tok = newChToken(token.RIGHT_PAREN, l.character)
 	case '{':
-		tok = newChToken(token.LEFT_BRACE, l.chracter)
+		tok = newChToken(token.LEFT_BRACE, l.character)
 	case '}':
-		tok = newChToken(token.RIGHT_BRACE, l.chracter)
+		tok = newChToken(token.RIGHT_BRACE, l.character)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
 	case '"':
 		tok.Type = token.STRING
 		tok.Literal = l.consumeString()
+	case '[':
+		tok = newChToken(token.LEFT_BRACKET, l.character)
+	case ']':
+		tok = newChToken(token.RIGHT_BRACKET, l.character)
 	default:
-		if isLetter(l.chracter) {
+		if isLetter(l.character) {
 			tok.Literal = l.consumeIdentifier()
 			tok.Type = token.LookupKeyword(tok.Literal)
 			return tok
-		} else if isDigit(l.chracter) {
+		} else if isDigit(l.character) {
 			tok.Type = token.INTEGER
 			tok.Literal = l.consumeNumber()
 			return tok
 		} else {
-			tok = newChToken(token.ILLEGAL, l.chracter)
+			tok = newChToken(token.ILLEGAL, l.character)
 		}
 	}
 	l.advanceCharacter()
@@ -87,7 +91,7 @@ func (l *Lexer) NextToken() token.Token {
 
 // skipWhitespace advances past spaces, tabs, newlines, and carriage returns.
 func (l *Lexer) skipWhitespace() {
-	for l.chracter == ' ' || l.chracter == '\t' || l.chracter == '\n' || l.chracter == '\r' {
+	for l.character == ' ' || l.character == '\t' || l.character == '\n' || l.character == '\r' {
 		l.advanceCharacter()
 	}
 }
@@ -95,9 +99,9 @@ func (l *Lexer) skipWhitespace() {
 // advanceCharacter advances the lexer by one character, setting chracter to 0 (NUL) once input is exhausted.
 func (l *Lexer) advanceCharacter() {
 	if l.peekPosition >= len(l.input) {
-		l.chracter = 0
+		l.character = 0
 	} else {
-		l.chracter = l.input[l.peekPosition]
+		l.character = l.input[l.peekPosition]
 	}
 	l.curPosition = l.peekPosition
 	l.peekPosition += 1
@@ -115,7 +119,7 @@ func (l *Lexer) peekCharacter() byte {
 // consumeIdentifier consumes and returns consecutive letters starting at curPosition.
 func (l *Lexer) consumeIdentifier() string {
 	position := l.curPosition
-	for isLetter(l.chracter) {
+	for isLetter(l.character) {
 		l.advanceCharacter()
 	}
 	return l.input[position:l.curPosition]
@@ -124,7 +128,7 @@ func (l *Lexer) consumeIdentifier() string {
 // consumeNumber consumes and returns consecutive digits starting at curPosition.
 func (l *Lexer) consumeNumber() string {
 	position := l.curPosition
-	for isDigit(l.chracter) {
+	for isDigit(l.character) {
 		l.advanceCharacter()
 	}
 	return l.input[position:l.curPosition]
@@ -135,7 +139,7 @@ func (l *Lexer) consumeString() string {
 	position := l.curPosition + 1
 	for {
 		l.advanceCharacter()
-		if l.chracter == '"' || l.chracter == 0 {
+		if l.character == '"' || l.character == 0 {
 			break
 		}
 	}
