@@ -273,3 +273,22 @@ func TestParseUnterminatedFunctionParametersIsSilentlyDropped(t *testing.T) {
 		t.Fatalf("input=%q: expected no recorded errors (documenting current behavior), got=%v\n", input, parser.Errors())
 	}
 }
+
+func TestParsingArrayExpression(t *testing.T) {
+	input := "[1, 2 * 2, 3 + 3]"
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	array, ok := stmt.Expression.(*ast.ArrayExpression)
+	if !ok {
+		t.Fatalf("exp not ast.ArrayExpression. got=%T", stmt.Expression)
+	}
+	if len(array.Elements) != 3 {
+		t.Fatalf("len(array.Elements) not 3. got=%d", len(array.Elements))
+	}
+	testIntegerExpression(t, array.Elements[0], 1)
+	testBinaryExpression(t, array.Elements[1], 2, "*", 2)
+	testBinaryExpression(t, array.Elements[2], 3, "+", 3)
+}

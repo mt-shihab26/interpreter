@@ -241,3 +241,45 @@ func (fe *FunctionExpression) Tree() string {
 	}
 	return renderTree("FunctionExpression", children...)
 }
+
+// ArrayExpression implements the Expression interface.
+type ArrayExpression struct {
+	Token    token.Token
+	Elements []Expression
+}
+
+// expressionNode marks FunctionExpression as an ast.Expression.
+func (fe *ArrayExpression) expressionNode() {
+
+}
+
+// TokenLiteral returns the literal of the "fn" token.
+func (fe *ArrayExpression) TokenLiteral() string {
+	return fe.Token.Literal
+}
+
+// Code reconstructs the expression as "fn(<param>, <param>, ...)<body>".
+func (fe *ArrayExpression) Code() string {
+	var out bytes.Buffer
+	params := []string{}
+	for _, parameter := range fe.Elements {
+		params = append(params, parameter.Code())
+	}
+	out.WriteString(fe.TokenLiteral())
+	out.WriteString("[")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString("] ")
+	return out.String()
+}
+
+// Tree renders the expression with each parameter as an indexed "Parameter[i]" child and the body as a "Body" child.
+func (fe *ArrayExpression) Tree() string {
+	children := make([]treeChild, 0, len(fe.Elements)+1)
+	for i, parameter := range fe.Elements {
+		if parameter == nil {
+			continue
+		}
+		children = append(children, treeChild{fmt.Sprintf("Elements[%d]", i), parameter})
+	}
+	return renderTree("ArrayExpression", children...)
+}
