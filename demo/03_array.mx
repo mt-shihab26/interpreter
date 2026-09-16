@@ -19,6 +19,7 @@ let reduce = fn(arr, initial, f) {
     } else {
         iter(rest(arr), f(result, first(arr)));
     }
+    };
     iter(arr, initial);
 };
 
@@ -27,4 +28,3 @@ let sum = fn(arr) {
 };
 
 sum([1, 2, 3, 4, 5])
-
