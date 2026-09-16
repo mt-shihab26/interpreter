@@ -107,7 +107,11 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.ArrayExpression:
 		obj := &object.Array{}
 		for _, element := range node.Elements {
-			obj.Elements = append(obj.Elements, Eval(element, env))
+			rs := Eval(element, env)
+			if isError(rs) {
+				return rs
+			}
+			obj.Elements = append(obj.Elements, rs)
 		}
 		return obj
 	case *ast.IntegerExpression:
