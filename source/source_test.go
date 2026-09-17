@@ -38,7 +38,9 @@ func TestRun(t *testing.T) {
 		{name: "invalid extension", file: "main.go", content: `let x = 5;`, expected: `invalid file extension: ."go", expected .mx`},
 		{name: "file does not exist", file: "missing.mx", expected: "no such file or directory"},
 		{name: "parser error", file: "main.mx", content: `let = 5;`, expected: "parser errors:"},
+		{name: "valid source file", file: "main.mx", content: `let x = 5;`, expected: ""},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.content != "" {
@@ -54,6 +56,12 @@ func TestRun(t *testing.T) {
 			}()
 			os.Args = []string{"monkey", tt.file}
 			err := Run()
+			if tt.expected == "" {
+				if err != nil {
+					t.Errorf("Run() returned unexpected error: %v", err)
+				}
+				return
+			}
 			if err == nil {
 				t.Fatal("Run() expected an error, got nil")
 			}
