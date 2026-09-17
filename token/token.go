@@ -9,52 +9,53 @@ type Token struct {
 	Literal string
 }
 
+// Token types constant represent the different kinds of tokens for Type.
 const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	// Indentifiers
-	IDENTIFIER = "IDENTIFIER" // add, foobar, x, y, ...
+	// Identifiers
+	IDENTIFIER = "IDENTIFIER" // add, foobar, x, y
 
 	// Literals
 	INTEGER = "INTEGER" // 123456
-	STRING  = "STRING"  // 123456
+	STRING  = "STRING"  // "Hello World"
 
 	// Operators
-	ASSIGN   = "ASSIGN"
-	PLUS     = "PLUS"
-	MINUS    = "MINUS"
-	BANG     = "BANG"
-	ASTERISK = "ASTERISK"
-	SLASH    = "SLASH"
+	ASSIGN   = "ASSIGN"   // =
+	PLUS     = "PLUS"     // +
+	MINUS    = "MINUS"    // -
+	ASTERISK = "ASTERISK" // *
+	SLASH    = "SLASH"    // /
+	BANG     = "BANG"     // !
 
 	// Comparison operators
-	LESS_THAN    = "LESS_THAN"
-	GREATER_THAN = "GREATER_THAN"
-	EQUAL        = "EQUAL"
-	NOT_EQUAL    = "NOT_EQUAL"
+	LESS_THAN    = "LESS_THAN"    // <
+	GREATER_THAN = "GREATER_THAN" // >
+	EQUAL        = "EQUAL"        // ==
+	NOT_EQUAL    = "NOT_EQUAL"    // !=
 
 	// Separators
-	COMMA     = "COMMA"
-	COLON     = "COLON"
-	SEMICOLON = "SEMICOLON"
+	COMMA     = "COMMA"     // ,
+	COLON     = "COLON"     // :
+	SEMICOLON = "SEMICOLON" // ;
 
 	// Brackets
-	LEFT_PAREN    = "LEFT_PAREN"
-	RIGHT_PAREN   = "RIGHT_PAREN"
-	LEFT_BRACE    = "LEFT_BRACE"
-	RIGHT_BRACE   = "RIGHT_BRACE"
-	LEFT_BRACKET  = "LEFT_BRACKET"
-	RIGHT_BRACKET = "RIGHT_BRACKET"
+	LEFT_PAREN    = "LEFT_PAREN"    // (
+	RIGHT_PAREN   = "RIGHT_PAREN"   // )
+	LEFT_BRACE    = "LEFT_BRACE"    // {
+	RIGHT_BRACE   = "RIGHT_BRACE"   // }
+	LEFT_BRACKET  = "LEFT_BRACKET"  // [
+	RIGHT_BRACKET = "RIGHT_BRACKET" // ]
 
 	// Keywords
-	LET      = "LET"
-	RETURN   = "RETURN"
-	IF       = "IF"
-	ELSE     = "ELSE"
-	FUNCTION = "FUNCTION"
-	TRUE     = "TRUE"
-	FALSE    = "FALSE"
+	LET      = "LET"      // let
+	RETURN   = "RETURN"   // return
+	IF       = "IF"       // if
+	ELSE     = "ELSE"     // else
+	FUNCTION = "FUNCTION" // fn
+	TRUE     = "TRUE"     // true
+	FALSE    = "FALSE"    // true
 )
 
 // keywords maps each reserved word to its TokenType.
