@@ -4,25 +4,27 @@ import "testing"
 
 func TestLookupKeyword(t *testing.T) {
 	tests := []struct {
-		word      string
-		tokenType Type
+		name     string
+		word     string
+		expected Type
 	}{
-		{"let", LET},
-		{"return", RETURN},
-		{"if", IF},
-		{"else", ELSE},
-		{"fn", FUNCTION},
-		{"true", TRUE},
-		{"false", FALSE},
-		{"foobar", IDENTIFIER},
-		{"1234", IDENTIFIER},
-		{"x", IDENTIFIER},
+		{"let keyword", "let", LET},
+		{"return keyword", "return", RETURN},
+		{"if keyword", "if", IF},
+		{"else keyword", "else", ELSE},
+		{"function keyword", "fn", FUNCTION},
+		{"true keyword", "true", TRUE},
+		{"false keyword", "false", FALSE},
+		{"identifier", "foobar", IDENTIFIER},
+		{"numeric string", "1234", IDENTIFIER},
+		{"single character identifier", "x", IDENTIFIER},
 	}
-
 	for _, test := range tests {
-		tokenType := LookupKeyword(test.word)
-		if tokenType != test.tokenType {
-			t.Errorf("LookupKeyword should return %v, got=%v\n", test.tokenType, tokenType)
-		}
+		t.Run(test.name, func(t *testing.T) {
+			tokenType := LookupKeyword(test.word)
+			if tokenType != test.expected {
+				t.Errorf("LookupKeyword(%q) = %v, expected %v", test.word, tokenType, test.expected)
+			}
+		})
 	}
 }
