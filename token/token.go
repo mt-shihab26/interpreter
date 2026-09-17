@@ -48,31 +48,31 @@ const (
 	RIGHT_BRACKET = "RIGHT_BRACKET"
 
 	// Keywords
-	FUNCTION = "FUNCTION"
 	LET      = "LET"
-	TRUE     = "TRUE"
-	FALSE    = "FALSE"
+	RETURN   = "RETURN"
 	IF       = "IF"
 	ELSE     = "ELSE"
-	RETURN   = "RETURN"
+	FUNCTION = "FUNCTION"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
 )
 
 // keywords maps each reserved word to its TokenType.
 var keywords = map[string]Type{
-	"fn":     FUNCTION,
 	"let":    LET,
-	"true":   TRUE,
-	"false":  FALSE,
+	"return": RETURN,
 	"if":     IF,
 	"else":   ELSE,
-	"return": RETURN,
+	"fn":     FUNCTION,
+	"true":   TRUE,
+	"false":  FALSE,
 }
 
-// LookupKeyword returns ident's keyword TokenType, or IDENTIFIER if ident is not a reserved word.
-func LookupKeyword(ident string) Type {
-	tok, ok := keywords[ident]
+// LookupKeyword returns the keyword TokenType for word, or IDENTIFIER if word is not a reserved word.
+func LookupKeyword(word string) Type {
+	tokenType, ok := keywords[word]
 	if !ok {
 		return IDENTIFIER
 	}
-	return tok
+	return tokenType
 }
