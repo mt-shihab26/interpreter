@@ -26,3 +26,35 @@ I also refactored the code to be more robust, maintainable, and readable.
 - [ ] Full Unicode support (including emojis)
 - [ ] Number formats other than integers (floats, hex, octal, etc.)
 - [ ] Character escaping in strings
+
+## Development
+
+Run the REPL:
+
+```sh
+bin/run.sh
+```
+
+Run a `.mx` source file (see [`demo/`](demo) for examples):
+
+```sh
+bin/run.sh demo/01-hello.mx
+```
+
+Run the tests:
+
+```sh
+bin/test.sh
+```
+
+Format the code:
+
+```sh
+bin/fmt.sh
+```
+
+Browse the generated docs:
+
+```sh
+bin/docs.sh
+```
