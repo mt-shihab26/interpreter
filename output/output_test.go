@@ -37,25 +37,16 @@ func TestPrint(t *testing.T) {
 		verbose   bool
 		expected  string
 	}{
-		{
-			name:      "normal output",
-			code:      "5",
-			evaluated: &object.Integer{Value: 5},
-			expected:  "5",
-		},
-		{
-			name:      "normal output with nil evaluated",
-			code:      "let x = 5;",
-			evaluated: nil,
-			expected:  "",
-		},
+		{name: "normal output", code: "5", evaluated: &object.Integer{Value: 5}, expected: "5"},
+		{name: "normal output with nil evaluated", code: "let x = 5;", expected: ""},
 		{
 			name:      "verbose output",
 			code:      "5",
 			evaluated: &object.Integer{Value: 5},
 			verbose:   true,
 			expected: `---CODE---
-5
+5;
+
 ---AST---
 Program
 └─ Statement[0]: ExpressionStatement
@@ -66,12 +57,12 @@ Program
 `,
 		},
 		{
-			name:      "verbose output with nil evaluated",
-			code:      "let x = 5;",
-			evaluated: nil,
-			verbose:   true,
+			name:    "verbose output with nil evaluated",
+			code:    "let x = 5;",
+			verbose: true,
 			expected: `---CODE---
 let x = 5;
+
 ---AST---
 Program
 └─ Statement[0]: LetStatement
@@ -80,6 +71,7 @@ Program
 `,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var writer bytes.Buffer
@@ -144,7 +136,8 @@ func TestPrintVerbose(t *testing.T) {
 			code:      "5",
 			evaluated: &object.Integer{Value: 5},
 			expected: `---CODE---
-5
+5;
+
 ---AST---
 Program
 └─ Statement[0]: ExpressionStatement
@@ -155,11 +148,11 @@ Program
 `,
 		},
 		{
-			name:      "nil evaluated",
-			code:      "let x = 5;",
-			evaluated: nil,
+			name: "nil evaluated",
+			code: "let x = 5;",
 			expected: `---CODE---
 let x = 5;
+
 ---AST---
 Program
 └─ Statement[0]: LetStatement
