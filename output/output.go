@@ -14,6 +14,15 @@ type Output struct {
 	Verbose   bool
 }
 
+func New(writer io.Writer, program *ast.Program, evaluated object.Object, verbose bool) *Output {
+	return &Output{
+		Writer:    writer,
+		Program:   program,
+		Evaluated: evaluated,
+		Verbose:   verbose,
+	}
+}
+
 func (o *Output) Print() {
 	if o.Verbose {
 		o.printVerbose()
