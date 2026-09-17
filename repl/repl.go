@@ -50,7 +50,8 @@ func start(in io.Reader, out io.Writer) {
 			return
 		}
 		evaluated := eval.Eval(program, env)
-		output.Print(out, program, evaluated)
+		output := output.New(os.Stdout, program, evaluated, false)
+		output.Print()
 	}
 }
 

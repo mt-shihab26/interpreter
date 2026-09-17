@@ -603,7 +603,8 @@ func printDebugInfo(t *testing.T, program *ast.Program, evaluated object.Object)
 	var out bytes.Buffer
 	out.WriteString("\n")
 	out.WriteString("----------------------START DEBUG-----------------------\n")
-	output.Print(&out, program, evaluated)
+	output := output.New(&out, program, evaluated, false)
+	output.Print()
 	out.WriteString("----------------------END DEBUG-------------------------\n")
 	t.Error(out.String())
 }

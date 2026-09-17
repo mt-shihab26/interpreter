@@ -31,7 +31,8 @@ func Run() error {
 	}
 	env := object.NewEnvironment()
 	evaluated := eval.Eval(program, env)
-	output.Print(os.Stdout, program, evaluated)
+	output := output.New(os.Stdout, program, evaluated, false)
+	output.Print()
 	return nil
 }
 
