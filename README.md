@@ -14,6 +14,7 @@ But there were many missing features in the language that are generally present 
 - [x] Integers, booleans, strings, arrays, and hashes
 - [x] Arithmetic and comparison operators
 - [x] `if` / `else` conditionals
+- [x] Expression evaluation with operator precedence via Pratt parsing
 - [x] First-class functions and closures
 - [x] Built-in functions: `len`, `first`, `last`, `rest`, `push`, `puts`
 
