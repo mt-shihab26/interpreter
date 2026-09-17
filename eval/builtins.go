@@ -1,8 +1,8 @@
 package eval
 
 import (
-	"fmt"
 	"monkey/object"
+	"strings"
 )
 
 var builtins = map[string]*object.Builtin{
@@ -92,10 +92,14 @@ var builtins = map[string]*object.Builtin{
 	},
 	"puts": {
 		Fn: func(args ...object.Object) object.Object {
+			var inspect strings.Builder
 			for _, arg := range args {
-				fmt.Println(arg.Inspect())
+				inspect.WriteString(arg.Inspect())
 			}
-			return NULL_OBJECT
+			inspect.WriteString("\n")
+			return &object.String{
+				Value: inspect.String(),
+			}
 		},
 	},
 }
