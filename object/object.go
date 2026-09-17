@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"monkey/ast"
 	"strings"
 )
@@ -21,6 +22,7 @@ const (
 	STRING   = "STRING"
 	BUILTIN  = "BUILTIN"
 	ARRAY    = "ARRAY"
+	HASH     = "HASH"
 )
 
 // Object is implemented by every value the Monkey evaluator produces.
@@ -29,6 +31,15 @@ type Object interface {
 	Type() Type
 	// Inspect returns a human-readable representation of the object's value.
 	Inspect() string
+}
+
+type HashKey struct {
+	Type  Type
+	Value uint64
+}
+
+type Hashable interface {
+	HashKey() HashKey
 }
 
 // Null implements the Object interface.
@@ -60,19 +71,29 @@ func (i *Integer) Inspect() string {
 	return fmt.Sprintf("%v", i.Value)
 }
 
-// Integer implements the Object interface.
+func (i *Integer) HashKey() HashKey {
+	return HashKey{Type: i.Type(), Value: uint64(i.Value)}
+}
+
+// String implements the Object interface.
 type String struct {
 	Value string
 }
 
-// Type returns INTEGER.
-func (i *String) Type() Type {
+// Type returns STRING.
+func (s *String) Type() Type {
 	return STRING
 }
 
-// Inspect returns the integer's value as a string.
-func (i *String) Inspect() string {
-	return i.Value
+// Inspect returns the string's value as a string.
+func (s *String) Inspect() string {
+	return s.Value
+}
+
+func (s *String) HashKey() HashKey {
+	h := fnv.New64a()
+	h.Write([]byte(s.Value))
+	return HashKey{Type: s.Type(), Value: h.Sum64()}
 }
 
 // Boolean implements the Object interface.
@@ -88,6 +109,16 @@ func (b *Boolean) Type() Type {
 // Inspect returns the boolean's value as a string.
 func (b *Boolean) Inspect() string {
 	return fmt.Sprintf("%v", b.Value)
+}
+
+func (b *Boolean) HashKey() HashKey {
+	var value uint64
+	if b.Value {
+		value = 1
+	} else {
+		value = 0
+	}
+	return HashKey{Type: b.Type(), Value: value}
 }
 
 // Return implements the Object interface.
@@ -170,7 +201,7 @@ type Array struct {
 	Elements []Object
 }
 
-// Type returns FUNCTION.
+// Type returns ARRAY.
 func (f *Array) Type() Type {
 	return ARRAY
 }
@@ -185,5 +216,33 @@ func (f *Array) Inspect() string {
 	out.WriteString("[")
 	out.WriteString(strings.Join(elements, ", "))
 	out.WriteString("]")
+	return out.String()
+}
+
+type HashPair struct {
+	Key   Object
+	Value Object
+}
+
+// Hash implements the Object interface.
+type Hash struct {
+	Pairs map[HashKey]HashPair
+}
+
+// Type returns HASH.
+func (f *Hash) Type() Type {
+	return HASH
+}
+
+// Inspect returns the hash's value as a string.
+func (f *Hash) Inspect() string {
+	var out bytes.Buffer
+	pairs := []string{}
+	for _, pair := range f.Pairs {
+		pairs = append(pairs, pair.Key.Inspect()+": "+pair.Value.Inspect())
+	}
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
 	return out.String()
 }
