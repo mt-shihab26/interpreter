@@ -16,7 +16,7 @@ I also refactored the code to be more robust, maintainable, and readable.
 - [x] Integers, booleans, strings, arrays, and hashes
 - [x] Arithmetic and comparison operators
 - [x] `if` / `else` conditionals
-- [x] Expression evaluation with operator precedence via Pratt parsing
+- [x] Expression evaluation with operator precedence via [Pratt parsing](https://en.wikipedia.org/wiki/Operator-precedence_parser#Pratt_parsing)
 - [x] First-class functions and closures
 - [x] Built-in functions: `len`, `first`, `last`, `rest`, `push`, `puts`
 
