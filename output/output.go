@@ -7,22 +7,36 @@ import (
 	"monkey/object"
 )
 
-// PrintProgram writes program's source and AST to out, followed by evaluated's inspected value when evaluated is not nil.
-func PrintProgram(out io.Writer, program *ast.Program, evaluated object.Object) {
-	if evaluated != nil {
-		io.WriteString(out, evaluated.Inspect())
+type Output struct {
+	Writer    io.Writer
+	Program   *ast.Program
+	Evaluated object.Object
+	Verbose   bool
+}
+
+func (o *Output) Print() {
+	if o.Verbose {
+		o.printVerbose()
+	} else {
+		o.printNormal()
 	}
 }
 
-func PrintVerbose(out io.Writer, program *ast.Program, evaluated object.Object) {
-	io.WriteString(out, "---CODE---\n")
-	io.WriteString(out, program.Code())
-	io.WriteString(out, "\n---AST---\n")
-	io.WriteString(out, program.Tree())
-	io.WriteString(out, "\n")
-	if evaluated != nil {
-		io.WriteString(out, "\n---OUT---\n")
-		io.WriteString(out, evaluated.Inspect())
-		io.WriteString(out, "\n")
+func (o *Output) printNormal() {
+	if o.Evaluated != nil {
+		io.WriteString(o.Writer, o.Evaluated.Inspect())
+	}
+}
+
+func (o *Output) printVerbose() {
+	io.WriteString(o.Writer, "---CODE---\n")
+	io.WriteString(o.Writer, o.Program.Code())
+	io.WriteString(o.Writer, "\n---AST---\n")
+	io.WriteString(o.Writer, o.Program.Tree())
+	io.WriteString(o.Writer, "\n")
+	if o.Evaluated != nil {
+		io.WriteString(o.Writer, "\n---OUT---\n")
+		io.WriteString(o.Writer, o.Evaluated.Inspect())
+		io.WriteString(o.Writer, "\n")
 	}
 }
