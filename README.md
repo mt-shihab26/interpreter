@@ -10,16 +10,16 @@ But there were many missing features in the language that are generally present 
 
 ## Features from the book
 
-- `let` and `return` statements
-- Integers, booleans, strings, arrays, and hashes
-- Arithmetic and comparison operators
-- `if` / `else` conditionals
-- First-class functions and closures
-- Built-in functions: `len`, `first`, `last`, `rest`, `push`, `puts`
+- [x] `let` and `return` statements
+- [x] Integers, booleans, strings, arrays, and hashes
+- [x] Arithmetic and comparison operators
+- [x] `if` / `else` conditionals
+- [x] First-class functions and closures
+- [x] Built-in functions: `len`, `first`, `last`, `rest`, `push`, `puts`
 
 ## New features added
 
-- Line and file name tracking in generated tokens
-- Full Unicode support (including emojis)
-- Number formats other than integers (floats, hex, octal, etc.)
-- Character escaping in strings
+- [ ] Line and file name tracking in generated tokens
+- [ ] Full Unicode support (including emojis)
+- [ ] Number formats other than integers (floats, hex, octal, etc.)
+- [ ] Character escaping in strings
