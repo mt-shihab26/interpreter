@@ -119,19 +119,30 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		if isError(left) {
 			return left
 		}
-		number := Eval(node.NumberExpression, env)
-		if isError(number) {
-			return number
+		index := Eval(node.NumberExpression, env)
+		if isError(index) {
+			return index
 		}
 		switch {
-		case left.Type() == object.ARRAY && number.Type() == object.INTEGER:
+		case left.Type() == object.ARRAY && index.Type() == object.INTEGER:
 			arrayObject := left.(*object.Array)
-			idx := number.(*object.Integer).Value
+			idx := index.(*object.Integer).Value
 			max := int64(len(arrayObject.Elements) - 1)
 			if idx < 0 || idx > max {
 				return NULL_OBJECT
 			}
 			return arrayObject.Elements[idx]
+		case left.Type() == object.HASH:
+			obj := left.(*object.Hash)
+			idx, ok := index.(object.Hashable)
+			if !ok {
+				return newErrorObject("unusable as hash key: %s", index.Type())
+			}
+			val, ok := obj.Pairs[idx.HashKey()]
+			if !ok {
+				return NULL_OBJECT
+			}
+			return val.Value
 		default:
 			return newErrorObject("index operator not supported: %s", left.Type())
 		}

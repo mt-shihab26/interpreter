@@ -213,6 +213,10 @@ func TestErrorObject(t *testing.T) {
 			`,
 			"identifier not found: printStr",
 		},
+		{
+			`{"name": "Monkey"}[fn(x) { x }];`,
+			"unusable as hash key: FUNCTION",
+		},
 	}
 	for _, test := range tests {
 		program, evaluated := testEval(test.input)
