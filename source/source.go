@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"monkey/eval"
-	"monkey/lexer"
-	"monkey/object"
-	"monkey/output"
-	"monkey/parser"
+	"interpreter/eval"
+	"interpreter/lexer"
+	"interpreter/object"
+	"interpreter/output"
+	"interpreter/parser"
 )
 
 func Run() error {

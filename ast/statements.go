@@ -3,8 +3,9 @@ package ast
 import (
 	"bytes"
 	"fmt"
-	"monkey/token"
 	"strings"
+
+	"interpreter/token"
 )
 
 // LetStatement implements the Statement interface.

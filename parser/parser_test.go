@@ -3,8 +3,8 @@ package parser
 import (
 	"testing"
 
-	"monkey/ast"
-	"monkey/lexer"
+	"interpreter/ast"
+	"interpreter/lexer"
 )
 
 // TestParseFullProgram walks the AST of a source exercising every construct the parser supports, checking it was assembled correctly.

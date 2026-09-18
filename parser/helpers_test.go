@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"monkey/ast"
-	"monkey/lexer"
+	"interpreter/ast"
+	"interpreter/lexer"
 )
 
 // testParseProgram parses input, fails the test on parser errors or a wrong statement count, and returns the resulting program.

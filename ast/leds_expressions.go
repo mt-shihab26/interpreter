@@ -3,8 +3,9 @@ package ast
 import (
 	"bytes"
 	"fmt"
-	"monkey/token"
 	"strings"
+
+	"interpreter/token"
 )
 
 // BinaryExpression implements the Expression interface.

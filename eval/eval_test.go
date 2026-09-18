@@ -2,12 +2,13 @@ package eval
 
 import (
 	"bytes"
-	"monkey/ast"
-	"monkey/lexer"
-	"monkey/object"
-	"monkey/output"
-	"monkey/parser"
 	"testing"
+
+	"interpreter/ast"
+	"interpreter/object"
+	"interpreter/lexer"
+	"interpreter/output"
+	"interpreter/parser"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {

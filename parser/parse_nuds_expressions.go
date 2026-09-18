@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/token"
 	"strconv"
+
+	"interpreter/ast"
+	"interpreter/token"
 )
 
 // registerNuds wires up the nud (null denotation) parse functions.

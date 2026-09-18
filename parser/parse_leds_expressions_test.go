@@ -3,8 +3,8 @@ package parser
 import (
 	"testing"
 
-	"monkey/ast"
-	"monkey/lexer"
+	"interpreter/ast"
+	"interpreter/lexer"
 )
 
 // TestParsingBinaryExpression checks that binary operator expressions parse with the right left operand, operator, and right operand.

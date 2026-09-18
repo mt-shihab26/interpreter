@@ -3,9 +3,10 @@ package ast
 import (
 	"bytes"
 	"fmt"
-	"monkey/token"
 	"sort"
 	"strings"
+
+	"interpreter/token"
 )
 
 // UnaryExpression implements the Expression interface.

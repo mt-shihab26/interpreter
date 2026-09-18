@@ -1,8 +1,9 @@
 package eval
 
 import (
-	"monkey/object"
 	"strings"
+
+	"interpreter/object"
 )
 
 var builtins = map[string]*object.Builtin{

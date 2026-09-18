@@ -1,6 +1,6 @@
 package lexer
 
-import "monkey/token"
+import "interpreter/token"
 
 // Lexer turns Monkey source code into a stream of tokens, one NextToken() call at a time.
 type Lexer struct {

@@ -2,8 +2,9 @@ package parser
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/token"
+
+	"interpreter/ast"
+	"interpreter/token"
 )
 
 type (

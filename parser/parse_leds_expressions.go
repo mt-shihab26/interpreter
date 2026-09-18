@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"monkey/ast"
-	"monkey/token"
+	"interpreter/ast"
+	"interpreter/token"
 )
 
 // registerLeds wires up the led (left denotation) parse functions.

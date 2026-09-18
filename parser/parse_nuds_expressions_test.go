@@ -3,8 +3,8 @@ package parser
 import (
 	"testing"
 
-	"monkey/ast"
-	"monkey/lexer"
+	"interpreter/ast"
+	"interpreter/lexer"
 )
 
 // TestIdentifierExpression checks that a bare identifier parses as an *ast.IdentifierExpression.

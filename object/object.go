@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"hash/fnv"
-	"monkey/ast"
 	"strings"
+
+	"interpreter/ast"
 )
 
 // Type identifies the kind of an Object.

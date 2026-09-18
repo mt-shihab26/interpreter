@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"testing"
 
-	"monkey/ast"
-	"monkey/lexer"
-	"monkey/object"
-	"monkey/parser"
+	"interpreter/ast"
+	"interpreter/lexer"
+	"interpreter/object"
+	"interpreter/parser"
 )
 
 func TestNew(t *testing.T) {

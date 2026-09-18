@@ -1,8 +1,9 @@
 package ast
 
 import (
-	"monkey/token"
 	"testing"
+
+	"interpreter/token"
 )
 
 // TestString checks that Program.Code() reconstructs Monkey source code from the AST.

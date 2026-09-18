@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/lexer"
-	"monkey/token"
+
+	"interpreter/ast"
+	"interpreter/lexer"
+	"interpreter/token"
 )
 
 // Parser turns a token stream from the lexer into an *ast.Program via Pratt parsing.

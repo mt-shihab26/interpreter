@@ -1,8 +1,9 @@
 package lexer
 
 import (
-	"monkey/token"
 	"testing"
+
+	"interpreter/token"
 )
 
 // TestNextToken checks that a run of single-character tokens is lexed correctly.

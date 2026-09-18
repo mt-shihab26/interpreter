@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"monkey/repl"
-	"monkey/source"
+	"interpreter/repl"
+	"interpreter/source"
 )
 
 func main() {

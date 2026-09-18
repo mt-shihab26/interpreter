@@ -3,8 +3,8 @@ package output
 import (
 	"io"
 
-	"monkey/ast"
-	"monkey/object"
+	"interpreter/ast"
+	"interpreter/object"
 )
 
 type Output struct {

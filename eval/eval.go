@@ -2,8 +2,9 @@ package eval
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/object"
+
+	"interpreter/ast"
+	"interpreter/object"
 )
 
 var (
