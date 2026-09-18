@@ -18,6 +18,7 @@ I also refactored the code to be more robust, maintainable, and readable.
 - [x] `if` / `else` conditionals
 - [x] Expression evaluation with operator precedence via [Pratt parsing](https://en.wikipedia.org/wiki/Operator-precedence_parser#Pratt_parsing)
 - [x] First-class functions and closures
+- [x] Global and Local bindings
 - [x] Built-in functions: `len`, `first`, `last`, `rest`, `push`, `puts`
 
 ## New features added
